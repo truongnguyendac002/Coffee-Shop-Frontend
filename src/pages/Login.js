@@ -1,14 +1,73 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import img_login from "../assets/img/img-login.png";
 import Logo from "../components/Logo";
 
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
+import summaryApi from "../common";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleOnchange = (e) => {
+    const { name, value } = e.target;
+
+    setData((pre) => {
+      return {
+        ...pre,
+        [name]: value,
+      };
+    });
+  };
+  // console.log('data login' , data);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const dataResponse = await fetch(summaryApi.signIn.url, {
+        method: summaryApi.signIn.method,
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const contentType = dataResponse.headers.get("Content-Type");
+      let response;
+
+      if (contentType && contentType.includes("application/json")) {
+        response = await dataResponse.json();
+      } else {
+        const responseText = await dataResponse.text();
+        console.log("Response:", responseText);
+
+        if (responseText === "Login Success ") {
+          navigate("/");
+          console.log("Login oke");
+        } else {
+          console.log("Error Login:", responseText);
+        }
+        return; 
+      }
+
+      if (response) {
+        navigate("/");
+      } else {
+        console.log("Error Login ");
+      }
+    } catch (error) {
+      console.log("error Login", error);
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row h-screen">
       <div className="bg-gray-100 md:w-1/2 flex items-center justify-center p-8">
@@ -39,14 +98,18 @@ const SignIn = () => {
             your previously saved all information.
           </p>
 
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label className="block text-lg font-medium text-gray-700">
                 Email
               </label>
               <input
+                required
                 placeholder="Email"
+                name="email"
                 type="email"
+                value={data.email}
+                onChange={handleOnchange}
                 className="text-lg mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
               />
             </div>
@@ -58,8 +121,12 @@ const SignIn = () => {
 
               <div className=" relative flex items-center justify-center ">
                 <input
+                  required
+                  name="password"
+                  value={data.password}
+                  onChange={handleOnchange}
                   placeholder="Password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   className=" mt-1 block  w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
                 />
                 <div
@@ -84,7 +151,7 @@ const SignIn = () => {
               </label>
               {/* forgot password */}
               <div>
-                <Link to="">
+                <Link to="/forgot-password">
                   <p className="text-sm text-blue-600 font-medium hover:underline">
                     Recovery Password
                   </p>
