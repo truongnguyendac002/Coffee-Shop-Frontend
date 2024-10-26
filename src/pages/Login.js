@@ -146,7 +146,7 @@ const SignIn = () => {
                   className="w-6 form-checkbox text-yellow-600 "
                 />
                 <span className="ml-2 font-medium text-gray-400 ">
-                  Set as default card
+                  Stay signed in
                 </span>
               </label>
               {/* forgot password */}
@@ -163,7 +163,7 @@ const SignIn = () => {
               type="submit"
               className="w-full py-2 px-4 bg-yellow-300 text-black font-semibold rounded-md shadow hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
             >
-              Login
+              Sign in
             </button>
             {/* login with google */}
             <button
