@@ -1,22 +1,26 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-// import Slideshow from '../components/Slideshow';
+import Slideshow from '../components/Slideshow';
 
 const Home = () => {
+  const location = useLocation();
+
   return (
     <>
       <Header />
       
-      <main className="container mx-auto px-4 mt-8">
-        {/* Slideshow component */}
-        <section className="mb-8">
-          {/* <Slideshow /> */}
-        </section>
+      <main className="container mx-auto px-4 mt-8">    
+        {/* Render Slideshow only if not on the Cart page */}
+        {location.pathname === '/' && (
+          <section>
+            <Slideshow />
+          </section>
+        )}
         
         {/* Main content, where Outlet will render nested routes */}
-        <section className="mt-8">
+        <section className="mt-8 mb-8">
           <Outlet />
         </section>
       </main>
