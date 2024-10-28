@@ -7,6 +7,7 @@ import Logo from "../components/Logo";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import summaryApi from "../common";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,12 +28,11 @@ const SignIn = () => {
       };
     });
   };
-  // console.log('data login' , data);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const dataResponse = await fetch(summaryApi.signIn.url, {
+      const loginResponse = await fetch(summaryApi.signIn.url, {
         method: summaryApi.signIn.method,
         body: JSON.stringify(data),
         headers: {
@@ -40,28 +40,13 @@ const SignIn = () => {
         },
       });
 
-      const contentType = dataResponse.headers.get("Content-Type");
-      let response;
-
-      if (contentType && contentType.includes("application/json")) {
-        response = await dataResponse.json();
-      } else {
-        const responseText = await dataResponse.text();
-        console.log("Response:", responseText);
-
-        if (responseText === "Login Success ") {
-          navigate("/");
-          console.log("Login oke");
-        } else {
-          console.log("Error Login:", responseText);
-        }
-        return; 
-      }
-
-      if (response) {
+      const loginResult = await loginResponse.json(); 
+     
+      if (loginResult.respCode === "000") {
         navigate("/");
+        toast.success("Login  Successfully !"  )
       } else {
-        console.log("Error Login ");
+        toast.error(loginResult.data)
       }
     } catch (error) {
       console.log("error Login", error);
