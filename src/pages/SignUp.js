@@ -8,6 +8,8 @@ import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import summaryApi from "../common";
 
+import { toast } from "react-toastify";
+
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -37,7 +39,7 @@ const SignUp = () => {
 
     if (data.password === data.confirmPassword) {
       try {
-        const dataResponse = await fetch(summaryApi.signUP.url, {
+        const signUpResponse = await fetch(summaryApi.signUP.url, {
           method: summaryApi.signUP.method,
           body: JSON.stringify(data),
           headers: {
@@ -45,32 +47,34 @@ const SignUp = () => {
           },
         });
 
-        const contentType = dataResponse.headers.get("Content-Type");
-        let response;
+        const signUpResult = await signUpResponse.json();
 
-        if (contentType && contentType.includes("application/json")) {
-          response = await dataResponse.json();
+        if (signUpResult.respCode === "000") {
+          toast.success("Sign Up  Successfully !"  )
+          // auto login 
+          const loginResponse =  await fetch (summaryApi.signIn.url , {
+            method : summaryApi.signIn.method ,
+            body : JSON.stringify({
+              email: data.email,
+              password: data.password
+            }), 
+            headers :  { 
+              "Content-Type": "application/json",
+            },
+          })
 
-        } else {
-         
-          const responseText = await dataResponse.text();
-          console.log("Response:", responseText);
-
-        
-          if (responseText === "Register success") {
-            navigate("/login");
-            console.log("SignUp oke");
-          } else {
-            console.log("Error SignUp:", responseText);
+          const loginResult =await loginResponse.json() 
+          if(loginResult.respCode === "000") {
+            navigate("/")
+            console.log("auto login Successfully")
           }
-          return; 
+
+        } else {
+          toast.error(signUpResult.data ,{
+            autoClose: 5000,
+          } )
         }
 
-        if (response) {
-          navigate("/login");
-        } else {
-          console.log("Error SignUp");
-        }
       } catch (error) {
         console.log("Error SignUp", error);
       }

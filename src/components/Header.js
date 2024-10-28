@@ -10,7 +10,7 @@ import { CiUser } from "react-icons/ci";
 
 const Header = () => {
   return (
-    <header className="bg-gray-150 dark:bg-gray-900 px-12 py-7">
+    <header className="bg-gray-150 dark:bg-gray-900 px-10 py-7">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-32">
           {/* logo  */}
@@ -50,7 +50,7 @@ const Header = () => {
             placeholder="Search product here..."
             className="w-full outline-none px-4 "
           />
-          <div className="flex h-8 min-w-[50px] items-center justify-center rounded-r-full bg-blue-123 text-lg text-white">
+          <div className="flex h-8 min-w-[50px] items-center justify-center rounded-r-full bg-teal-500 text-lg text-white cursor-pointer hover:bg-teal-600">
             <GrSearch />
           </div>
         </div>
@@ -74,8 +74,15 @@ const Header = () => {
 
           {/* sign in or sign out */}
           <div>
+            <Link to="/sign-up">
+              <button className="rounded-full bg-teal-500 px-5 py-1 text-white text-lg hover:bg-teal-600">
+                Sign Up
+              </button>
+            </Link>
+          </div>
+          <div>
             <Link to="/login">
-              <button className="rounded-full bg-blue-123 px-5 py-1 text-white text-lg hover:bg-blue-123">
+              <button className="rounded-full bg-teal-500 px-5 py-1 text-white text-lg hover:bg-teal-600">
                 Sign In
               </button>
             </Link>
