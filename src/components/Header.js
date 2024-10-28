@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 
 import Logo from "./Logo";
 import { GrSearch } from "react-icons/gr";
-// import { FaRegCircleUser } from "react-icons/fa6";
-// import { FaShoppingCart } from "react-icons/fa";
 import { CiShoppingCart } from "react-icons/ci";
 import { CiUser } from "react-icons/ci";
 
@@ -58,6 +56,7 @@ const Header = () => {
         {/* user */}
         <div className="flex items-center space-x-6">
           {/* user icon */}
+          <Link to="/cart">
           <div className=" relative cursor-pointer text-2xl ">
             <span>
               <CiShoppingCart />
@@ -66,6 +65,7 @@ const Header = () => {
               <p className="text-sm">0</p>
             </div>
           </div>
+          </Link>
 
           {/*  cart*/}
           <div className="relative flex cursor-pointer justify-center text-3xl">
