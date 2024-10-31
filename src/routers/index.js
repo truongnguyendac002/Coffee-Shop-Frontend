@@ -5,6 +5,8 @@ import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
 import ForgotPassword from "../pages/ForgotPassword";
 import Cart from "../pages/Cart";
+import OtpAuthentication from "../pages/OtpAuthentication";
+import ChangePassword from "../pages/ChangePassword";
 
 const router = createBrowserRouter ([
     {
@@ -31,6 +33,14 @@ const router = createBrowserRouter ([
             {
                 path:'/forgot-password',
                 element:<ForgotPassword />
+            }, 
+            {
+                path:'/otp-auth',
+                element:<OtpAuthentication />
+            }, 
+            {
+                path:'/change-password',
+                element:<ChangePassword />
             }, 
         
         ]

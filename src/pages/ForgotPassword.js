@@ -1,58 +1,86 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
 import { IoKeyOutline } from "react-icons/io5";
+import EmailInput from "../components/EmailInput";
+import summaryApi from "../common";
+import { toast } from "react-toastify";
+import {emailState} from "../states"
+import { useRecoilState , useRecoilValue } from "recoil";
+
 
 function ForgotPassword() {
-  const [email, setEmail] = useState("");
+  const [email, setEmailState] = useRecoilState(emailState);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+
+
+  const handleEmailChange = (newEmail) => {
+    setEmailState(newEmail);
+  };
+
+
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
     console.log(`Email gửi yêu cầu reset: ${email}`);
+    // console.log(summaryApi.forgotPassword.url + `${email}`)
+    try{
+      const forgotPassResponse = await fetch(summaryApi.forgotPassword.url + `${email}` , {
+        method: summaryApi.forgotPassword.method , 
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const forgotPassResult = await forgotPassResponse.json() ;
+      if(forgotPassResult.respCode === "000") {
+        toast.success(forgotPassResult.respDesc)
+        navigate("/otp-auth")
+        setEmailState(email);
+        console.log("oke sent email")
+      }else {
+        toast.error(forgotPassResult.respDesc)
+      }
+
+    }catch (error){
+      console.log("error" , error)
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 py-6">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <div className="flex flex-col items-center mb-4">
-          <div className="p-4 rounded-xl bg-gray-100"> 
-          <IoKeyOutline />
+          <div className="p-4 rounded-xl bg-gray-100">
+            <IoKeyOutline />
           </div>
+
           <h2 className="text-2xl font-bold">Forgot password?</h2>
+
+          <p className="text-sm text-gray-400 mt-3">
+          Please enter your email!
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              required
-            />
-          </div>
+
+          <EmailInput onEmailChange={handleEmailChange} />
+
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow hover:bg-indigo-700 "
           >
-            Reset password
+            Sent Email
           </button>
         </form>
+
         <div className="mt-6 text-center">
           <Link to="/login">
             <p className="text-indigo-600 hover:underline mt-2">
               ← Back to log in
             </p>
           </Link>
-        </div>
-        <div className="flex justify-center mt-4">
-          <span className="h-2 w-2 bg-gray-400 rounded-full mx-1"></span>
-          <span className="h-2 w-2 bg-purple-600 rounded-full mx-1"></span>
-          <span className="h-2 w-2 bg-gray-400 rounded-full mx-1"></span>
-          <span className="h-2 w-2 bg-gray-400 rounded-full mx-1"></span>
         </div>
       </div>
     </div>

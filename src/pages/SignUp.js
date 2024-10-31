@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
 
   const [data, setData] = useState({
     email: "",
@@ -20,7 +21,6 @@ const SignUp = () => {
     confirmPassword: "",
   });
 
-  const navigate = useNavigate();
 
   const handleOnchange = (e) => {
     const { name, value } = e.target;
