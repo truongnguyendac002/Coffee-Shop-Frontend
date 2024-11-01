@@ -1,9 +1,9 @@
-import React from "react";
+import React, {useContext} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import img_login from "../assets/img/img-login.png";
-import Logo from "../components/Logo";
-
+import Logo from "../components/layout/Logo";
+import { AuthContext } from "../components/context/auth.context";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import summaryApi from "../common";
@@ -15,6 +15,8 @@ const SignIn = () => {
     email: "",
     password: "",
   });
+  const { setUser } = useContext(AuthContext);
+
 
   const navigate = useNavigate();
 
@@ -43,6 +45,9 @@ const SignIn = () => {
       const loginResult = await loginResponse.json(); 
      
       if (loginResult.respCode === "000") {
+        console.log("loginResult",loginResult.data );
+        localStorage.setItem("access_token", loginResult.data.accessToken);
+        setUser(loginResult.data.user);
         navigate("/");
         toast.success("Login  Successfully !"  )
       } else {

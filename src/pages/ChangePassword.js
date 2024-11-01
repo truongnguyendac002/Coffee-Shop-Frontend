@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PasswordInput from "../components/PasswordInput ";
+import PasswordInput from "../components/auth/PasswordInput";
 import { Link, useNavigate } from "react-router-dom";
 import { VscLock } from "react-icons/vsc";
 import { toast } from "react-toastify";
