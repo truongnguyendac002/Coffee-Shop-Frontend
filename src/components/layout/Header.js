@@ -7,7 +7,7 @@ import { AuthContext } from "../context/auth.context";
 
 const Header = () => {
   const { user } = useContext(AuthContext);
-  console.log("user", user);
+  console.log("user header", user);
 
   return (
     <header className="bg-gray-150 dark:bg-gray-900 px-10 py-7">
@@ -68,9 +68,8 @@ const Header = () => {
           <div className="relative flex cursor-pointer justify-center text-3xl">
             <CiUser />
           </div>
-
           {/* sign in, sign up, and sign out */}
-          {!user.id ? (
+          {!user?.id? (
             <>
               <div>
                 <Link to="/login">
@@ -90,6 +89,7 @@ const Header = () => {
             </>
           ) : (
             <div>
+              {console.log("user", user.id)}
               <Link to="/logout">
                 <button className="rounded-full bg-teal-500 px-5 py-1 text-white text-lg hover:bg-teal-600">
                   Logout
