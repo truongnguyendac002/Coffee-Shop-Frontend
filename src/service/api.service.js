@@ -8,4 +8,14 @@ const getAccountAPI = () => {
         }
     )
 }
-export { getAccountAPI }
+
+const logoutAPI = () => {
+    const URL = "/auth/logout"
+    return customFetch(
+        URL,
+        {
+            method: "GET",
+        }
+    )
+}
+export { getAccountAPI, logoutAPI }

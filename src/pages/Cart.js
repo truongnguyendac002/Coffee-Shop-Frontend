@@ -12,7 +12,7 @@ function Checkout() {
       brand: "LavAzza",
       inStock: true,
       quantity: 1,
-      imgSrc: "path/to/image1.jpg" 
+      // imgSrc: "path/to/image1.jpg" 
     },
     {
       id: 2,
@@ -21,7 +21,7 @@ function Checkout() {
       brand: "LavAzza",
       inStock: true,
       quantity: 1,
-      imgSrc: "path/to/image2.jpg"
+      // imgSrc: "path/to/image2.jpg"
     },
     {
       id: 3,
@@ -30,7 +30,7 @@ function Checkout() {
       brand: "LavAzza",
       inStock: true,
       quantity: 1,
-      imgSrc: "path/to/image3.jpg"
+      // imgSrc: "path/to/image3.jpg"
     }
   ];
 

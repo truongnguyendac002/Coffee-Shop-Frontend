@@ -17,7 +17,6 @@ const Home = () => {
       try {
         const response = await getAccountAPI();
         if (response.respCode === "000") {
-          console.log("User information: ", response.data);
           setUser(response.data);
         } else if (response.respCode === "103") {
           console.log("Chưa đăng nhập: ", response);

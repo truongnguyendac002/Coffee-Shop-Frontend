@@ -4,10 +4,23 @@ import Logo from "./Logo";
 import { GrSearch } from "react-icons/gr";
 import { CiShoppingCart, CiUser } from "react-icons/ci";
 import { AuthContext } from "../context/auth.context";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const { user } = useContext(AuthContext);
-  console.log("user header", user);
+  const { user, setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    setUser({
+      email: "",
+      roleName: "",
+      phone: "",
+      profile_img: "",
+      status: "",
+      id: "",
+    });
+    localStorage.removeItem("access_token");
+    navigate("/");
+  };
 
   return (
     <header className="bg-gray-150 dark:bg-gray-900 px-10 py-7">
@@ -69,7 +82,7 @@ const Header = () => {
             <CiUser />
           </div>
           {/* sign in, sign up, and sign out */}
-          {!user?.id? (
+          {!user?.id ? (
             <>
               <div>
                 <Link to="/login">
@@ -89,12 +102,12 @@ const Header = () => {
             </>
           ) : (
             <div>
-              {console.log("user", user.id)}
-              <Link to="/logout">
-                <button className="rounded-full bg-teal-500 px-5 py-1 text-white text-lg hover:bg-teal-600">
-                  Logout
-                </button>
-              </Link>
+              <button
+                onClick={handleLogout}
+                className="rounded-full bg-teal-500 px-5 py-1 text-white text-lg hover:bg-teal-600"
+              >
+                Logout
+              </button>
             </div>
           )}
         </div>

@@ -45,7 +45,6 @@ const SignIn = () => {
       const loginResult = await loginResponse.json(); 
      
       if (loginResult.respCode === "000") {
-        console.log("loginResult",loginResult.data );
         localStorage.setItem("access_token", loginResult.data.accessToken);
         setUser(loginResult.data.user);
         navigate("/");
