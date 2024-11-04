@@ -7,45 +7,51 @@ import ForgotPassword from "../pages/ForgotPassword";
 import Cart from "../pages/Cart";
 import OtpAuthentication from "../pages/OtpAuthentication";
 import ChangePassword from "../pages/ChangePassword";
+import PrivateRoute from "./private.route";
 
-const router = createBrowserRouter ([
+const router = createBrowserRouter([
     {
-        path : '/',
+        path: '/',
         element: <App />,
-        children : [
+        children: [
             {
                 path: "",
-                element: <Home/>,
+                element: <Home />,
                 children: [
-                    {   path: "/cart",
-                        element: <Cart/>,
+                    {
+                        path: "/cart",
+                        element: (
+                            <PrivateRoute>
+                                <Cart />
+                            </PrivateRoute>
+                        )
                     }
                 ]
             },
             {
                 path: "/login",
-                element: <Login/>,
+                element: <Login />,
             },
             {
                 path: "/sign-up",
-                element: <SignUp/>,
+                element: <SignUp />,
             },
             {
-                path:'/forgot-password',
-                element:<ForgotPassword />
-            }, 
+                path: '/forgot-password',
+                element: <ForgotPassword />
+            },
             {
-                path:'/otp-auth',
-                element:<OtpAuthentication />
-            }, 
+                path: '/otp-auth',
+                element: <OtpAuthentication />
+            },
             {
-                path:'/change-password',
-                element:<ChangePassword />
-            }, 
-        
+                path: '/change-password',
+                element: <ChangePassword />
+            },
+
         ]
 
     }
 ]);
 
-export default router ;
+export default router;

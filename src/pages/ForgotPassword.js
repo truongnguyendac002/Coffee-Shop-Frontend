@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 import { IoKeyOutline } from "react-icons/io5";
-import EmailInput from "../components/EmailInput";
+import EmailInput from "../components/auth/EmailInput";
 import summaryApi from "../common";
 import { toast } from "react-toastify";
 import {emailState} from "../states"
-import { useRecoilState , useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 
 
 function ForgotPassword() {

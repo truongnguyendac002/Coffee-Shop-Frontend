@@ -5,19 +5,19 @@ const slides = [
   {
     id: 1,
     text: "ORDER YOUR FAVORITE COFFEE",
-    image: "/path/to/your/image1.png",
+    // image: "/path/to/your/image1.png",
     bgColor: "bg-blue-200",
   },
   {
     id: 2,
     text: "DISCOVER NEW FLAVORS",
-    image: "/path/to/your/image2.png",
+    // image: "/path/to/your/image2.png",
     bgColor: "bg-yellow-200",
   },
   {
     id: 3,
     text: "FRESHLY ROASTED BEANS",
-    image: "/path/to/your/image3.png",
+    // image: "/path/to/your/image3.png",
     bgColor: "bg-pink-200",
   },
 ];

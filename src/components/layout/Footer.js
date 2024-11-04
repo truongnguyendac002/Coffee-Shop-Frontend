@@ -10,9 +10,7 @@ const Footer = () => {
         {/* Footer column 1 */}
         <div>
           <Link to="/" className="flex items-center space-x-2 mb-4">
-            <Link to="/">
               <Logo />
-            </Link>
           </Link>
           <p className="mb-4 text-gray-500 dark:text-gray-400">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam, maxime et veniam eligendi rem

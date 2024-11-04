@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import img_login from "../assets/img/img-login.png";
-import Logo from "../components/Logo";
+import Logo from "../components/layout/Logo";
 
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
