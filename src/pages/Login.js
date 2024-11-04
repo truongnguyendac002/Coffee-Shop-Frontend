@@ -3,11 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import img_login from "../assets/img/img-login.png";
 import Logo from "../components/Logo";
+import fetchWithAuth from "../helps/fetchWithAuth ";
 
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import summaryApi from "../common";
 import { toast } from "react-toastify";
+
+import { userState } from "../states";
+import { useSetRecoilState } from "recoil";
+
+import Cookies from "js-cookie";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,6 +21,8 @@ const SignIn = () => {
     email: "",
     password: "",
   });
+
+  const setUser = useSetRecoilState(userState);
 
   const navigate = useNavigate();
 
@@ -39,10 +47,13 @@ const SignIn = () => {
           "Content-Type": "application/json",
         },
       });
-
       const loginResult = await loginResponse.json(); 
      
       if (loginResult.respCode === "000") {
+        setUser(loginResult.data)
+        const {accessToken ,refreshToken    }=  loginResult.data
+        Cookies.set("token" , accessToken)
+        Cookies.set("refreshToken", refreshToken )
         navigate("/");
         toast.success("Login  Successfully !"  )
       } else {

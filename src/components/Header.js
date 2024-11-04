@@ -7,6 +7,8 @@ import { CiShoppingCart } from "react-icons/ci";
 import { CiUser } from "react-icons/ci";
 
 const Header = () => {
+  
+
   return (
     <header className="bg-gray-150 dark:bg-gray-900 px-10 py-7">
       <div className="container mx-auto flex items-center justify-between">
@@ -70,6 +72,7 @@ const Header = () => {
           {/*  cart*/}
           <div className="relative flex cursor-pointer justify-center text-3xl">
             <CiUser />
+
           </div>
 
           {/* sign in or sign out */}
