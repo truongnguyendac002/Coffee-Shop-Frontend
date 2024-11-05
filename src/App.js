@@ -44,7 +44,8 @@ function App() {
         const refreshResult = await refreshResponse.json();
 
         if (refreshResult.respCode === "000") {
-          Cookies.set("token", refreshResult.data);
+          Cookies.set("token", refreshResult.data.accessToken);
+          Cookies.set("refreshToken",refreshResult.data.refreshToken);
 
           const retryResponse = await fetchWithAuth(
             summaryApi.current_user.url,

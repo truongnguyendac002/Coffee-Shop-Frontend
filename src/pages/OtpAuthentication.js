@@ -9,6 +9,7 @@ import {  useSelector } from "react-redux";
 function OtpAuthentication() {
 
   const [otp, setOtp] = useState(["", "", "", ""]);
+  
   const email = useSelector((state) => state.forgotPassword.email);
 
   const navigate = useNavigate();
