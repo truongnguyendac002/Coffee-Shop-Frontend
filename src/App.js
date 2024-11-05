@@ -1,9 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { DatePicker } from "antd";
-import { RecoilRoot } from "recoil";
-import { useEffect } from "react";
+
+import { useEffect, useCallback } from "react";
 import fetchWithAuth from "./helps/fetchWithAuth ";
 import summaryApi from "./common";
 import Context from "./context";
@@ -15,8 +14,7 @@ import Cookies from "js-cookie";
 function App() {
   const dispatch = useDispatch();
 
-
-  const fetchUserDetails = async () => {
+  const fetchUserDetails = useCallback(async () => {
     const token = Cookies.get("token");
     const refreshToken = Cookies.get("refreshToken");
 
@@ -26,34 +24,27 @@ function App() {
     }
 
     try {
-
       const response = await fetchWithAuth(summaryApi.current_user.url, {
         method: summaryApi.current_user.method,
       });
 
       const dataResponse = await response.json();
-      
 
       if (dataResponse.respCode === "000") {
-
         dispatch(setUser(dataResponse.data));
-
       } else if (dataResponse.respCode === "103") {
-
         const refreshResponse = await fetch(summaryApi.refreshToken.url, {
           method: summaryApi.refreshToken.method,
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${refreshToken}`,
           },
-          body: JSON.stringify({ refreshToken }),
         });
 
         const refreshResult = await refreshResponse.json();
 
         if (refreshResult.respCode === "000") {
-          
-          Cookies.set("token", refreshResult.data.token);
-          Cookies.set("refreshToken", refreshResult.data.refreshToken);
+          Cookies.set("token", refreshResult.data);
 
           const retryResponse = await fetchWithAuth(
             summaryApi.current_user.url,
@@ -70,7 +61,7 @@ function App() {
             throw new Error(retryResult.respDesc);
           }
         } else {
-          toast.error("Session expired. Please log in again.");
+          console.log("error", "bala bala");
         }
       } else {
         throw new Error(dataResponse.respDesc);
@@ -78,11 +69,11 @@ function App() {
     } catch (err) {
       toast.error("Failed to fetch user details");
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     fetchUserDetails();
-  }, []);
+  }, [fetchUserDetails]);
 
   return (
     <>
@@ -91,11 +82,8 @@ function App() {
           fetchUserDetails,
         }}
       >
-        <RecoilRoot>
-          <Outlet />
-          <ToastContainer autoClose={2000} />
-          <DatePicker />
-        </RecoilRoot>
+        <Outlet />
+        <ToastContainer autoClose={2000} />
       </Context.Provider>
     </>
   );

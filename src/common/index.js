@@ -32,7 +32,7 @@ const summaryApi = {
         method: "POST"
     },
     refreshToken : {
-        url : `${backendDomain}/auth/refresh_token`,
+        url : `${backendDomain}/auth/refresh-token`,
         method : "POST"
     }
     
