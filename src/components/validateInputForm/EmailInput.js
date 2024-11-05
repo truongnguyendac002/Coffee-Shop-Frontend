@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import InPutForm from './InPutForm';
+import React, { useState } from "react";
+import InPutForm from "./InPutForm";
 
 function EmailInput({ onEmailChange }) {
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
   const validateEmail = (value) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -12,19 +12,19 @@ function EmailInput({ onEmailChange }) {
 
   const handleChange = (e) => {
     const value = e.target.value;
-    
+
     setEmail(value);
 
     if (!validateEmail(value)) {
-      setError('Email is not in correct format');
+      setError("Email is not in correct format");
     } else {
-      setError('');
+      setError("");
     }
-    return onEmailChange(value)
+    return onEmailChange(value);
   };
 
   return (
-    <div >
+    <div>
       <InPutForm
         label="Email"
         type="email"
@@ -33,7 +33,6 @@ function EmailInput({ onEmailChange }) {
         onChange={handleChange}
         error={error}
         required
-        
       />
     </div>
   );

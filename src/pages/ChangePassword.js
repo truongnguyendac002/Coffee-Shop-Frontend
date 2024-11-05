@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import PasswordInput from "../components/auth/PasswordInput";
+import PasswordInput from "../components/validateInputForm/PasswordInput";
 import { Link, useNavigate } from "react-router-dom";
 import { VscLock } from "react-icons/vsc";
 import { toast } from "react-toastify";
 import summaryApi from "../common";
-import { useRecoilValue } from "recoil";
-import { emailState } from "../states";
+
+import {  useSelector } from "react-redux";
 
 function ChangePassword() {
-  // const [password, setPassword] = useState("");
-  // const [repeatPassword, setRepeatPassword] = useState("");
-  const email = useRecoilValue(emailState);
-  const navigate = useNavigate()
+
+  const email = useSelector((state) => state.forgotPassword.email);
+  const navigate = useNavigate();
 
   const [data, setData] = useState({
     password: "",
@@ -29,18 +28,11 @@ function ChangePassword() {
     });
   };
 
-  // const handlePasswordChange = (newPassword) => {
-  //   setPassword(newPassword);
-  // };
-
-  // const handlerepeatPasswordChange = (newrepeatPassword) => {
-  //   setrepeatPassword(newrepeatPassword);
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("pass", data.password, "confirmPass", data.repeatPassword);
-    console.log("data" , data)
+    console.log("data", data);
     if (data.password === data.repeatPassword) {
       try {
         const changePasswordResponse = await fetch(

@@ -3,16 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import img_login from "../assets/img/img-login.png";
 import Logo from "../components/layout/Logo";
-import { AuthContext } from "../components/context/auth.context";
+
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import summaryApi from "../common";
 import { toast } from "react-toastify";
 
-import { userState } from "../states";
-import { useSetRecoilState } from "recoil";
 
 import Cookies from "js-cookie";
+import Context from "../context";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,11 +19,8 @@ const SignIn = () => {
     email: "",
     password: "",
   });
-  const { setUser } = useContext(AuthContext);
 
-
-  // const setUser = useSetRecoilState(userState);
-
+  const { fetchUserDetails  } = useContext(Context)
   const navigate = useNavigate();
 
   const handleOnchange = (e) => {
@@ -51,10 +47,14 @@ const SignIn = () => {
       const loginResult = await loginResponse.json(); 
      
       if (loginResult.respCode === "000") {
-        localStorage.setItem("access_token", loginResult.data.accessToken);
-        setUser(loginResult.data.user);
         navigate("/");
         toast.success("Login  Successfully !"  )
+
+        const {accessToken, refreshToken  } =loginResult.data
+        Cookies.set("token" , accessToken);
+        Cookies.set("refreshToken", refreshToken);
+        fetchUserDetails()
+        
       } else {
         toast.error(loginResult.data)
       }

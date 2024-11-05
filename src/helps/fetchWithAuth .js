@@ -20,7 +20,7 @@ const fetchWithAuth = async (url, options = {}, authRequired = true) => {
     headers,
   });
 
-  return response; // Trả về kết quả dưới dạng JSON
+  return response; 
 };
 
 export default fetchWithAuth;

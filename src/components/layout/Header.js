@@ -1,26 +1,29 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
 import { GrSearch } from "react-icons/gr";
-import { CiShoppingCart, CiUser } from "react-icons/ci";
-import { AuthContext } from "../context/auth.context";
+
+import { MdOutlineShoppingCart } from "react-icons/md";
+import { PiUserCircle } from "react-icons/pi";
+
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { clearUser } from "../../store/userSlice";
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 const Header = () => {
-  const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleLogout = () => {
-    setUser({
-      email: "",
-      roleName: "",
-      phone: "",
-      profile_img: "",
-      status: "",
-      id: "",
-    });
-    localStorage.removeItem("access_token");
+    Cookies.remove("token");
+    Cookies.remove("refreshToken");
+    dispatch(clearUser());
     navigate("/");
+    toast.success("Logout Successfully!");
   };
+
+  const user = useSelector((state) => state?.user?.user);
 
   return (
     <header className="bg-gray-150 dark:bg-gray-900 px-10 py-7">
@@ -34,7 +37,7 @@ const Header = () => {
           </div>
 
           {/* nav */}
-          {/* Dropdowns */}
+         
           <div className="hidden md:flex space-x-5">
             <div className="relative">
               <button className="text-gray-700 dark:text-white hover:underline">
@@ -53,8 +56,8 @@ const Header = () => {
             </div>
           </div>
         </div>
-
-        <div className="bg-white hidden w-full max-w-sm lg:flex items-center justify-between rounded-full border pl-2 focus-within:shadow">
+        {/* search */}
+        <div className="bg-white hidden w-full max-w-xs lg:flex items-center justify-between rounded-full border pl-2 focus-within:shadow">
           <input
             type="text"
             placeholder="Search product here..."
@@ -70,18 +73,26 @@ const Header = () => {
           <Link to="/cart">
             <div className="relative cursor-pointer text-2xl">
               <span>
-                <CiShoppingCart />
+                <MdOutlineShoppingCart />
               </span>
               <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 p-1 text-white">
                 <p className="text-sm">0</p>
               </div>
             </div>
           </Link>
-
-          <div className="relative flex cursor-pointer justify-center text-3xl">
-            <CiUser />
-
-          </div>
+          {user?.id && (
+            <div className="relative flex cursor-pointer justify-center text-3xl">
+              {user?.profile_img ? (
+                <img
+                  src={user?.profile_img}
+                  alt="Avatar User"
+                  className="w-10 rounded-full"
+                />
+              ) : (
+                <PiUserCircle />
+              )}
+            </div>
+          )}
           {/* sign in, sign up, and sign out */}
           {!user?.id ? (
             <>

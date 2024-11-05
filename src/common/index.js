@@ -11,6 +11,14 @@ const summaryApi = {
         url : `${backendDomain}/auth/login`,
         method : "POST"
     },
+    logout_user : {
+        url : `${backendDomain}/api/user-logout`,
+        method : "GET"
+    },
+    current_user :{
+        url : `${backendDomain}/auth/user-details`,
+        method : "GET"
+    },
     forgotPassword : {
         url: `${backendDomain}/forgotPassword/verifyEmail/`,
         method: "POST"
@@ -23,6 +31,10 @@ const summaryApi = {
         url: `${backendDomain}/forgotPassword/changePassword/`,
         method: "POST"
     },
+    refreshToken : {
+        url : `${backendDomain}/auth/refresh_token`,
+        method : "POST"
+    }
     
 
 }

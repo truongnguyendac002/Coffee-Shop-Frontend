@@ -4,15 +4,12 @@ import { CiMail } from "react-icons/ci";
 
 import summaryApi from "../common";
 import { toast } from "react-toastify";
-
-import { emailState } from "../states";
-import { useRecoilValue } from "recoil";
+import {  useSelector } from "react-redux";
 
 function OtpAuthentication() {
-  const [otp, setOtp] = useState(["", "", "", ""]);
 
-  const email = useRecoilValue(emailState);
-  console.log(email);
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const email = useSelector((state) => state.forgotPassword.email);
 
   const navigate = useNavigate();
 
@@ -32,14 +29,11 @@ function OtpAuthentication() {
     window.open((window.location.href = "mailto:"));
   };
 
-  // Function to verify OTP
+
   const handleOtpAuthentication = async (e) => {
     e.preventDefault();
     const otpValue = otp.join("");
-    console.log("Entered OTP:", otpValue);
-    console.log("hi")
-    // Add your OTP verification logic here
-    console.log("hello", summaryApi.verifyOtp.url + `${otpValue}/` + email);
+    
     try {
       const otpResponse = await fetch(
         summaryApi.verifyOtp.url + `${otpValue}/`+email,

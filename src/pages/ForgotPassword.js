@@ -2,49 +2,46 @@ import React from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 import { IoKeyOutline } from "react-icons/io5";
-import EmailInput from "../components/auth/EmailInput";
+import EmailInput from "../components/validateInputForm/EmailInput";
 import summaryApi from "../common";
 import { toast } from "react-toastify";
-import {emailState} from "../states"
-import { useRecoilState } from "recoil";
-
+import { useDispatch, useSelector } from "react-redux";
+import { setEmail } from "../store/forgotPasswordSlice";
 
 function ForgotPassword() {
-  const [email, setEmailState] = useRecoilState(emailState);
+  const dispatch = useDispatch();
+  const email = useSelector((state) => state.forgotPassword.email);
   const navigate = useNavigate();
 
-
-
   const handleEmailChange = (newEmail) => {
-    setEmailState(newEmail);
+    dispatch(setEmail(newEmail))
   };
 
-
-
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(`Email gửi yêu cầu reset: ${email}`);
-    // console.log(summaryApi.forgotPassword.url + `${email}`)
-    try{
-      const forgotPassResponse = await fetch(summaryApi.forgotPassword.url + `${email}` , {
-        method: summaryApi.forgotPassword.method , 
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+    
+    try { 
+      const forgotPassResponse = await fetch(
+        summaryApi.forgotPassword.url + `${email}`,
+        {
+          method: summaryApi.forgotPassword.method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const forgotPassResult = await forgotPassResponse.json() ;
-      if(forgotPassResult.respCode === "000") {
-        toast.success(forgotPassResult.respDesc)
-        navigate("/otp-auth")
-        setEmailState(email);
-        console.log("oke sent email")
-      }else {
-        toast.error(forgotPassResult.respDesc)
+      const forgotPassResult = await forgotPassResponse.json();
+      if (forgotPassResult.respCode === "000") {
+        toast.success(forgotPassResult.respDesc);
+        navigate("/otp-auth");
+        console.log("oke sent email");
+      } else {
+        toast.error(forgotPassResult.respDesc);
       }
-
-    }catch (error){
-      console.log("error" , error)
+    } catch (error) {
+      console.log("error", error);
     }
   };
 
@@ -58,13 +55,10 @@ function ForgotPassword() {
 
           <h2 className="text-2xl font-bold">Forgot password?</h2>
 
-          <p className="text-sm text-gray-400 mt-3">
-          Please enter your email!
-          </p>
+          <p className="text-sm text-gray-400 mt-3">Please enter your email!</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-
           <EmailInput onEmailChange={handleEmailChange} />
 
           <button

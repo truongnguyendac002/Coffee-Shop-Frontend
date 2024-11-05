@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../components/context/auth.context';
+import {  useSelector } from "react-redux";
 const PrivateRoute = (props) => {
-    const { user } = useContext(AuthContext);
+    
+    const user = useSelector((state) => state?.user?.user);
     if (!user || !user.id) {
         return (
             <Navigate to="/login" replace />
