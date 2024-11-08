@@ -8,6 +8,7 @@ import Cart from "../pages/Cart";
 import OtpAuthentication from "../pages/OtpAuthentication";
 import ChangePassword from "../pages/ChangePassword";
 import PrivateRoute from "./private.route";
+import Checkout from "../pages/Checkout";
 
 const router = createBrowserRouter([
     {
@@ -19,13 +20,23 @@ const router = createBrowserRouter([
                 element: <Home />,
                 children: [
                     {
-                        path: "/cart",
+                        path: "cart",
                         element: (
                             <PrivateRoute>
                                 <Cart />
                             </PrivateRoute>
-                        )
-                    }
+                        ),
+
+                    },
+                    {
+                        path: "checkout",
+                        element: (
+                            <PrivateRoute>
+                                <Checkout />
+                            </PrivateRoute>
+                        ),
+
+                    },
                 ]
             },
             {
