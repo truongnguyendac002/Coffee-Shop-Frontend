@@ -7,7 +7,7 @@ import fetchWithAuth from "./helps/fetchWithAuth ";
 import summaryApi from "./common";
 import Context from "./context";
 import { useDispatch } from "react-redux";
-import { setUser } from "./store/userSlice";
+import { setUser, setLoading } from "./store/userSlice";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
@@ -19,6 +19,7 @@ function App() {
     const refreshToken = Cookies.get("refreshToken");
 
     if (!token) {
+      dispatch(setLoading(false));
       console.log("No token found, user might not be logged in.");
       return;
     }
@@ -33,6 +34,7 @@ function App() {
       if (dataResponse.respCode === "000") {
         dispatch(setUser(dataResponse.data));
       } else if (dataResponse.respCode === "103") {
+        dispatch(setLoading(false));
         const refreshResponse = await fetch(summaryApi.refreshToken.url, {
           method: summaryApi.refreshToken.method,
           headers: {
@@ -45,7 +47,7 @@ function App() {
 
         if (refreshResult.respCode === "000") {
           Cookies.set("token", refreshResult.data.accessToken);
-          Cookies.set("refreshToken",refreshResult.data.refreshToken);
+          Cookies.set("refreshToken", refreshResult.data.refreshToken);
 
           const retryResponse = await fetchWithAuth(
             summaryApi.current_user.url,
@@ -68,6 +70,7 @@ function App() {
         throw new Error(dataResponse.respDesc);
       }
     } catch (err) {
+      dispatch(setLoading(false));
       toast.error("Failed to fetch user details");
     }
   }, [dispatch]);

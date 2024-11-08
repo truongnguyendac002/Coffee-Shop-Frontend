@@ -1,26 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import CartSummary from '../components/cart/CartSummary';
-import { getCartAPI } from '../services/api.service';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import ShippingAddress from '../components/cart/ShippingAddress';
+import { useLocation } from 'react-router-dom';
+
 
 function Checkout() {
-  const [cartItems, setCartItems] = useState([]);
-  const user = useSelector((state) => state?.user?.user);
-  useEffect(() => {
-    if (user) {
-      const fetchCartItems = async () => {
-        try {
-          const response = await getCartAPI(user.id);
-          setCartItems(response.data || []);
-        } catch (error) {
-          console.error("Error fetching cart items:", error);
-        }
-      };
-      fetchCartItems();
-    }
-  }, [user]);
+  const { cartItems } = useLocation().state || {}; 
 
+  console.log("alo oalso: ",cartItems);
+  // const user = useSelector((state) => state?.user?.user);
 
   return (
     <div className="container mx-auto p-4 bg-gray-100 min-h-screen">

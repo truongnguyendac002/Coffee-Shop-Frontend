@@ -5,40 +5,45 @@ import { useSelector } from 'react-redux';
 import CartItems from '../components/cart/CartItems';
 
 function Cart() {
+
   const [cartItems, setCartItems] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]); 
-  console.log("cart item:" ,cartItems);
-  console.log("select item:" ,selectedItems);
+
+
   const user = useSelector((state) => state?.user?.user);
+
   useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await getCartAPI(user.id);
+        setCartItems(response.data || []);
+      } catch (error) {
+        console.error("Error fetching cart items:", error);
+      }
+    };
+
     if (user) {
-      const fetchCartItems = async () => {
-        try {
-          const response = await getCartAPI(user.id);
-          if(JSON.stringify(response.data) !== JSON.stringify(cartItems)){
-            setCartItems(response.data || []);
-          }
-        } catch (error) {
-          console.error("Error fetching cart items:", error);
-        }
-      };
       fetchCartItems();
     }
-  }, [user, selectedItems, cartItems]);
+  }, [user]);
+
+
 
   return (
-    <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
-      <div className="flex flex-col lg:flex-row justify-between items-start space-y-4 lg:space-y-0 lg:space-x-4">
-        <div className="w-full lg:w-2/3">
+    <>
+      <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
+        <div className="flex flex-col lg:flex-row justify-between items-start space-y-4 lg:space-y-0 lg:space-x-4">
+          <div className="w-full lg:w-2/3">
 
-          <CartItems cartItems={cartItems} setCartItems={setCartItems} selectedItems = {selectedItems} setSelectedItems = {setSelectedItems} />
-        </div>
-        <div className="w-full lg:w-1/3">
-          <CartSummary cartItems={selectedItems} setSelectedItems = {setSelectedItems} />
+            <CartItems cartItems={cartItems} setCartItems={setCartItems} />
+          </div>
+          <div className="w-full lg:w-1/3">
+            <CartSummary cartItems={cartItems} />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
+
 }
 
 export default Cart;

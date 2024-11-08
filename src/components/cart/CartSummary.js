@@ -4,8 +4,16 @@ import { Link } from 'react-router-dom';
 
 const CartSummary = ({ cartItems }) => {
   const shipping = 10.00;
-  const subtotal = cartItems ? cartItems.reduce((sum, item) => sum + item.productItem.price * item.quantity, 0) : 0;
+  const selectedItems = cartItems
+    ? cartItems.filter(item => item.isSelected) // Lọc các item đã được chọn
+    : [];
+
+  const subtotal = selectedItems
+    ? selectedItems.reduce((sum, item) => sum + item.productItem.price * item.quantity, 0)
+    : 0;
+
   const total = subtotal + shipping;
+
   return (
     <Card className="bg-white text-gray-800 shadow-md border border-gray-300">
       <div className="mb-4">
@@ -21,7 +29,8 @@ const CartSummary = ({ cartItems }) => {
         <p>${total.toFixed(2)}</p>
       </div>
 
-      <Link to="/checkout">
+      {/* Truyền chỉ những item được chọn */}
+      <Link to={{ pathname: "/checkout", state: { cartItems: selectedItems } }}>
         <button className="bg-yellow-500 hover:bg-yellow-400 w-full py-2 rounded-md mt-2 text-white">
           Continue to checkout
         </button>

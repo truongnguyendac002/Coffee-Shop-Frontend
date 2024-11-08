@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
-
+import image1 from "../../assets/img/img1.jpg"
 // Slide data
 const slides = [
   {
     id: 1,
     text: "ORDER YOUR FAVORITE COFFEE",
-    // image: "/path/to/your/image1.png",
+    // image: image1,
     bgColor: "bg-blue-200",
   },
   {
     id: 2,
     text: "DISCOVER NEW FLAVORS",
-    // image: "/path/to/your/image2.png",
+    // image: image1,
     bgColor: "bg-yellow-200",
   },
   {
     id: 3,
     text: "FRESHLY ROASTED BEANS",
-    // image: "/path/to/your/image3.png",
+    // image: image1,
     bgColor: "bg-pink-200",
   },
 ];
@@ -34,7 +34,7 @@ const Slideshow = () => {
   }, []);
 
   return (
-    <div className={`relative w-full h-64 ${slides[currentSlide].bgColor} rounded-lg flex items-center`}>
+    <div className={`relative w-full h-64 mt-10  ${slides[currentSlide].bgColor} rounded-lg flex items-center`}>
       <div className="container mx-auto px-4 flex justify-between items-center">
         {/* Text */}
         <div className="text-3xl font-bold text-white">

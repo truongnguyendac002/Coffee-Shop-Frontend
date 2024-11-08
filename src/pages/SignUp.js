@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import img_login from "../assets/img/img-login.png";
@@ -7,6 +7,9 @@ import Logo from "../components/layout/Logo";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import summaryApi from "../common";
+import Context from "../context";
+
+import Cookies from "js-cookie";
 
 import { toast } from "react-toastify";
 
@@ -15,12 +18,13 @@ const SignUp = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
+  const { fetchUserDetails } = useContext(Context);
+
   const [data, setData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
   });
-
 
   const handleOnchange = (e) => {
     const { name, value } = e.target;
@@ -32,7 +36,6 @@ const SignUp = () => {
       };
     });
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,31 +53,34 @@ const SignUp = () => {
         const signUpResult = await signUpResponse.json();
 
         if (signUpResult.respCode === "000") {
-          toast.success("Sign Up  Successfully !"  )
-          // auto login 
-          const loginResponse =  await fetch (summaryApi.signIn.url , {
-            method : summaryApi.signIn.method ,
-            body : JSON.stringify({
+          toast.success("Sign Up  Successfully !");
+
+          // auto login
+          const loginResponse = await fetch(summaryApi.signIn.url, {
+            method: summaryApi.signIn.method,
+            body: JSON.stringify({
               email: data.email,
-              password: data.password
-            }), 
-            headers :  { 
+              password: data.password,
+            }),
+            headers: {
               "Content-Type": "application/json",
             },
-          })
+          });
 
-          const loginResult =await loginResponse.json() 
-          if(loginResult.respCode === "000") {
-            navigate("/")
-            console.log("auto login Successfully")
+          const loginResult = await loginResponse.json();
+          if (loginResult.respCode === "000") {
+            navigate("/");
+            const { accessToken, refreshToken } = loginResult.data;
+            Cookies.set("token", accessToken);
+            Cookies.set("refreshToken", refreshToken);
+            fetchUserDetails();
+            console.log("auto login Successfully");
           }
-
         } else {
-          toast.error(signUpResult.data ,{
+          toast.error(signUpResult.data, {
             autoClose: 5000,
-          } )
+          });
         }
-
       } catch (error) {
         console.log("Error SignUp", error);
       }

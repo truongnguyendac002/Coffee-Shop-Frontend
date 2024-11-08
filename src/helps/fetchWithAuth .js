@@ -6,7 +6,6 @@ const fetchWithAuth = async (url, options = {}, authRequired = true) => {
     ...options.headers,
   };
 
-  // Nếu authRequired là true, thêm token vào headers
   if (authRequired) {
     const token = Cookies.get("token"); // Lấy token từ cookie
     if (token) {
@@ -14,7 +13,6 @@ const fetchWithAuth = async (url, options = {}, authRequired = true) => {
     }
   }
 
-  // Gửi request với headers đã cấu hình sẵn
   const response = await fetch(url, {
     ...options,
     headers,

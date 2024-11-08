@@ -1,28 +1,37 @@
 import React, { useState } from 'react';
 import { Card, InputNumber, Button, Checkbox } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
-import {updateCartItemAPI} from '../../services/api.service';
 import { toast } from "react-toastify";
+import fetchWithAuth from '../../helps/fetchWithAuth ';
+import summaryApi from '../../common';
 
 
-const CartItems = ({ cartItems, setCartItems, selectedItems, setSelectedItems }) => {
+const CartItems = ({ cartItems, setCartItems}) => {
+
   const [errorItemId, setErrorItemId] = useState(null);
 
   const handleQuantityChange = (value, item) => {
-    if (value < 1 ||value > item.productItem.stock ) {
+    if (value < 1 || value > item.productItem.stock) {
       triggerError(item);
     } else {
       item.quantity = value;
       setCartItems([...cartItems]);
       setErrorItemId(null);
-      updateCartItem(item); 
+      updatedCartItems(item);
     }
   };
-
-  const updateCartItem = async (item) => {
+  const updatedCartItems = async (item) => {
     try {
-      const response = await updateCartItemAPI(item);
-      if (response.status === 200) {
+      const response = await fetchWithAuth(summaryApi.updateCartItem.url, {
+        method: summaryApi.updateCartItem.method,
+        body: JSON.stringify({
+          Quantity: item.quantity,
+          ProductItemId: item.productItem.id,
+          UserId: item.user.id
+        }),
+      });
+      const result = await response.json();
+      if (result.resCode === "200") {
         toast.success("Cart item updated successfully");
       }
     } catch (error) {
@@ -37,11 +46,12 @@ const CartItems = ({ cartItems, setCartItems, selectedItems, setSelectedItems })
   };
 
   const handleSelectItem = (item) => {
-    setSelectedItems((prevSelectedItems) =>
-      prevSelectedItems.some((selectedItem) => selectedItem.id === item.id)
-    ? [...prevSelectedItems.filter((selectedItem) => selectedItem.id !== item.id)]
-        : [...prevSelectedItems, item]
+    const updatedItems = cartItems.map((cartItem) =>
+      cartItem.id === item.id
+        ? { ...cartItem, isSelected: !cartItem.isSelected }
+        : cartItem
     );
+    setCartItems(updatedItems);
   };
 
   return (
@@ -50,7 +60,7 @@ const CartItems = ({ cartItems, setCartItems, selectedItems, setSelectedItems })
         <Card key={item.id} className="bg-white shadow-md border rounded-md p-4">
           <div className="flex items-center justify-between">
             <Checkbox
-              checked={selectedItems.some((selectedItem) => selectedItem.id === item.id)}
+              checked={item.isSelected}
               onClick={() => handleSelectItem(item)}
               className='mr-6'
             />
