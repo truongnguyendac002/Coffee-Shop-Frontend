@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "../../store/userSlice";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
-import { persistor } from '../../store/store';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -20,12 +19,28 @@ const Header = () => {
     Cookies.remove("token");
     Cookies.remove("refreshToken");
     dispatch(clearUser());
-    persistor.purge(); 
+
     navigate("/");
     toast.success("Logout Successfully!");
   };
 
   const user = useSelector((state) => state?.user?.user);
+  const loading = useSelector((state) => state.user.loading);
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <div className="spinner"></div>
+      </div>
+    );
+  }
 
   return (
     <header className="bg-gray-150 dark:bg-gray-900 px-10 py-7">
