@@ -34,7 +34,16 @@ const summaryApi = {
     refreshToken : {
         url : `${backendDomain}/auth/refresh-token`,
         method : "POST"
-    }
+    },
+    allCategory : {
+        url : `${backendDomain}/category/all-category`,
+        method : "GET"
+    },
+    allProduct : {
+        url : `${backendDomain}/product/all-product`,
+        method : "GET"
+    },
+    
     
 
 }
