@@ -6,99 +6,6 @@ import { MdArrowForwardIos } from "react-icons/md";
 import { useRef } from "react";
 import summaryApi from "../../common";
 
-// const products = [
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-//   {
-//     name: "Coffee Beans - Espresso Arabica and Robusta Beans",
-//     brand: "Lavazza",
-//     price: "$47.00",
-//     rating: "4.3",
-//     image: image1,
-//   },
-// ];
 
 const ListProduct = () => {
   const [products, setProducts] = useState([]);
@@ -145,7 +52,6 @@ const ListProduct = () => {
 
         if (productResult.respCode === "000") {
           setProducts(productResult.data);
-          console.log("products list", productResult.data);
         } else {
           console.log("log get all products", productResult.respDesc);
         }
@@ -170,6 +76,7 @@ const ListProduct = () => {
         <div className="flex flex-wrap justify-center mt-5 gap-x-5 gap-y-6">
           {currentProducts.map((product, index) => (
             <ProductCard product={product} key={index} />
+            
           ))}
         </div>
 
