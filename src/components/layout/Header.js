@@ -10,7 +10,9 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "../../store/userSlice";
 import Cookies from "js-cookie";
-import { toast } from "react-toastify";
+import { message } from "antd";
+import { Badge } from 'antd';
+
 
 const Header = () => {
   const navigate = useNavigate();
@@ -18,10 +20,12 @@ const Header = () => {
   const handleLogout = () => {
     Cookies.remove("token");
     Cookies.remove("refreshToken");
+    Cookies.remove("cart-item-list");
     dispatch(clearUser());
 
     navigate("/");
-    toast.success("Logout Successfully!");
+    message.success("Logout Successfully!");
+
   };
 
   const user = useSelector((state) => state?.user?.user);
@@ -54,7 +58,7 @@ const Header = () => {
           </div>
 
           {/* nav */}
-         
+
           <div className="hidden md:flex space-x-5">
             <div className="relative">
               <button className="text-gray-700 dark:text-white hover:underline">
@@ -88,17 +92,14 @@ const Header = () => {
         {/* user */}
         <div className="flex items-center space-x-6">
           <Link to="/cart">
-            <div className="relative cursor-pointer text-2xl">
-              <span>
-                <MdOutlineShoppingCart />
-              </span>
-              <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 p-1 text-white">
-                <p className="text-sm">0</p>
-              </div>
+            <div className="relative cursor-pointer text-4xl">
+              <Badge count={5} size="large"> 
+                <MdOutlineShoppingCart style={{ fontSize: '30px' }} />
+              </Badge>
             </div>
           </Link>
           {user?.id && (
-            <div className="relative flex cursor-pointer justify-center text-3xl">
+            <div className="relative flex cursor-pointer justify-center text-4xl">
               {user?.profile_img ? (
                 <img
                   src={user?.profile_img}

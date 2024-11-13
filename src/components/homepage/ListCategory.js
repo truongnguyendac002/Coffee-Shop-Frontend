@@ -66,7 +66,6 @@ const ListCategory = () => {
         const dataResult =await categoryResponse.json();
         if (dataResult.respCode === "000") {
           setCategories(dataResult.data);
-          console.log("list category" , dataResult.data)
         }
       } catch (error) {
         console.log("error", error);

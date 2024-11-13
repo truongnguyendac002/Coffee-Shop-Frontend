@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import image1 from "../../assets/img/img1.jpg"
 // Slide data
 const slides = [
   {
