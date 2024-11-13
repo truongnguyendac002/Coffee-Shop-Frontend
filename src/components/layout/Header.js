@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "../../store/userSlice";
 import Cookies from "js-cookie";
-import { toast } from "react-toastify";
+import { message } from "antd";
 import { Badge } from 'antd';
 
 
@@ -20,10 +20,12 @@ const Header = () => {
   const handleLogout = () => {
     Cookies.remove("token");
     Cookies.remove("refreshToken");
+    Cookies.remove("cart-item-list");
     dispatch(clearUser());
 
     navigate("/");
-    toast.success("Logout Successfully!");
+    message.success("Logout Successfully!");
+
   };
 
   const user = useSelector((state) => state?.user?.user);

@@ -145,9 +145,7 @@ const ListProduct = () => {
 
         if (productResult.respCode === "000") {
           setProducts(productResult.data);
-          console.log("products list", productResult.data);
         } else {
-          console.log("log get all products", productResult.respDesc);
         }
       } catch (error) {
         console.log("error", error);

@@ -8,7 +8,7 @@ import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import summaryApi from "../common";
 import { toast } from "react-toastify";
-
+import { message } from "antd";
 
 import Cookies from "js-cookie";
 import Context from "../context";
@@ -48,7 +48,7 @@ const SignIn = () => {
      
       if (loginResult.respCode === "000") {
         navigate("/");
-        toast.success("Login  Successfully !"  )
+        message.success("Login Successfully !");
 
         const {accessToken, refreshToken  } =loginResult.data
         Cookies.set("token" , accessToken);

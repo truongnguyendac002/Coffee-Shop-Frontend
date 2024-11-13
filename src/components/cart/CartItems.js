@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Card, InputNumber, Button, Checkbox } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { toast } from "react-toastify";
-import fetchWithAuth from '../../helps/fetchWithAuth ';
+import fetchWithAuth from '../../helps/fetchWithAuth';
 import summaryApi from '../../common';
+import Cookies from "js-cookie";
 
 
-const CartItems = ({ cartItems, setCartItems}) => {
+const CartItems = ({ cartItems, setCartItems }) => {
+  console.log("render cartItem");
 
   const [errorItemId, setErrorItemId] = useState(null);
 
@@ -14,13 +16,26 @@ const CartItems = ({ cartItems, setCartItems}) => {
     if (value < 1 || value > item.productItem.stock) {
       triggerError(item);
     } else {
-      item.quantity = value;
-      setCartItems([...cartItems]);
+      const updatedItem = { ...item, quantity: value };
       setErrorItemId(null);
-      updatedCartItems(item);
+      try {
+        if (updatedCartItems(updatedItem)) {
+          console.log("update true")
+          setCartItems((prev) => prev.map((i) => (i.id === item.id ? updatedItem : i)));
+          Cookies.set("cart-item-list", JSON.stringify(cartItems)); 
+
+        }
+        else  console.log("update false")
+         
+      }
+      catch (error) {
+        toast.error("Error updating cart item");
+      }
+
     }
   };
   const updatedCartItems = async (item) => {
+    console.log("run update")
     try {
       const response = await fetchWithAuth(summaryApi.updateCartItem.url, {
         method: summaryApi.updateCartItem.method,
@@ -31,13 +46,15 @@ const CartItems = ({ cartItems, setCartItems}) => {
         }),
       });
       const result = await response.json();
-      if (result.resCode === "200") {
+      if (result.resCode === "000") {
         toast.success("Cart item updated successfully");
+        return true;
       }
     } catch (error) {
       toast.error("Error updating cart item");
       console.error("Error updating cart item:", error);
     }
+    return false;
   };
 
   const triggerError = (item) => {
@@ -46,12 +63,9 @@ const CartItems = ({ cartItems, setCartItems}) => {
   };
 
   const handleSelectItem = (item) => {
-    const updatedItems = cartItems.map((cartItem) =>
-      cartItem.id === item.id
-        ? { ...cartItem, isSelected: !cartItem.isSelected }
-        : cartItem
-    );
-    setCartItems(updatedItems);
+    const updatedItem = { ...item, isSelected: !item.isSelected };
+    setCartItems((prev) => prev.map((i) => (i.id === item.id ? updatedItem : i)));
+    
   };
 
   return (

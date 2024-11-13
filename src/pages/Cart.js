@@ -1,31 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import CartSummary from '../components/cart/CartSummary';
-import { getCartAPI } from '../services/api.service';
-import { useSelector } from 'react-redux';
 import CartItems from '../components/cart/CartItems';
+import Cookies from "js-cookie";
+import { useState } from 'react';
 
 function Cart() {
+  console.log("render cart");
 
   const [cartItems, setCartItems] = useState([]);
-
-
-  const user = useSelector((state) => state?.user?.user);
+  console.log("cart at cart page:", cartItems);
 
   useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const response = await getCartAPI(user.id);
-        setCartItems(response.data || []);
-      } catch (error) {
-        console.error("Error fetching cart items:", error);
-      }
-    };
+      const cartData = JSON.parse(Cookies.get("cart-item-list"));
+      setCartItems(cartData)
+  },[] );
 
-    if (user) {
-      fetchCartItems();
-    }
-  }, [user]);
-
+  useEffect(() => {
+    Cookies.set("cart-item-list", JSON.stringify(cartItems)); 
+  }, [cartItems])
 
 
   return (
@@ -33,7 +25,6 @@ function Cart() {
       <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
         <div className="flex flex-col lg:flex-row justify-between items-start space-y-4 lg:space-y-0 lg:space-x-4">
           <div className="w-full lg:w-2/3">
-
             <CartItems cartItems={cartItems} setCartItems={setCartItems} />
           </div>
           <div className="w-full lg:w-1/3">

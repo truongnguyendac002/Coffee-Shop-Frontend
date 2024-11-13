@@ -3,7 +3,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useEffect, useCallback } from "react";
-import fetchWithAuth from "./helps/fetchWithAuth ";
+import fetchWithAuth from "./helps/fetchWithAuth";
 import summaryApi from "./common";
 import Context from "./context";
 import { useDispatch } from "react-redux";

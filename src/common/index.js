@@ -46,6 +46,26 @@ const summaryApi = {
         url : `${backendDomain}/cart/item`,
         method : "PUT"
     },
+    getAllCartItems : {
+        url : `${backendDomain}/cart/user/`,
+        method : "GET"
+    },
+    addCartitem : {
+        url : `${backendDomain}/cart/item`,
+        method : "POST"
+    },
+    getAddressByUser : {
+        url : `${backendDomain}/address/user/`,
+        method : "GET"
+    },
+    addShippingAddress : {
+        url : `${backendDomain}/address`,
+        method : "POST"
+    },
+    updateShippingAddress : {
+        url : `${backendDomain}/address`,
+        method : "PUT"
+    },
     
     
 
