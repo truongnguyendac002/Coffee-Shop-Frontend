@@ -70,9 +70,15 @@ const summaryApi = {
         url : `${backendDomain}/address/`,
         method : "DELETE"
     },
-    
-    
 
+    productDetails: {
+      url: `${backendDomain}/product/`,
+      method: "GET",
+    },
+    productItem: {
+      url: `${backendDomain}/product-item/`,
+      method: "GET",
+    },
 }
 
 export default summaryApi;

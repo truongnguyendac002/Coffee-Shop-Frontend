@@ -2,7 +2,6 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-
 const PrivateRoute = (props) => {
   const user = useSelector((state) => state?.user?.user);
   const loading = useSelector((state) => state.user.loading);
@@ -27,4 +26,5 @@ const PrivateRoute = (props) => {
   }
   return <>{props.children}</>;
 };
+
 export default PrivateRoute;

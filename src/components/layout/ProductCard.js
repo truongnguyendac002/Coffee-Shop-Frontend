@@ -1,12 +1,20 @@
 import React from "react";
 import image1 from "../../assets/img/img1.jpg";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
   const price = "$47.00";
   const rating= "4.3";
+  const navigate = useNavigate()
+  const handleCardClick = () => {
+    navigate(`/product/${product.id}`)
+  }
   return (
     <>
-      <div className="max-w-60  bg-white rounded-2xl p-4 overflow-hidden shadow-lg">
+      <div 
+      className="max-w-60  bg-white rounded-2xl p-4 overflow-hidden shadow-lg"
+      onClick={handleCardClick}
+      >
         {/* <img className="w-full rounded-e-xl object-cover" src={product.default_image} alt={product.name} /> */}
         <img className="w-full rounded-e-xl object-cover" src={image1} alt={product.name} />
         <div className="space-y-4 mt-4">

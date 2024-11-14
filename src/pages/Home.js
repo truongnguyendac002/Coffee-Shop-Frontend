@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import fetchWithAuth from '../helps/fetchWithAuth';
 import summaryApi from '../common';
 import Cookies from "js-cookie";
+import BreadcrumbNav from "../components/layout/BreadcrumbNav";
 
 const Home = () => {
   const location = useLocation();
@@ -60,7 +61,8 @@ const Home = () => {
     return (
       <>
         <Header />
-        <main className="container mx-auto">
+        <BreadcrumbNav/>
+        <main className="container mx-auto ">
           {location.pathname === "/" && (
             <>
               <Slideshow />
