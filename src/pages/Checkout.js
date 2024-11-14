@@ -7,11 +7,10 @@ import fetchWithAuth from '../helps/fetchWithAuth';
 import Cookies from "js-cookie";
 
 function Checkout() {
+
   const user = useSelector((state) => state?.user?.user);
   const [loading, setLoading] = useState(true);
-  const [addresses, setAddresses] = useState([]);
   const [cartItems, setCartItems] = useState([]);
-  console.log("cart at checkout:", cartItems)
 
   useEffect(() => {
     const cartData = JSON.parse(Cookies.get("cart-item-list"));
@@ -21,7 +20,6 @@ function Checkout() {
 
   useEffect(() => {
     const fetchAddresses = async () => {
-      console.log("fetchAddresses at checkout");
       setLoading(true);
       try {
         const response = await fetchWithAuth(
@@ -31,7 +29,9 @@ function Checkout() {
         const responseData = await response.json();
 
         if (responseData.respCode === "000" && responseData.data) {
-          setAddresses(responseData.data);
+          debugger;
+          const addresses = responseData.data;
+          localStorage.setItem("shipping-address", JSON.stringify(addresses));
         }
       } catch (error) {
         console.error("Error fetching addresses:", error);
@@ -44,8 +44,10 @@ function Checkout() {
   }, [user]);
 
   if(loading) {
+
     return (
-      <p>Checkout page ...</p>
+      <>
+      </>
     )
   }
   else
@@ -53,7 +55,7 @@ function Checkout() {
     <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
       <div className="flex flex-col lg:flex-row justify-between items-start space-y-4 lg:space-y-0 lg:space-x-4">
         <div className="w-full lg:w-2/3">
-          <ShippingAddress addresses={addresses} setAddresses={setAddresses} />
+          <ShippingAddress/>
         </div>
         <div className="w-full lg:w-1/3">
           <CheckoutSummary cartItems={cartItems} />

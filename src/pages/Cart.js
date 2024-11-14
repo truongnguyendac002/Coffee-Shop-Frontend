@@ -5,10 +5,8 @@ import Cookies from "js-cookie";
 import { useState } from 'react';
 
 function Cart() {
-  console.log("render cart");
-
+  
   const [cartItems, setCartItems] = useState([]);
-  console.log("cart at cart page:", cartItems);
 
   useEffect(() => {
       const cartData = JSON.parse(Cookies.get("cart-item-list"));

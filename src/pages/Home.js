@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Slideshow from "../components/homepage/Slideshow";
@@ -11,10 +13,9 @@ import summaryApi from '../common';
 import Cookies from "js-cookie";
 
 const Home = () => {
-  console.log("render home");
   const location = useLocation();
   const user = useSelector((state) => state?.user?.user);
-  const [isCartLoading, setIsCartLoading] = useState(true);
+  const [isCartLoading, setIsCartLoading] = useState(false);
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -28,7 +29,7 @@ const Home = () => {
 
         if (dataResponse.data) {
           Cookies.set("cart-item-list", JSON.stringify(dataResponse.data));
-          console.log("Cart at home JSOn: ", JSON.parse(Cookies.get("cart-item-list")))
+          console.log("Cart at home JSON: ", JSON.parse(Cookies.get("cart-item-list")))
         }
       } catch (error) {
         console.error("Error fetching cart items:", error);
@@ -37,23 +38,29 @@ const Home = () => {
       }
     };
 
-    if (user) {
+    if (user && !Cookies.get("cart-item-list")) {
       fetchCartItems();
     }
   }, [user]);
+
   if (isCartLoading) {
+    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
     return (
       <>
         <Header />
-        <p>Home loading</p>
+        <div className="flex justify-center h-screen mt-3">
+          <Spin indicator={antIcon} />
+        </div>
+        <Footer />
+
       </>
-    )
-  }
-  else
+    );
+  } else {
     return (
       <>
         <Header />
-        <main className="container mx-auto ">
+        <main className="container mx-auto">
           {location.pathname === "/" && (
             <>
               <Slideshow />
@@ -68,6 +75,7 @@ const Home = () => {
         <Footer />
       </>
     );
+  }
 };
 
 export default Home;

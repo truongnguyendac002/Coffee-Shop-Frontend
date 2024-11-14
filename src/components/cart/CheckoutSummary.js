@@ -3,8 +3,6 @@ import { Card } from 'antd';
 import { Link } from 'react-router-dom';
 
 const CartSummary = ({ cartItems }) => {
-  console.log("render cart summary");
-  console.log("Cart item at summary:", cartItems);
   const shipping = 10.00;
   const selectedItems = cartItems
     ? cartItems.filter(item => item.isSelected) 
