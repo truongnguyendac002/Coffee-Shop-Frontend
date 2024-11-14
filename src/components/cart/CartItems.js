@@ -8,7 +8,6 @@ import Cookies from "js-cookie";
 
 
 const CartItems = ({ cartItems, setCartItems }) => {
-  console.log("render cartItem");
 
   const [errorItemId, setErrorItemId] = useState(null);
 
@@ -65,7 +64,7 @@ const CartItems = ({ cartItems, setCartItems }) => {
   const handleSelectItem = (item) => {
     const updatedItem = { ...item, isSelected: !item.isSelected };
     setCartItems((prev) => prev.map((i) => (i.id === item.id ? updatedItem : i)));
-    
+    Cookies.set("cart-item-list", JSON.stringify(cartItems)); 
   };
 
   return (

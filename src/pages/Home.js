@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Slideshow from "../components/homepage/Slideshow";
@@ -9,8 +11,7 @@ import { useSelector } from 'react-redux';
 import fetchWithAuth from '../helps/fetchWithAuth';
 import summaryApi from '../common';
 import Cookies from "js-cookie";
-
-import BreadcrumbNav from "../components/layout/BreadcrumbNav ";
+import BreadcrumbNav from "../components/layout/BreadcrumbNav";
 
 const Home = () => {
   console.log("home page" )
@@ -42,19 +43,24 @@ const Home = () => {
       }
     };
 
-    if (user) {
+    if (user && !Cookies.get("cart-item-list")) {
       fetchCartItems();
     }
   }, [user , carts]);
   if (isCartLoading) {
+    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
     return (
       <>
         <Header />
-        <p>Home loading</p>
+        <div className="flex justify-center h-screen mt-3">
+          <Spin indicator={antIcon} />
+        </div>
+        <Footer />
+
       </>
-    )
-  }
-  else
+    );
+  } else {
     return (
       <>
         <Header />
@@ -74,6 +80,7 @@ const Home = () => {
         <Footer />
       </>
     );
+  }
 };
 
 export default Home;

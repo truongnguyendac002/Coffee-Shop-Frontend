@@ -66,6 +66,11 @@ const summaryApi = {
         url : `${backendDomain}/address`,
         method : "PUT"
     },
+    deleteShippingAddress : {
+        url : `${backendDomain}/address/`,
+        method : "DELETE"
+    },
+
     productDetails: {
       url: `${backendDomain}/product/`,
       method: "GET",

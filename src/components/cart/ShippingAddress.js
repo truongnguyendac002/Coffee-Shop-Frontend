@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Radio, Modal, Input, message } from 'antd';
-import { PlusOutlined, EditOutlined } from '@ant-design/icons';
+import { Button, Radio, Modal, Input, message, Popconfirm } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import summaryApi from '../../common';
 import { useSelector } from 'react-redux';
 import fetchWithAuth from '../../helps/fetchWithAuth';
 
-const ShippingAddress = ({addresses, setAddresses}) => {
-    
+const ShippingAddress = () => {
+
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [editingAddress, setEditingAddress] = useState({});
     const [errors, setErrors] = useState({});
 
+    const [addresses, setAddresses] = useState([]);
+
     const user = useSelector((state) => state?.user?.user);
 
     useEffect(() => {
-        
-    }, [user]);
+        const addressesData = localStorage.getItem("shipping-address");
+        if (addressesData) {
+            setAddresses(JSON.parse(addressesData));
+        }
+    }, []);
 
     const handleSelectAddress = (id) => {
         setSelectedAddress(id);
@@ -48,19 +53,52 @@ const ShippingAddress = ({addresses, setAddresses}) => {
         }
 
         try {
-            if (editingAddress.id) {
-                await fetchWithAuth(summaryApi.updateShippingAddress.url, {
-                    method: summaryApi.updateShippingAddress.method,
-                    body: JSON.stringify({ ...editingAddress, user_id: user.id }),
-                });
-                message.success("Address updated successfully!");
-            } else {
-                await fetchWithAuth(summaryApi.addShippingAddress.url, {
-                    method: summaryApi.addShippingAddress.method,
-                    body: JSON.stringify({ ...editingAddress, user_id: user.id }),
-                });
-                message.success("Address added successfully!");
+            const fetchUpdateAddress = async (requestMethod) => {
+                try {
+                    const response = await fetchWithAuth(
+                        summaryApi.updateShippingAddress.url,
+                        {
+                            method: requestMethod,
+                            body: JSON.stringify({
+                                id: editingAddress.id,
+                                reciever_name: editingAddress.recieverName,
+                                reciever_phone: editingAddress.recieverPhone,
+                                location: editingAddress.location,
+                                user_id: user.id,
+                            }),
+                        }
+                    );
+                    const responseData = await response.json();
+                    if (responseData.respCode === "000") {
+                        return responseData.data;
+                    }
+                    else {
+                        message.error("Failed to process address.", responseData);
+                    }
+                } catch (error) {
+                    message.error("Error when process address:", error);
+                }
+                return null;
             }
+
+            if (editingAddress.id) {
+                const updatedAddress = await fetchUpdateAddress(summaryApi.updateShippingAddress.method);
+                if (updatedAddress) {
+                    const updatedAddresses = addresses.map((address) => address.id === updatedAddress.id ? updatedAddress : address);
+                    setAddresses(updatedAddresses);
+                    localStorage.setItem("shipping-address", JSON.stringify(updatedAddresses));
+                    message.success("Address updated successfully!");
+                }
+            } else {
+                const newAddress = await fetchUpdateAddress(summaryApi.addShippingAddress.method);
+                if (newAddress) {
+                    const updatedAddresses = [...addresses, newAddress];
+                    setAddresses(updatedAddresses);
+                    localStorage.setItem("shipping-address", JSON.stringify(updatedAddresses));
+                    message.success("Address added successfully!");
+                }
+            }
+
             setIsModalVisible(false);
             setEditingAddress({});
             setErrors({});
@@ -75,6 +113,33 @@ const ShippingAddress = ({addresses, setAddresses}) => {
         setEditingAddress({});
         setErrors({});
     };
+
+    const handleDeleteAddress = (id) => {
+        const updatedAddresses = addresses.filter((address) => address.id !== id);
+        const fetchDeleteAddress = async () => {
+            try {
+                const response = await fetchWithAuth(
+                    summaryApi.deleteShippingAddress.url + id,
+                    {
+                        method: summaryApi.deleteShippingAddress.method,
+                    }
+                );
+                const responseData = await response.json();
+                if (responseData.respCode === "000") {
+                    setAddresses(updatedAddresses);
+                    localStorage.setItem("shipping-address", JSON.stringify(updatedAddresses));
+                    message.success("Address deleted successfully!");
+                }
+                else {
+                    console.error("Failed to process address:", responseData);
+                }
+            } catch (error) {
+                console.error("Error deleting address:", error);
+            }
+        }
+        fetchDeleteAddress();
+    };
+
 
     return (
         <div className="p-6 bg-white rounded-md shadow-md">
@@ -102,12 +167,25 @@ const ShippingAddress = ({addresses, setAddresses}) => {
                             <p className="text-gray-700">{address.location}</p>
                             <p className="text-gray-500">Phone: {address.recieverPhone}</p>
                         </div>
-                        <Button type="link" icon={<EditOutlined />} className="text-gray-500" onClick={() => showModal(address)}>
-                            Edit
-                        </Button>
+                        <div className="flex space-x-2">
+                            <Button type="link" icon={<EditOutlined />} className="text-gray-500" onClick={() => showModal(address)}>
+                                Edit
+                            </Button>
+                            <Popconfirm
+                                title="Are you sure to delete this address?"
+                                onConfirm={() => handleDeleteAddress(address.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <Button type="link" icon={<DeleteOutlined />} className="text-red-500">
+                                    Delete
+                                </Button>
+                            </Popconfirm>
+                        </div>
                     </div>
                 ))}
             </div>
+
 
             <Modal
                 title={editingAddress?.id ? "Edit Address" : "Add New Address"}
