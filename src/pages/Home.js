@@ -17,7 +17,7 @@ const Home = () => {
   console.log("home page" )
   const location = useLocation();
   const user = useSelector((state) => state?.user?.user);
-  const [isCartLoading, setIsCartLoading] = useState(true);
+  const [isCartLoading, setIsCartLoading] = useState(false);
   const carts = useSelector((store) => store.cart.items) ;
 
   useEffect(() => {
