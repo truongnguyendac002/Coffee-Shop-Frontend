@@ -11,6 +11,11 @@ import image1 from "../assets/img/img1.jpg";
 import image2 from "../assets/img/img2.png";
 import image3 from "../assets/img/image3.jpg";
 import image4 from "../assets/img/image4.jpg";
+import { useSelector , useDispatch} from "react-redux";
+import { addToCart } from "../store/cartSlice";
+import fetchWithAuth from "../helps/fetchWithAuth";
+import { toast } from "react-toastify";
+
 
 const images = [ image1, image2, image3, image4];
 
@@ -23,12 +28,24 @@ const ProductDetail = () => {
   const [clickButtonSize, setClickButtonSize] = useState(null);
   const [selectedDiscount, setSelectedDiscount] = useState(null);
   const [productItemPrice, setProductItemPrice] = useState(null);
+  const [productItem, setProductItem] = useState(null);
   
   const [quantity, setQuantity] = useState(1);
   const maxQuantity = itemStock;
 
   const [activeTab, setActiveTab] = useState("Description");
   const tabs = ["Description", "Review ", "Similar"];
+
+  const user = useSelector((store) => store?.user?.user);
+  // console.log("user" , user);
+  // const carts = useSelector((store) => store.cart.items) ;
+  const  dispatch = useDispatch();
+  // console.log("carts " , carts) ;
+
+ 
+
+
+
 
   useEffect(() => {
     const fetchProductItems = async () => {
@@ -85,7 +102,43 @@ const ProductDetail = () => {
     setClickButtonSize(item);
     setSelectedDiscount(item.discount);
     setProductItemPrice(item.price);
+    setProductItem(item);
   };
+
+  // console.log("product item" , productItem);
+
+  const handleAddToCart = async() => {
+
+    try {
+      const response = await fetchWithAuth(summaryApi.addCartitem.url, {
+        method: summaryApi.addCartitem.method,
+        body : JSON.stringify({
+          ProductItemId: productItem.id,
+          Quantity:  quantity,
+          UserId: user.id,
+        }),
+      })
+
+      const data = await response.json();
+      if( data.respCode === "000") {
+        console.log("Thêm vào giỏ hàng thành công", data);
+        toast.success("Đã thêm sản phẩm vào giỏ hàng") ;
+      }else {
+        throw new Error("Lỗi khi thêm vào giỏ hàng");
+      }
+
+      dispatch(addToCart({
+        productItemId: productItem.id,
+        userId : user.id,
+        quantity
+      }))
+      
+    } catch (error) {
+      console.log("Lỗi khi thêm vào giỏ hàng:" , error);
+    }
+    
+    
+  }
 
   const renderContent = (product) => {
     if (!product || !product.brand || !product.category) {
@@ -288,7 +341,9 @@ const ProductDetail = () => {
             {/* add to cart or buy now */}
             <div className="flex mt-8 space-x-5">
               <div className="flex space-x-4">
-                <button className="grow flex items-center justify-center px-4 py-2 bg-red-100 border border-red-500 text-red-500 hover:bg-white">
+                <button 
+                onClick={handleAddToCart}
+                className="grow flex items-center justify-center px-4 py-2 bg-red-100 border border-red-500 text-red-500 hover:bg-white">
                   <FaShoppingCart className="mr-2" /> Thêm Vào Giỏ Hàng
                 </button>
 

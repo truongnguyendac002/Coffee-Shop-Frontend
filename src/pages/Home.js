@@ -13,10 +13,11 @@ import Cookies from "js-cookie";
 import BreadcrumbNav from "../components/layout/BreadcrumbNav ";
 
 const Home = () => {
-  console.log("render home");
+  console.log("home page" )
   const location = useLocation();
   const user = useSelector((state) => state?.user?.user);
   const [isCartLoading, setIsCartLoading] = useState(true);
+  const carts = useSelector((store) => store.cart.items) ;
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -27,10 +28,12 @@ const Home = () => {
           { method: summaryApi.getAllCartItems.method }
         );
         const dataResponse = await response.json();
+        console.log("fetchCartItems home page "  )
 
         if (dataResponse.data) {
           Cookies.set("cart-item-list", JSON.stringify(dataResponse.data));
-          console.log("Cart at home JSOn: ", JSON.parse(Cookies.get("cart-item-list")))
+          console.log("fetchCartItems home page "  )
+          // console.log("Cart at home JSOn: ", JSON.parse(Cookies.get("cart-item-list")))
         }
       } catch (error) {
         console.error("Error fetching cart items:", error);
@@ -42,7 +45,7 @@ const Home = () => {
     if (user) {
       fetchCartItems();
     }
-  }, [user]);
+  }, [user , carts]);
   if (isCartLoading) {
     return (
       <>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
 import { GrSearch } from "react-icons/gr";
@@ -29,7 +29,19 @@ const Header = () => {
   };
 
   const user = useSelector((state) => state?.user?.user);
+  const carts = useSelector((store) => store.cart.items) ;
+  
+
   const loading = useSelector((state) => state.user.loading);
+  const [totalQuantity, setTotalQuantity] = useState(0) ; 
+  
+
+  useEffect(() => {
+    const total = carts.length;
+    console.log("cart hearder" , carts)
+    setTotalQuantity(total);
+  }, [carts]);
+ 
 
   if (loading) {
     return (
@@ -93,7 +105,7 @@ const Header = () => {
         <div className="flex items-center space-x-6">
           <Link to="/cart">
             <div className="relative cursor-pointer text-4xl">
-              <Badge count={5} size="large"> 
+              <Badge count={totalQuantity} size="large"> 
                 <MdOutlineShoppingCart style={{ fontSize: '30px' }} />
               </Badge>
             </div>
