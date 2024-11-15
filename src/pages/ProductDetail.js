@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import summaryApi from "../common";
 import { FaRegStar } from "react-icons/fa6";
 import { FaRegHeart } from "react-icons/fa";
@@ -11,13 +11,12 @@ import image1 from "../assets/img/img1.jpg";
 import image2 from "../assets/img/img2.png";
 import image3 from "../assets/img/image3.jpg";
 import image4 from "../assets/img/image4.jpg";
-import { useSelector , useDispatch} from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { addToCart } from "../store/cartSlice";
 import fetchWithAuth from "../helps/fetchWithAuth";
-import { toast } from "react-toastify";
+import { message } from "antd";
 
-
-const images = [ image1, image2, image3, image4];
+const images = [image1, image2, image3, image4];
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -29,7 +28,8 @@ const ProductDetail = () => {
   const [selectedDiscount, setSelectedDiscount] = useState(null);
   const [productItemPrice, setProductItemPrice] = useState(null);
   const [productItem, setProductItem] = useState(null);
-  
+
+  const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const maxQuantity = itemStock;
 
@@ -39,13 +39,8 @@ const ProductDetail = () => {
   const user = useSelector((store) => store?.user?.user);
   // console.log("user" , user);
   // const carts = useSelector((store) => store.cart.items) ;
-  const  dispatch = useDispatch();
-  // console.log("carts " , carts) ;
-
- 
-
-
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProductItems = async () => {
@@ -103,42 +98,51 @@ const ProductDetail = () => {
     setSelectedDiscount(item.discount);
     setProductItemPrice(item.price);
     setProductItem(item);
+    setError(null);
   };
 
-  // console.log("product item" , productItem);
-
-  const handleAddToCart = async() => {
+ 
+  const handleAddProductToCart = async () => {
+    if (!productItem) {
+      setError("Bạn cần chọn kích thước sản phẩm trước khi thêm vào giỏ hàng!");
+      return;
+    }
 
     try {
       const response = await fetchWithAuth(summaryApi.addCartitem.url, {
         method: summaryApi.addCartitem.method,
-        body : JSON.stringify({
+        body: JSON.stringify({
           ProductItemId: productItem.id,
-          Quantity:  quantity,
+          Quantity: quantity,
           UserId: user.id,
         }),
-      })
+      });
 
       const data = await response.json();
-      if( data.respCode === "000") {
-        console.log("Thêm vào giỏ hàng thành công", data);
-        toast.success("Đã thêm sản phẩm vào giỏ hàng") ;
-      }else {
+      if (data.respCode === "000") {
+        dispatch(addToCart(data.data)); 
+        message.success("Đã thêm sản phẩm vào giỏ hàng");
+
+        return data.data; 
+      } else {
         throw new Error("Lỗi khi thêm vào giỏ hàng");
       }
-
-      dispatch(addToCart({
-        productItemId: productItem.id,
-        userId : user.id,
-        quantity
-      }))
-      
     } catch (error) {
-      console.log("Lỗi khi thêm vào giỏ hàng:" , error);
+      console.log("Lỗi khi thêm vào giỏ hàng:", error);
     }
-    
-    
-  }
+  };
+
+  const handleAddToCart = async () => {
+    await handleAddProductToCart();
+  };
+
+
+  const handleBuyNow = async () => {
+    const addedProduct = await handleAddProductToCart();
+    if (addedProduct) {
+      navigate("/checkout"); 
+    }
+  };
 
   const renderContent = (product) => {
     if (!product || !product.brand || !product.category) {
@@ -339,22 +343,26 @@ const ProductDetail = () => {
             </div>
 
             {/* add to cart or buy now */}
-            <div className="flex mt-8 space-x-5">
-              <div className="flex space-x-4">
-                <button 
-                onClick={handleAddToCart}
-                className="grow flex items-center justify-center px-4 py-2 bg-red-100 border border-red-500 text-red-500 hover:bg-white">
+            <div className="flex mt-8  flex-col">
+              {error && <div className="text-red-500 ">{error}</div>}
+              <div className="flex space-x-5 mt-8">
+                <button
+                  onClick={handleAddToCart}
+                  className="grow flex items-center justify-center px-4 py-2 bg-red-100 border border-red-500 text-red-500 hover:bg-white"
+                >
                   <FaShoppingCart className="mr-2" /> Thêm Vào Giỏ Hàng
                 </button>
 
-                <button className="grow px-4 py-2 bg-red-500 text-white hover:bg-red-600">
+                <button
+                  onClick={handleBuyNow}
+                  className="grow px-4 py-2 bg-red-500 text-white hover:bg-red-600"
+                >
                   Mua Ngay
                 </button>
+                <button className="text-gray-500 hover:text-red-500 w-9">
+                  <FaRegHeart style={{ width: "32px", height: "32px" }} />
+                </button>
               </div>
-
-              <button className="text-gray-500 hover:text-red-500 w-9">
-                <FaRegHeart style={{ width: "32px", height: "32px" }} />
-              </button>
             </div>
           </div>
         </div>

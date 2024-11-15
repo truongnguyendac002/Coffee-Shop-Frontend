@@ -11,8 +11,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "../../store/userSlice";
 import Cookies from "js-cookie";
 import { message } from "antd";
-import { Badge } from 'antd';
-
+import { Badge } from "antd";
+import { clearCart } from "../../store/cartSlice";
+import CartTab from "../cart/CartTab";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -22,26 +23,24 @@ const Header = () => {
     Cookies.remove("refreshToken");
     Cookies.remove("cart-item-list");
     dispatch(clearUser());
-
+    dispatch(clearCart());
     navigate("/");
     message.success("Logout Successfully!");
-
   };
 
+  const [showCartTab, setShowCartTab] = useState(false);
+
   const user = useSelector((state) => state?.user?.user);
-  const carts = useSelector((store) => store.cart.items) ;
-  
+  const carts = useSelector((store) => store.cart.items)  ;
+  // console.log(carts);
 
   const loading = useSelector((state) => state.user.loading);
-  const [totalQuantity, setTotalQuantity] = useState(0) ; 
-  
+  const [totalQuantity, setTotalQuantity] = useState(0);
 
   useEffect(() => {
     const total = carts.length;
-    console.log("cart hearder" , carts)
     setTotalQuantity(total);
-  }, [carts]);
- 
+  }, [carts, user]);
 
   if (loading) {
     return (
@@ -104,10 +103,18 @@ const Header = () => {
         {/* user */}
         <div className="flex items-center space-x-6">
           <Link to="/cart">
-            <div className="relative cursor-pointer text-4xl">
-              <Badge count={totalQuantity} size="large"> 
-                <MdOutlineShoppingCart style={{ fontSize: '30px' }} />
+            <div
+              className="relative cursor-pointer text-4xl"
+              onMouseEnter={() => setShowCartTab(true)}
+              onMouseLeave={() => setShowCartTab(false)}
+            >
+              <Badge count={totalQuantity} size="large" showZero>
+                <MdOutlineShoppingCart style={{ fontSize: "30px" }} />
               </Badge>
+
+              <div className="absolute top-12 -right-4 z-50">
+                {showCartTab && <CartTab items={carts}/>}
+              </div>
             </div>
           </Link>
           {user?.id && (

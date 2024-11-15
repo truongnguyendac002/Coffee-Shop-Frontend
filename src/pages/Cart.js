@@ -1,26 +1,26 @@
-import React, { useEffect } from 'react';
-import CartSummary from '../components/cart/CartSummary';
-import CartItems from '../components/cart/CartItems';
+import React, { useEffect } from "react";
+import CartSummary from "../components/cart/CartSummary";
+import CartItems from "../components/cart/CartItems";
 import Cookies from "js-cookie";
-import { useState } from 'react';
+import { useState } from "react";
 
 function Cart() {
-  
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-      const cartData = JSON.parse(Cookies.get("cart-item-list"));
-      setCartItems(cartData)
-  },[] );
+    const cartData = Cookies.get("cart-item-list");
+    if (cartData) {
+      setCartItems(JSON.parse(cartData));
+    }
+  }, []);
 
   useEffect(() => {
-    Cookies.set("cart-item-list", JSON.stringify(cartItems)); 
-  }, [cartItems])
-
+    Cookies.set("cart-item-list", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   return (
     <>
-      <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
+      <div className="container mx-auto  bg-gray-100 min-h-screen">
         <div className="flex flex-col lg:flex-row justify-between items-start space-y-4 lg:space-y-0 lg:space-x-4">
           <div className="w-full lg:w-2/3">
             <CartItems cartItems={cartItems} setCartItems={setCartItems} />
@@ -32,7 +32,6 @@ function Cart() {
       </div>
     </>
   );
-
 }
 
 export default Cart;

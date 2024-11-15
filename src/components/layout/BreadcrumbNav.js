@@ -28,10 +28,13 @@ const CustomBreadcrumb = styled(Breadcrumb)`
 const BreadcrumbNav = () => {
   const location = useLocation();
 
-  const pathSnippets = location.pathname.split('/').filter((i) => i);
-  if (pathSnippets.length < 2) {
-    return null;
+  // Kiểm tra nếu đường dẫn là trang chủ ('/')
+  if (location.pathname === '/') {
+    return null; // Không render breadcrumb ở trang chủ
   }
+
+  // Tách đường dẫn thành các phần
+  const pathSnippets = location.pathname.split('/').filter((i) => i);
 
   const items = [
     {
@@ -58,7 +61,7 @@ const BreadcrumbNav = () => {
   ];
 
   return (
-    <div className="container mx-auto rounded-xl mt-10 shadow-lg p-4 flex items-center ">
+    <div className="container mx-auto rounded-xl mt-10 shadow-lg p-4 flex items-center">
       <CustomBreadcrumb separator=">" items={items} />
     </div>
   );

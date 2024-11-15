@@ -13,8 +13,10 @@ function Checkout() {
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    const cartData = JSON.parse(Cookies.get("cart-item-list"));
-    setCartItems(cartData)
+    const cartData = Cookies.get("cart-item-list");
+    if (cartData) {
+      setCartItems(JSON.parse(cartData));
+    }
   }, []);
 
 

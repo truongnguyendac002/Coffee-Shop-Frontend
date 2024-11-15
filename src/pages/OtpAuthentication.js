@@ -4,12 +4,11 @@ import { CiMail } from "react-icons/ci";
 
 import summaryApi from "../common";
 import { toast } from "react-toastify";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 function OtpAuthentication() {
-
   const [otp, setOtp] = useState(["", "", "", ""]);
-  
+
   const email = useSelector((state) => state.forgotPassword.email);
 
   const navigate = useNavigate();
@@ -30,14 +29,13 @@ function OtpAuthentication() {
     window.open((window.location.href = "mailto:"));
   };
 
-
   const handleOtpAuthentication = async (e) => {
     e.preventDefault();
     const otpValue = otp.join("");
-    
+
     try {
       const otpResponse = await fetch(
-        summaryApi.verifyOtp.url + `${otpValue}/`+email,
+        summaryApi.verifyOtp.url + `${otpValue}/` + email,
         {
           method: summaryApi.verifyOtp.method,
           headers: {
@@ -50,7 +48,6 @@ function OtpAuthentication() {
       if (otpResult.respCode === "000") {
         toast.success(otpResult.respDesc);
         navigate("/change-password");
-        console.log("oke otp");
       } else {
         toast.error(otpResult.respDesc);
       }
@@ -89,7 +86,6 @@ function OtpAuthentication() {
 
           <button
             type="submit"
-           
             className="w-full py-2 px-4 mb-4 bg-indigo-600 text-white font-semibold rounded-md shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             VERIFY OTP

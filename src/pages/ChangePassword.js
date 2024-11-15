@@ -5,11 +5,15 @@ import { VscLock } from "react-icons/vsc";
 import { toast } from "react-toastify";
 import summaryApi from "../common";
 
-import {  useSelector } from "react-redux";
+import {  useDispatch, useSelector } from "react-redux";
+import { clearEmail } from "../store/forgotPasswordSlice";
 
 function ChangePassword() {
 
   const email = useSelector((state) => state.forgotPassword.email);
+  const dispatch = useDispatch();
+  const [error ,setError] = useState(false);
+  
   const navigate = useNavigate();
 
   const [data, setData] = useState({
@@ -26,15 +30,18 @@ function ChangePassword() {
         [name]: value,
       };
     });
+    
   };
 
 
+ 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("pass", data.password, "confirmPass", data.repeatPassword);
-    console.log("data", data);
+    
     if (data.password === data.repeatPassword) {
       try {
+        setError(false);
         const changePasswordResponse = await fetch(
           summaryApi.changePassword.url + email,
           {
@@ -50,6 +57,7 @@ function ChangePassword() {
 
         if (changePassResult.respCode === "000") {
           toast.success(changePassResult.respDesc);
+          dispatch(clearEmail());
           navigate("/login");
           console.log("oke change Password ");
         }
@@ -57,6 +65,8 @@ function ChangePassword() {
         toast.error(error);
         console.log("Error", error);
       }
+    }else {
+      setError("Confirm Password không đúng");
     }
   };
 
@@ -87,6 +97,11 @@ function ChangePassword() {
             name={"repeatPassword"}
             onChange={handleOnchange}
           />
+          {
+            error && (
+              <p className="text-sm text-red-500 my-2">{error}</p>
+            )
+          }
 
           <ul className="mb-6 text-sm text-gray-500 list-disc list-inside">
             <li className="marker:text-red-500 ">

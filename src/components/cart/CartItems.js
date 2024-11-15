@@ -70,7 +70,7 @@ const CartItems = ({ cartItems, setCartItems }) => {
   return (
     <div className="space-y-4">
       {cartItems.map(item => (
-        <Card key={item.id} className="bg-white shadow-md border rounded-md p-4">
+        <Card key={item.id} className="bg-white shadow-md border rounded-md">
           <div className="flex items-center justify-between">
             <Checkbox
               checked={item.isSelected}
@@ -82,7 +82,7 @@ const CartItems = ({ cartItems, setCartItems }) => {
               alt={item.productItem.product.name}
               className="w-16 h-16 object-cover"
             />
-            <div className="flex-1 ml-4">
+            <div className="flex justify-between flex-1  mx-5">
               <div onClick={() => handleSelectItem(item)}>
                 <h2 className="text-lg font-semibold text-gray-800">{item.productItem.product.name}</h2>
                 <p className="text-gray-600">Type: {item.productItem.type.name}</p>
@@ -114,7 +114,7 @@ const CartItems = ({ cartItems, setCartItems }) => {
                 />
               </div>
             </div>
-            <div className="text-lg font-semibold text-gray-800">
+            <div className="text-base font-semibold text-red-500">
               ${(item.productItem.price * item.quantity).toFixed(2)}
             </div>
           </div>
