@@ -22,6 +22,7 @@ const Header = () => {
     Cookies.remove("token");
     Cookies.remove("refreshToken");
     Cookies.remove("cart-item-list");
+    localStorage.removeItem("shipping-address");
     dispatch(clearUser());
     dispatch(clearCart());
     navigate("/");

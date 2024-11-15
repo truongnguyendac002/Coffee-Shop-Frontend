@@ -40,11 +40,11 @@ const ShippingAddress = () => {
     };
 
     const handleSaveAddress = async () => {
-        const { recieverName, recieverPhone, location } = editingAddress;
+        const { receiverName, receiverPhone, location } = editingAddress;
         const newErrors = {};
 
-        if (!recieverName) newErrors.recieverName = "Receiver Name is required";
-        if (!recieverPhone) newErrors.recieverPhone = "Receiver Phone is required";
+        if (!receiverName) newErrors.receiverName = "Receiver Name is required";
+        if (!receiverPhone) newErrors.receiverPhone = "Receiver Phone is required";
         if (!location) newErrors.location = "Location is required";
 
         if (Object.keys(newErrors).length > 0) {
@@ -61,8 +61,8 @@ const ShippingAddress = () => {
                             method: requestMethod,
                             body: JSON.stringify({
                                 id: editingAddress.id,
-                                reciever_name: editingAddress.recieverName,
-                                reciever_phone: editingAddress.recieverPhone,
+                                receiver_name: editingAddress.receiverName,
+                                receiver_phone: editingAddress.receiverPhone,
                                 location: editingAddress.location,
                                 user_id: user.id,
                             }),
@@ -163,9 +163,9 @@ const ShippingAddress = () => {
                             <Radio value={address.id} />
                         </Radio.Group>
                         <div className="flex-1" onClick={() => handleSelectAddress(address.id)}>
-                            <h3 className="font-semibold">{address.recieverName}</h3>
+                            <h3 className="font-semibold">{address.receiverName}</h3>
                             <p className="text-gray-700">{address.location}</p>
-                            <p className="text-gray-500">Phone: {address.recieverPhone}</p>
+                            <p className="text-gray-500">Phone: {address.receiverPhone}</p>
                         </div>
                         <div className="flex space-x-2">
                             <Button type="link" icon={<EditOutlined />} className="text-gray-500" onClick={() => showModal(address)}>
@@ -204,20 +204,20 @@ const ShippingAddress = () => {
                 <h3 className="mt-3 font-semibold ">Receiver name: </h3>
                 <Input
                     placeholder="Receiver Name"
-                    value={editingAddress?.recieverName || ''}
-                    onChange={(e) => setEditingAddress((prev) => ({ ...prev, recieverName: e.target.value }))}
-                    className={`${errors.recieverName ? 'border-red-500' : ''}`}
+                    value={editingAddress?.receiverName || ''}
+                    onChange={(e) => setEditingAddress((prev) => ({ ...prev, receiverName: e.target.value }))}
+                    className={`${errors.receiverName ? 'border-red-500' : ''}`}
                 />
-                {errors.recieverName && <p className="text-red-500 text-sm">{errors.recieverName}</p>}
+                {errors.receiverName && <p className="text-red-500 text-sm">{errors.receiverName}</p>}
 
                 <h3 className="mt-3 font-semibold ">Receiver phone: </h3>
                 <Input
                     placeholder="Receiver Phone"
-                    value={editingAddress?.recieverPhone || ''}
-                    onChange={(e) => setEditingAddress((prev) => ({ ...prev, recieverPhone: e.target.value }))}
-                    className={` ${errors.recieverPhone ? 'border-red-500' : ''}`}
+                    value={editingAddress?.receiverPhone || ''}
+                    onChange={(e) => setEditingAddress((prev) => ({ ...prev, receiverPhone: e.target.value }))}
+                    className={` ${errors.receiverPhone ? 'border-red-500' : ''}`}
                 />
-                {errors.recieverPhone && <p className="text-red-500 text-sm">{errors.recieverPhone}</p>}
+                {errors.receiverPhone && <p className="text-red-500 text-sm">{errors.receiverPhone}</p>}
 
                 <h3 className="mt-3 font-semibold ">Location: </h3>
                 <Input.TextArea
@@ -228,12 +228,6 @@ const ShippingAddress = () => {
                 />
                 {errors.location && <p className="text-red-500 text-sm">{errors.location}</p>}
 
-                {/* <Checkbox
-                    checked={editingAddress?.status === 'ACTIVE'}
-                    onChange={(e) => setEditingAddress((prev) => ({ ...prev, status: e.target.checked ? 'ACTIVE' : 'INACTIVE' }))}
-                >
-                    Set as active
-                </Checkbox> */}
             </Modal>
         </div>
     );

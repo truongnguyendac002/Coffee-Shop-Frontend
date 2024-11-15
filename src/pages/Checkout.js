@@ -25,7 +25,7 @@ function Checkout() {
       setLoading(true);
       try {
         const response = await fetchWithAuth(
-          summaryApi.getAddressByUser.url + user.id,
+          summaryApi.getAddressByUser.url,
           { method: summaryApi.getAddressByUser.method }
         );
         const responseData = await response.json();
