@@ -55,7 +55,7 @@ const summaryApi = {
         method : "POST"
     },
     getAddressByUser : {
-        url : `${backendDomain}/address/user/`,
+        url : `${backendDomain}/address`,
         method : "GET"
     },
     addShippingAddress : {
