@@ -12,7 +12,7 @@ import image2 from "../assets/img/img2.png";
 import image3 from "../assets/img/image3.jpg";
 import image4 from "../assets/img/image4.jpg";
 import { useSelector, useDispatch } from "react-redux";
-import { addToCart } from "../store/cartSlice";
+import { addToCart, toggleSelected } from "../store/cartSlice";
 import fetchWithAuth from "../helps/fetchWithAuth";
 import { message } from "antd";
 
@@ -140,6 +140,7 @@ const ProductDetail = () => {
   const handleBuyNow = async () => {
     const addedProduct = await handleAddProductToCart();
     if (addedProduct) {
+      dispatch(toggleSelected(addedProduct.id))
       navigate("/checkout"); 
     }
   };

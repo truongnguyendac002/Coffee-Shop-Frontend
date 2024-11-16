@@ -4,10 +4,13 @@ import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { toast } from "react-toastify";
 import fetchWithAuth from '../../helps/fetchWithAuth';
 import summaryApi from '../../common';
-import Cookies from "js-cookie";
+import { useDispatch } from 'react-redux';
+import { addToCart, toggleSelected } from '../../store/cartSlice';
 
+const CartItems = ({cartItems}) => {
 
-const CartItems = ({ cartItems, setCartItems }) => {
+  const dispatch = useDispatch();
+  // const cartItems = useSelector((state) => state.cart.items);
 
   const [errorItemId, setErrorItemId] = useState(null);
 
@@ -19,10 +22,8 @@ const CartItems = ({ cartItems, setCartItems }) => {
       setErrorItemId(null);
       try {
         if (updatedCartItems(updatedItem)) {
-          console.log("update true")
-          setCartItems((prev) => prev.map((i) => (i.id === item.id ? updatedItem : i)));
-          Cookies.set("cart-item-list", JSON.stringify(cartItems)); 
-
+          // console.log("update true")
+          dispatch(addToCart(updatedItem));
         }
         else  console.log("update false")
          
@@ -34,7 +35,7 @@ const CartItems = ({ cartItems, setCartItems }) => {
     }
   };
   const updatedCartItems = async (item) => {
-    console.log("run update")
+    // console.log("run update")
     try {
       const response = await fetchWithAuth(summaryApi.updateCartItem.url, {
         method: summaryApi.updateCartItem.method,
@@ -62,9 +63,7 @@ const CartItems = ({ cartItems, setCartItems }) => {
   };
 
   const handleSelectItem = (item) => {
-    const updatedItem = { ...item, isSelected: !item.isSelected };
-    setCartItems((prev) => prev.map((i) => (i.id === item.id ? updatedItem : i)));
-    Cookies.set("cart-item-list", JSON.stringify(cartItems)); 
+    dispatch(toggleSelected(item.id));
   };
 
   return (
