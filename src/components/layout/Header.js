@@ -32,7 +32,7 @@ const Header = () => {
   const [showCartTab, setShowCartTab] = useState(false);
 
   const user = useSelector((state) => state?.user?.user);
-  const carts = useSelector((store) => store.cart.items)  ;
+  const carts = useSelector((store) => store.cart.items);
   // console.log(carts);
 
   const loading = useSelector((state) => state.user.loading);
@@ -114,22 +114,24 @@ const Header = () => {
               </Badge>
 
               <div className="absolute top-12 -right-4 z-50">
-                {showCartTab && <CartTab items={carts}/>}
+                {showCartTab && <CartTab items={carts} />}
               </div>
             </div>
           </Link>
           {user?.id && (
-            <div className="relative flex cursor-pointer justify-center text-4xl">
-              {user?.profile_img ? (
-                <img
-                  src={user?.profile_img}
-                  alt="Avatar User"
-                  className="w-10 rounded-full"
-                />
-              ) : (
-                <PiUserCircle />
-              )}
-            </div>
+            <Link to="/profile">
+              <div className="relative flex cursor-pointer justify-center text-4xl">
+                {user?.profile_img ? (
+                  <img
+                    src={user?.profile_img}
+                    alt="Avatar User"
+                    className="w-10 rounded-full"
+                  />
+                ) : (
+                  <PiUserCircle />
+                )}
+              </div>
+            </Link>
           )}
           {/* sign in, sign up, and sign out */}
           {!user?.id ? (
