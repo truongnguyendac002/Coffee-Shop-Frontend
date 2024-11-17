@@ -4,7 +4,7 @@ import { UserOutlined, LoadingOutlined } from "@ant-design/icons";
 import {
   FiHome,
   FiMail,
-  FiHeart,
+  // FiHeart,
   FiGift,
   FiAlertCircle,
   FiPhone,
@@ -95,7 +95,7 @@ const Profile = () => {
 
               {/* Lists */}
               <div className="bg-white p-6 rounded-lg shadow-md">
-                <Title level={3}>Lists</Title>
+                <Title level={3}>Wish List</Title>
                 <div className="mt-4 space-y-4">
                   <div className="p-4 bg-gray-100 rounded-lg flex justify-between items-center">
                     <div>
@@ -130,20 +130,20 @@ const Profile = () => {
             <p>Adjust your communication preferences here.</p>
           </div>
         );
-      case "reorder":
+      case "orderHistory":
         return (
           <div>
-            <Title level={3}>Reorder</Title>
+            <Title level={3}>Order History</Title>
             <p>View and reorder your favorite items.</p>
           </div>
         );
-      case "lists":
-        return (
-          <div>
-            <Title level={3}>Lists</Title>
-            <p>Manage your wish lists here.</p>
-          </div>
-        );
+      // case "lists":
+      //   return (
+      //     <div>
+      //       <Title level={3}>Lists</Title>
+      //       <p>Manage your wish lists here.</p>
+      //     </div>
+      //   );
       case "help":
         return (
           <div>
@@ -201,8 +201,8 @@ const Profile = () => {
         <List
           itemLayout="horizontal"
           dataSource={[
-            { key: "reorder", title: "Reorder", icon: <FiHeart className="text-2xl" /> },
-            { key: "lists", title: "Lists", icon: <FiGift className="text-2xl" /> },
+            // { key: "reorder", title: "Reorder", icon: <FiHeart className="text-2xl" /> },
+            { key: "orderHistory", title: "Order History", icon: <FiGift className="text-2xl" /> },
           ]}
           renderItem={(item) => (
             <List.Item

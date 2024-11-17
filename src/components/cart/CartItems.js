@@ -10,7 +10,6 @@ import { addToCart, toggleSelected } from '../../store/cartSlice';
 const CartItems = ({cartItems}) => {
 
   const dispatch = useDispatch();
-  // const cartItems = useSelector((state) => state.cart.items);
 
   const [errorItemId, setErrorItemId] = useState(null);
 
@@ -35,7 +34,6 @@ const CartItems = ({cartItems}) => {
     }
   };
   const updatedCartItems = async (item) => {
-    // console.log("run update")
     try {
       const response = await fetchWithAuth(summaryApi.updateCartItem.url, {
         method: summaryApi.updateCartItem.method,

@@ -103,7 +103,7 @@ const Header = () => {
 
         {/* user */}
         <div className="flex items-center space-x-6">
-          <Link to="/cart">
+          {/* <Link to="/cart">
             <div
               className="relative cursor-pointer text-4xl"
               onMouseEnter={() => setShowCartTab(true)}
@@ -117,7 +117,29 @@ const Header = () => {
                 {showCartTab && <CartTab items={carts} />}
               </div>
             </div>
-          </Link>
+          </Link> */}
+          <div
+            className="flex items-center space-x-6 relative"
+            onMouseEnter={() => setShowCartTab(true)}
+            onMouseLeave={() => setShowCartTab(false)}
+          >
+            <Link to="/cart">
+              <div className="relative cursor-pointer text-4xl">
+                <Badge count={totalQuantity} size="large" showZero>
+                  <MdOutlineShoppingCart style={{ fontSize: "30px" }} />
+                </Badge>
+              </div>
+            </Link>
+
+            {showCartTab && (
+              <div className="absolute top-12 -right-4 z-50">
+                <CartTab items={carts} />
+              </div>
+            )}
+          </div>
+
+
+
           {user?.id && (
             <Link to="/profile">
               <div className="relative flex cursor-pointer justify-center text-4xl">
