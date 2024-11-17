@@ -38,7 +38,8 @@ const ProductDetail = () => {
 
   const user = useSelector((store) => store?.user?.user);
   // console.log("user" , user);
-  // const carts = useSelector((store) => store.cart.items) ;
+  const carts = useSelector((store) => store.cart.items) ;
+  console.log("cart ProductDetail " , carts)
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -139,6 +140,7 @@ const ProductDetail = () => {
 
   const handleBuyNow = async () => {
     const addedProduct = await handleAddProductToCart();
+    console.log("addedProduct", addedProduct)
     if (addedProduct) {
       dispatch(toggleSelected(addedProduct.id))
       navigate("/checkout"); 
@@ -254,7 +256,7 @@ const ProductDetail = () => {
               </div>
               <div className="flex gap-x-4 gap-y-3 flex-wrap">
                 {selectedDiscount > 0 ? (
-                  <button className="shrink-0 w-28 h-8 border-dashed border-2 bg-red-100 border text-red-500 font-semibold rounded-sm text-lg">
+                  <button className="shrink-0 w-28 h-8 border-dashed border-2 bg-red-100  text-red-500 font-semibold rounded-sm text-lg">
                     {`Giảm ${selectedDiscount}k`}
                   </button>
                 ) : selectedDiscount === 0.0 ? (
