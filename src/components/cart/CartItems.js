@@ -42,7 +42,7 @@ const CartItems = ({cartItems}) => {
         body: JSON.stringify({
           Quantity: item.quantity,
           ProductItemId: item.productItem.id,
-          UserId: item.user.id
+          UserId: item.userId
         }),
       });
       const result = await response.json();
