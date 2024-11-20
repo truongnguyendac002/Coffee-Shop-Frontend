@@ -95,9 +95,8 @@ const Home = () => {
     return (
       <>
         <Header />
-        {location.pathname !== "/profile" && <BreadcrumbNav />}
         <div className="mt-36"></div>
-        <BreadcrumbNav />
+        {location.pathname !== "/profile" && <BreadcrumbNav />}
         <main className="container mx-auto ">
           {location.pathname === "/" && (
             <>
