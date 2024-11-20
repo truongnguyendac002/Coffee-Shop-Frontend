@@ -103,6 +103,10 @@ const summaryApi = {
         url: `${backendDomain}/product-item/`,
         method: "GET",
     },
+    addProductItem: {
+        url: `${backendDomain}/product-item`,
+        method: "POST",
+    },
 
     createRefund: {
         url: `${backendDomain}/payment`,
@@ -147,7 +151,15 @@ const summaryApi = {
     deleteFavorites : {
         url : `${backendDomain}/favorites`,
         method : "DELETE"
-    }
+    },
+    addType : {
+        url : `${backendDomain}/type-product`,
+        method : "POST"
+    },
+    getAllType : {
+        url : `${backendDomain}/type-product/all`,
+        method : "GET"
+    },
 }
 
 export default summaryApi;
