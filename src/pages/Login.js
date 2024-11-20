@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import img_login from "../assets/img/img-login.png";
@@ -20,7 +20,7 @@ const SignIn = () => {
     password: "",
   });
 
-  const { fetchUserDetails  } = useContext(Context)
+  const { fetchUserDetails } = useContext(Context)
   const navigate = useNavigate();
 
   const handleOnchange = (e) => {
@@ -44,17 +44,18 @@ const SignIn = () => {
           "Content-Type": "application/json",
         },
       });
-      const loginResult = await loginResponse.json(); 
-     
+      const loginResult = await loginResponse.json();
+
       if (loginResult.respCode === "000") {
+        console.log("loginResult", loginResult);
         navigate("/");
         message.success("Login Successfully !");
 
-        const {accessToken, refreshToken  } =loginResult.data
-        Cookies.set("token" , accessToken);
+        const { accessToken, refreshToken } = loginResult.data
+        Cookies.set("token", accessToken);
         Cookies.set("refreshToken", refreshToken);
         fetchUserDetails()
-        
+
       } else {
         toast.error(loginResult.data)
       }

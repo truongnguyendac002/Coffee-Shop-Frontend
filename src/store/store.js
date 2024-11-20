@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
 import forgotPasswordReducer from "./forgotPasswordSlice";
-import cartReducer from "./cartSlice"
+import cartReducer from "./cartSlice";
+import favoritesReducer from './favoritesSlice ';
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     forgotPassword: forgotPasswordReducer,
-    cart : cartReducer
+    cart : cartReducer,
+    favorites: favoritesReducer,
   },
 });

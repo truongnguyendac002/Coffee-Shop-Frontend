@@ -85,6 +85,11 @@ const SignUp = () => {
         console.log("Error SignUp", error);
       }
     }
+    else {
+      toast.error("Password and Confirm Password not match", {
+        autoClose: 1000,
+      });
+    }
   };
 
   return (

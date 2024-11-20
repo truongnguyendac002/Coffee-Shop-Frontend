@@ -11,6 +11,12 @@ import PrivateRoute from "./private.route";
 import Checkout from "../pages/Checkout";
 import ProductDetail from "../pages/ProductDetail";
 import Profile from "../pages/Profile";
+import AdminHome from "../pages/AdminHome";
+import ProductsContent from "../components/adminpage/product/ProductsContent";
+import UsersContent from "../components/adminpage/user/UsersContent";
+import HomeContent from "../components/adminpage/HomeContent";
+import NotFound from "../pages/NotFound404";
+import SearchProduct from "../pages/SearchProduct";
 
 
 const router = createBrowserRouter([
@@ -30,10 +36,10 @@ const router = createBrowserRouter([
                             </PrivateRoute>
                         ),
 
-                    },      
+                    },
                     {
-                        path: "/product/:id", 
-                        element: <ProductDetail/>
+                        path: "/product/:id",
+                        element: <ProductDetail />
                     },
                     {
                         path: "checkout",
@@ -45,12 +51,21 @@ const router = createBrowserRouter([
 
                     },
                     {
+                        path: "/search", 
+                        element: <SearchProduct/>
+                    },
+                    {
                         path: "profile",
                         element: (
                             <PrivateRoute>
                                 <Profile />
                             </PrivateRoute>
                         ),
+                    },
+                    {
+                        path: "*",
+                        element: <NotFound />,
+
                     }
                 ]
             },
@@ -74,6 +89,41 @@ const router = createBrowserRouter([
                 path: '/change-password',
                 element: <ChangePassword />
             },
+            {
+                path: "/admin",
+                element: (
+                    <PrivateRoute>
+                        <AdminHome />
+                    </PrivateRoute>
+                ),
+                children: [
+                    {
+                        path: "",
+                        element: (
+                            <HomeContent />
+                        ),
+                    },
+                    {
+                        path: "products",
+                        element: (
+                            <ProductsContent />
+                        ),
+                    },
+                    {
+                        path: "users",
+                        element: (
+                            <UsersContent />
+                        ),
+                    },
+                    {
+                        path: "*",
+                        element: <NotFound />,
+
+                    }
+                ]
+
+            },
+
 
         ]
 

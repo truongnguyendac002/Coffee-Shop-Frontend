@@ -27,7 +27,7 @@ const CartSummary = () => {
       <div className="space-y-4">
         <div className=" flex text-lg font-semibold justify-between">
           <h3 className=" text-gray-700">Subtotal (items):</h3>
-          <p className="text-gray-800">{cartItems.length}</p>
+          <p className="text-gray-800">{selectedItems.length}</p>
         </div>
 
         <div className="flex text-lg font-semibold justify-between">

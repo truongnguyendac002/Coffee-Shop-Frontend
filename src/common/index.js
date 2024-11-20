@@ -35,12 +35,36 @@ const summaryApi = {
         method: "POST"
     },
     allCategory: {
-        url: `${backendDomain}/category/all-category`,
+        url: `${backendDomain}/category/all`,
         method: "GET"
     },
-    allProduct: {
-        url: `${backendDomain}/product/all-product`,
+    addCategory: {
+        url: `${backendDomain}/category`,
+        method: "POST"
+    },
+    allBrand: {
+        url: `${backendDomain}/brand/all`,
         method: "GET"
+    },
+    addBrand: {
+        url: `${backendDomain}/brand`,
+        method: "POST"
+    },
+    allProduct: {
+        url: `${backendDomain}/product/all`,
+        method: "GET"
+    },
+    addProduct: {
+        url: `${backendDomain}/product`,
+        method: "POST"
+    },
+    updateProduct: {
+        url: `${backendDomain}/product/`,
+        method: "PUT"
+    },
+    deleteProduct: {
+        url: `${backendDomain}/product/`,
+        method: "DELETE"
     },
     updateCartItem: {
         url: `${backendDomain}/cart/item`,
@@ -99,6 +123,31 @@ const summaryApi = {
         url: `${backendDomain}/profile`,
         method: "GET",
     },
+    getAllUsers: {
+        url: `${backendDomain}/user/all`,
+        method: "GET",
+    },
+    processUser: {
+        url: `${backendDomain}/user/`,
+        method: "PUT",
+    },
+    searchProduct : {
+        url : `${backendDomain}/product/search`,
+        method : 'GET'
+    },
+
+    addFavorite : {
+        url : `${backendDomain}/favorites`,
+        method : "POST"
+    },
+    allFavorites : {
+        url : `${backendDomain}/favorites/`,
+        method : "GET"
+    },
+    deleteFavorites : {
+        url : `${backendDomain}/favorites`,
+        method : "DELETE"
+    }
 }
 
 export default summaryApi;
