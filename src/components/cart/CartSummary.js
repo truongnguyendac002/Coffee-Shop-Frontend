@@ -1,9 +1,10 @@
 import React from "react";
 import { Card } from "antd";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const CartSummary = ({ cartItems }) => {
-  console.log("first ", cartItems);
+const CartSummary = () => {
+  const cartItems = useSelector((store) => store.cart.items)
 
   const shipping = 10.0;
   const selectedItems = cartItems
@@ -12,12 +13,14 @@ const CartSummary = ({ cartItems }) => {
 
   const subtotal = selectedItems
     ? selectedItems.reduce(
-        (sum, item) => sum + item.productItem.price * item.quantity,
-        0
-      )
+      (sum, item) => sum + item.productItem.price * item.quantity,
+      0
+    )
     : 0;
 
   const total = subtotal + shipping;
+
+
 
   return (
     <Card className="bg-white text-gray-800 shadow-md border border-gray-300">
@@ -37,7 +40,7 @@ const CartSummary = ({ cartItems }) => {
           <p className="text-gray-800">{shipping.toFixed(2)} đ</p>
         </div>
       </div>
-      <hr class="border-t border-gray-300 mt-6"></hr>
+      <hr className="border-t border-gray-300 mt-6"></hr>
 
       <div className="my-6 flex justify-between text-lg font-bold text-gray-800">
         <h3>Total:</h3>
@@ -47,11 +50,10 @@ const CartSummary = ({ cartItems }) => {
       {/* , state: { cartItems: selectedItems } */}
       <Link to={{ pathname: "/checkout" }}>
         <button
-          className={`w-full py-2 text-lg font-semibold rounded-md mt-2  text-black ${
-            subtotal <= 0
+          className={`w-full py-2 text-lg font-semibold rounded-md mt-2  text-black ${subtotal <= 0
               ? "bg-yellow-500 cursor-not-allowed opacity-50"
               : "bg-yellow-500 hover:bg-yellow-400 hover:text-black"
-          }`}
+            }`}
           disabled={subtotal <= 0}
         >
           Continue to checkout

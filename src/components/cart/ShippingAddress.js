@@ -11,11 +11,11 @@ const ShippingAddress = () => {
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [editingAddress, setEditingAddress] = useState({});
     const [errors, setErrors] = useState({});
-
     const [addresses, setAddresses] = useState([]);
 
     const user = useSelector((state) => state?.user?.user);
 
+    console.log("selectedAddress at shipping address component", selectedAddress)
     useEffect(() => {
         const addressesData = localStorage.getItem("shipping-address");
         if (addressesData) {
@@ -25,6 +25,7 @@ const ShippingAddress = () => {
 
     const handleSelectAddress = (id) => {
         setSelectedAddress(id);
+        localStorage.setItem("selected-address-id", JSON.stringify(selectedAddress));
     };
 
     const handleAddingAddress = () => {
@@ -65,6 +66,7 @@ const ShippingAddress = () => {
                                 receiver_phone: editingAddress.receiverPhone,
                                 location: editingAddress.location,
                                 user_id: user.id,
+                                status: "ACTIVE",
                             }),
                         }
                     );
@@ -164,7 +166,7 @@ const ShippingAddress = () => {
                         </Radio.Group>
                         <div className="flex-1" onClick={() => handleSelectAddress(address.id)}>
                             <h3 className="font-semibold">{address.receiverName}</h3>
-                            <p className="text-gray-700">{address.location}</p>
+                            <p className="text-gray-700">Location: {address.location}</p>
                             <p className="text-gray-500">Phone: {address.receiverPhone}</p>
                         </div>
                         <div className="flex space-x-2">

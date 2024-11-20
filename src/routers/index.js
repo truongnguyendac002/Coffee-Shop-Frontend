@@ -10,6 +10,7 @@ import ChangePassword from "../pages/ChangePassword";
 import PrivateRoute from "./private.route";
 import Checkout from "../pages/Checkout";
 import ProductDetail from "../pages/ProductDetail";
+import Profile from "../pages/Profile";
 import SearchProduct from "../pages/SearchProduct";
 
 
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
                         path: "/search", 
                         element: <SearchProduct/>
                     },
+                    {
+                        path: "profile",
+                        element: (
+                            <PrivateRoute>
+                                <Profile />
+                            </PrivateRoute>
+                        ),
+                    }
                 ]
             },
             {

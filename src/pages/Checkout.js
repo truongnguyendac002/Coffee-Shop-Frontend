@@ -1,25 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import CheckoutSummary from '../components/cart/CartSummary';
+import CheckoutSummary from '../components/cart/CheckoutSummary';
 import ShippingAddress from '../components/cart/ShippingAddress';
 import { useSelector } from 'react-redux';
 import summaryApi from '../common';
 import fetchWithAuth from '../helps/fetchWithAuth';
-// import Cookies from "js-cookie";
 
 function Checkout() {
 
   const user = useSelector((state) => state?.user?.user);
   const [loading, setLoading] = useState(true);
-  // const [cartItems, setCartItems] = useState([]);
 
-  const carts = useSelector((store) => store.cart.items)
-
-  // useEffect(() => {
-  //   const cartData = Cookies.get("cart-item-list");
-  //   if (cartData) {
-  //     setCartItems(JSON.parse(cartData));
-  //   }
-  // }, []);
 
 
   useEffect(() => {
@@ -33,7 +23,6 @@ function Checkout() {
         const responseData = await response.json();
 
         if (responseData.respCode === "000" && responseData.data) {
-          debugger;
           const addresses = responseData.data;
           localStorage.setItem("shipping-address", JSON.stringify(addresses));
         }
@@ -48,7 +37,6 @@ function Checkout() {
   }, [user]);
 
   if(loading) {
-
     return (
       <>
       </>
@@ -62,8 +50,7 @@ function Checkout() {
           <ShippingAddress/>
         </div>
         <div className="w-full lg:w-1/3">
-          {/* <CheckoutSummary cartItems={cartItems} /> */}
-          <CheckoutSummary cartItems={carts} />
+          <CheckoutSummary/>
         </div>
       </div>
     </div>

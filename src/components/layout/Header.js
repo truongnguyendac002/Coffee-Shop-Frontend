@@ -56,7 +56,7 @@ const Header = () => {
   };
 
   const user = useSelector((state) => state?.user?.user);
-  const carts = useSelector((store) => store.cart.items)  ;
+  const carts = useSelector((store) => store.cart.items);
   // console.log(carts);
 
   const loading = useSelector((state) => state.user.loading);
@@ -134,7 +134,7 @@ const Header = () => {
 
         {/* user */}
         <div className="flex items-center space-x-6">
-          <Link to="/cart">
+          {/* <Link to="/cart">
             <div
               className="relative cursor-pointer text-4xl"
               onMouseEnter={() => setShowCartTab(true)}
@@ -145,22 +145,46 @@ const Header = () => {
               </Badge>
 
               <div className="absolute top-12 -right-4 z-50">
-                {showCartTab && <CartTab items={carts}/>}
+                {showCartTab && <CartTab items={carts} />}
               </div>
             </div>
-          </Link>
+          </Link> */}
+          <div
+            className="flex items-center space-x-6 relative"
+            onMouseEnter={() => setShowCartTab(true)}
+            onMouseLeave={() => setShowCartTab(false)}
+          >
+            <Link to="/cart">
+              <div className="relative cursor-pointer text-4xl">
+                <Badge count={totalQuantity} size="large" showZero>
+                  <MdOutlineShoppingCart style={{ fontSize: "30px" }} />
+                </Badge>
+              </div>
+            </Link>
+
+            {showCartTab && (
+              <div className="absolute top-12 -right-4 z-50">
+                <CartTab items={carts} />
+              </div>
+            )}
+          </div>
+
+
+
           {user?.id && (
-            <div className="relative flex cursor-pointer justify-center text-4xl">
-              {user?.profile_img ? (
-                <img
-                  src={user?.profile_img}
-                  alt="Avatar User"
-                  className="w-10 rounded-full"
-                />
-              ) : (
-                <PiUserCircle />
-              )}
-            </div>
+            <Link to="/profile">
+              <div className="relative flex cursor-pointer justify-center text-4xl">
+                {user?.profile_img ? (
+                  <img
+                    src={user?.profile_img}
+                    alt="Avatar User"
+                    className="w-10 rounded-full"
+                  />
+                ) : (
+                  <PiUserCircle />
+                )}
+              </div>
+            </Link>
           )}
           {/* sign in, sign up, and sign out */}
           {!user?.id ? (
