@@ -13,6 +13,7 @@ import {
 import Highlighter from 'react-highlight-words';
 import fetchWithAuth from '../../../helps/fetchWithAuth';
 import summaryApi from '../../../common';
+import ProductItemsModal from './ProductItemModal';
 
 const { Option } = Select;
 
@@ -30,9 +31,19 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
 
     const [form] = Form.useForm();
 
-    console.log("render");
-    console.log(currentProduct);
-    console.log(isModalVisible);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [isProductItemsModalVisible, setIsProductItemsModalVisible] = useState(false);
+
+    const showProductItemsModal = (product) => {
+        setSelectedProduct(product);
+        setIsProductItemsModalVisible(true);
+    };
+
+    const closeProductItemsModal = () => {
+        setSelectedProduct(null);
+        setIsProductItemsModalVisible(false);
+    };
+
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -46,9 +57,6 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
         setSearchText('');
     };
     const closeModel = () => {
-        console.log("closeModel 1");
-        console.log(currentProduct);
-        console.log(isModalVisible);
         setCurrentProduct(null);
         setIsModalVisible(false);
         if (!currentProduct) form.resetFields();
@@ -241,6 +249,7 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
             title: 'Product Name',
             dataIndex: 'name',
             key: 'name',
+
             ...getColumnSearchProps('name'),
         },
         {
@@ -266,10 +275,13 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
             key: 'action',
             render: (_, record) => (
                 <>
-                    <Button type="primary" onClick={() => showModal(record)}>
+                    <Button onClick={() => showProductItemsModal(record)}
+                        className='mr-5 bg-green-500 hover:bg-green-300' type="primary">
+                        View
+                    </Button>
+                    <Button className='mr-5' type="primary" onClick={() => showModal(record)}>
                         Edit
                     </Button>
-
                     <Popconfirm
                         title="Are you sure to delete this product?"
                         onConfirm={() => handleDelete(record.id)}
@@ -296,8 +308,17 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
                 Add New Product
             </Button>
             <Table rowKey="id" columns={columns} dataSource={products} />
+
+            {selectedProduct && (
+                <ProductItemsModal
+                    product={selectedProduct}
+                    visible={isProductItemsModalVisible}
+                    onClose={closeProductItemsModal}
+                />
+            )}
+
             <Modal
-                title={currentProduct ? "Update Product" : "Add New Product"}  
+                title={currentProduct ? "Update Product" : "Add New Product"}
                 open={isModalVisible}
                 onCancel={() => closeModel()}
                 footer={null}
@@ -405,7 +426,6 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
                 </Button>
             </Modal>
 
-            {/* Modal for adding brand */}
             <Modal
                 title="Add New Brand"
                 open={isBrandModalVisible}
