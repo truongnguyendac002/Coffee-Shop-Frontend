@@ -15,6 +15,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { addToCart, toggleSelected } from "../store/cartSlice";
 import fetchWithAuth from "../helps/fetchWithAuth";
 import { message } from "antd";
+import {
+  selectFavorites,
+  removeFromFavorites,
+  addToFavorites,
+  setFavorites,
+} from "../store/favoritesSlice ";
 
 const images = [image1, image2, image3, image4];
 
@@ -28,20 +34,34 @@ const ProductDetail = () => {
   const [selectedDiscount, setSelectedDiscount] = useState(null);
   const [productItemPrice, setProductItemPrice] = useState(null);
   const [productItem, setProductItem] = useState(null);
-
+  const [activeTab, setActiveTab] = useState("Description");
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const maxQuantity = itemStock;
-
-  const [activeTab, setActiveTab] = useState("Description");
-  const tabs = ["Description", "Review ", "Similar"];
 
   const user = useSelector((store) => store?.user?.user);
-  // console.log("user" , user);
-  const carts = useSelector((store) => store.cart.items) ;
-  console.log("cart ProductDetail " , carts)
+  const favorites = useSelector(selectFavorites);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const maxQuantity = itemStock;
+  const tabs = ["Description", "Review ", "Similar"];
+  
+  const [isFavorite, setIsFavorite] = useState(false); 
+
+  useEffect(() => {
+    if (product) {
+      
+      const isProductFavorite = favorites.some(
+        (item) => item.product && item.product.id === product.id
+      );
+      setIsFavorite(isProductFavorite); 
+    }
+  }, [product, favorites]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   useEffect(() => {
     const fetchProductItems = async () => {
@@ -102,7 +122,6 @@ const ProductDetail = () => {
     setError(null);
   };
 
- 
   const handleAddProductToCart = async () => {
     if (!productItem) {
       setError("Bạn cần chọn kích thước sản phẩm trước khi thêm vào giỏ hàng!");
@@ -121,10 +140,10 @@ const ProductDetail = () => {
 
       const data = await response.json();
       if (data.respCode === "000") {
-        dispatch(addToCart(data.data)); 
+        dispatch(addToCart(data.data));
         message.success("Đã thêm sản phẩm vào giỏ hàng");
 
-        return data.data; 
+        return data.data;
       } else {
         throw new Error("Lỗi khi thêm vào giỏ hàng");
       }
@@ -137,13 +156,66 @@ const ProductDetail = () => {
     await handleAddProductToCart();
   };
 
-
   const handleBuyNow = async () => {
     const addedProduct = await handleAddProductToCart();
-    console.log("addedProduct", addedProduct)
     if (addedProduct) {
-      dispatch(toggleSelected(addedProduct.id))
-      navigate("/checkout"); 
+      dispatch(toggleSelected(addedProduct.id));
+      navigate("/checkout");
+    }
+  };
+
+  const handleClickFavorites = async () => {
+    const isAlreadyFavorite = isFavorite;
+
+    if (isAlreadyFavorite) {
+      try {
+        const response = await fetchWithAuth(summaryApi.deleteFavorites.url, {
+          method: summaryApi.deleteFavorites.method,
+          body: JSON.stringify({
+            ProductId: product.id,
+            UserId: user.id,
+          }),
+        });
+
+        const data = await response.json();
+        if (data.respCode === "000") {
+          dispatch(removeFromFavorites(product));
+
+          dispatch(
+            setFavorites(
+              favorites.filter((item) => item.product.id !== product.id)
+            )
+          );
+
+          message.success("Sản phẩm đã được xóa khỏi danh sách yêu thích");
+        } else {
+          throw new Error("Lỗi khi xóa sản phẩm vào danh sách yêu thích");
+        }
+      } catch (error) {
+        console.log("Lỗi khi xóa sản phẩm vào danh sách yêu thích:", error);
+      }
+    } else {
+      try {
+        const response = await fetchWithAuth(summaryApi.addFavorite.url, {
+          method: summaryApi.addFavorite.method,
+          body: JSON.stringify({
+            ProductId: product.id,
+            UserId: user.id,
+          }),
+        });
+
+        const data = await response.json();
+        if (data.respCode === "000") {
+          dispatch(addToFavorites(product));
+          dispatch(setFavorites([...favorites, { product }]));
+
+          message.success("Sản phẩm đã được thêm vào danh sách yêu thích");
+        } else {
+          throw new Error("Lỗi khi thêm sản phẩm vào danh sách yêu thích");
+        }
+      } catch (error) {
+        console.log("Lỗi khi thêm sản phẩm vào danh sách yêu thích:", error);
+      }
     }
   };
 
@@ -362,7 +434,13 @@ const ProductDetail = () => {
                 >
                   Mua Ngay
                 </button>
-                <button className="text-gray-500 hover:text-red-500 w-9">
+                <button
+                  onClick={handleClickFavorites}
+                  className={`text-gray-500 hover:text-red-500 w-9 ${
+                    isFavorite ? "text-red-500" : ""
+                  }`}
+                >
+                  {/* {console.log("first" ,isFavorite)} */}
                   <FaRegHeart style={{ width: "32px", height: "32px" }} />
                 </button>
               </div>

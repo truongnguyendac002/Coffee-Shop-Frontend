@@ -13,6 +13,7 @@ import summaryApi from "../common";
 import Cookies from "js-cookie";
 import BreadcrumbNav from "../components/layout/BreadcrumbNav";
 import { setCartItems } from "../store/cartSlice";
+import { setFavorites } from "../store/favoritesSlice ";
 
 const Home = () => {
   const location = useLocation();
@@ -35,9 +36,6 @@ const Home = () => {
         if (dataResponse.data) {
           dispatch(setCartItems(dataResponse.data));
           console.log("laays data thanh cong ");
-          // Cookies.set("cart-item-list", JSON.stringify(dataResponse.data));
-          // console.log("fetchCartItems home page "  )
-          // console.log("Cart at home JSOn: ", JSON.parse(Cookies.get("cart-item-list")))
         }
       } catch (error) {
         console.error("Error fetching cart items:", error);
@@ -46,10 +44,41 @@ const Home = () => {
       }
     };
 
+
+
     if (user && !Cookies.get("cart-item-list")) {
       fetchCartItems();
     }
   }, [user, dispatch]);
+
+  useEffect(() => {
+    if (user && user.id) {
+      const fetchFavorites = async () => {
+        try {
+          const response = await fetchWithAuth(
+            summaryApi.allFavorites.url + user.id,
+            {
+              method: summaryApi.allFavorites.method,
+            }
+          );
+  
+          const dataResponse = await response.json();
+  
+          if (dataResponse.data) {
+            dispatch(setFavorites(dataResponse.data));
+            console.log("setFavorites(dataResponse.data)", dataResponse.data);
+          }
+        } catch (error) {
+          console.log("error", error);
+        }
+      };
+  
+      fetchFavorites();
+    } else {
+      console.warn("User hoặc user.id không hợp lệ:", user);
+    }
+  }, [user, dispatch]);
+
   if (isCartLoading) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -66,13 +95,14 @@ const Home = () => {
     return (
       <>
         <Header />
+        <div className="mt-36"></div>
         <BreadcrumbNav />
         <main className="container mx-auto ">
           {location.pathname === "/" && (
             <>
               <Slideshow />
               <ListCategory />
-              <ListProduct />
+              <ListProduct title={"Browse Product "} />
             </>
           )}
           <section className="mt-8 mb-8">

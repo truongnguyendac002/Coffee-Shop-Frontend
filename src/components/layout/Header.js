@@ -13,6 +13,7 @@ import Cookies from "js-cookie";
 import { message } from "antd";
 import { Badge } from "antd";
 import { clearCart } from "../../store/cartSlice";
+import { clearFavorites } from "../../store/favoritesSlice ";
 import CartTab from "../cart/CartTab";
 
 const Header = () => {
@@ -25,11 +26,34 @@ const Header = () => {
     localStorage.removeItem("shipping-address");
     dispatch(clearUser());
     dispatch(clearCart());
+    dispatch(clearFavorites())
     navigate("/");
     message.success("Logout Successfully!");
   };
 
   const [showCartTab, setShowCartTab] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearch = () => {
+    if(searchTerm) {
+      const query = encodeURIComponent(searchTerm);
+      // console.log("search ", searchTerm)
+      navigate(`/search?q=${query}`)
+      setSearchTerm("")
+    }else {
+      navigate("/search")
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch(); // Gọi hàm `handleSearch` khi nhấn Enter
+    }
+  };
 
   const user = useSelector((state) => state?.user?.user);
   const carts = useSelector((store) => store.cart.items)  ;
@@ -58,8 +82,10 @@ const Header = () => {
     );
   }
 
+  
+
   return (
-    <header className="bg-gray-150 dark:bg-gray-900 px-10 py-7">
+    <header className="bg-gray-150 dark:bg-gray-900 px-10 py-7 fixed top-0 w-full z-20">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-32">
           {/* logo  */}
@@ -95,8 +121,13 @@ const Header = () => {
             type="text"
             placeholder="Search product here..."
             className="w-full outline-none px-4 "
+            value={searchTerm}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
           />
-          <div className="flex h-8 min-w-[50px] items-center justify-center rounded-r-full bg-teal-500 text-lg text-white cursor-pointer hover:bg-teal-600">
+          <div 
+          onClick={handleSearch}
+          className="flex h-8 min-w-[50px] items-center justify-center rounded-r-full bg-teal-500 text-lg text-white cursor-pointer hover:bg-teal-600">
             <GrSearch />
           </div>
         </div>

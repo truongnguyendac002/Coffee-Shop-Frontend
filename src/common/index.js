@@ -79,6 +79,26 @@ const summaryApi = {
       url: `${backendDomain}/product-item/`,
       method: "GET",
     },
+    searchProduct : {
+        url : `${backendDomain}/product/search`,
+        method : 'GET'
+    },
+    allBrand : {
+        url : `${backendDomain}/brand/all`,
+        method : 'GET'
+    },
+    addFavorite : {
+        url : `${backendDomain}/favorites`,
+        method : "POST"
+    },
+    allFavorites : {
+        url : `${backendDomain}/favorites/`,
+        method : "GET"
+    },
+    deleteFavorites : {
+        url : `${backendDomain}/favorites`,
+        method : "DELETE"
+    }
 }
 
 export default summaryApi;
