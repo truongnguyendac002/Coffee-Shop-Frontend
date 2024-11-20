@@ -80,6 +80,21 @@ const summaryApi = {
         method: "GET",
     },
 
+    createRefund: {
+        url: `${backendDomain}/payment`,
+        method: "POST",
+    },
+
+    createOnlinePayment: {
+        url: `${backendDomain}/payment`,
+        method: "GET",
+    },
+
+    addOrder: {
+        url: `${backendDomain}/order`,
+        method: "POST",
+    },
+
     getProfile: {
         url: `${backendDomain}/profile`,
         method: "GET",

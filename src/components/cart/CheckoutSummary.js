@@ -1,13 +1,20 @@
 import React from "react";
 import { Card } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import summaryApi from "../../common";
+import fetchWithAuth from "../../helps/fetchWithAuth";
+import { toast } from "react-toastify";
+import { Radio } from 'antd';
+
 
 const CheckoutSummary = () => {
   // Lay Cac Item Trong Cart
   const cartItems = useSelector((store) => store.cart.items)
-  const [selectedAdress, setSelectedAddress] = useState(null);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("COD");
+  const navigate = useNavigate();
 
   // Cac Item Duoc Chon Thanh Toan
   const selectedItems = cartItems
@@ -30,9 +37,56 @@ const CheckoutSummary = () => {
   }, []);
 
   // Thuc lam tu day
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
+    console.log("selectedAddressId at checkout ", selectedAddress);
+    const order = {
+      orderItems: selectedItems.map(item => ({
+        ProductItemId: item.productItem.id,
+        Amount: item.quantity,
+        Price: item.productItem.price,
+        Discount: item.productItem.discount,
+      })),
+      shippingAddressId: selectedAddress,
+      paymentMethod: paymentMethod,
+    };
+
+    localStorage.setItem("order", JSON.stringify(order));
+
+    try {
+      if( paymentMethod === "COD" ){
+        const addOrder = await fetchWithAuth(summaryApi.addOrder.url, {
+        method: summaryApi.addOrder.method,
+        body: JSON.stringify(order),
+        });
+        const response = await addOrder.json()
+        if( response.respCode === "000"){
+          toast.success("Order successful")
+          navigate("/order-success")
+        } else {
+          toast.error("Order failed")
+        }
+      } else if( paymentMethod === "VNPay" ) {
+        // console.log(summaryApi.createOnlinePayment.url + `?amount=${total}`)
+        const amount = total + "000";
+        const createOnlinePayment = await fetchWithAuth(summaryApi.createOnlinePayment.url + `?amount=${amount}`, {
+          method: summaryApi.createOnlinePayment.method,
+        })
+
+        const response = await createOnlinePayment.json();
+        console.log(response)
+        if(response.respCode === "000" ){
+          toast.success("Order successful")
+          window.location.href = response.data.URL
+        } else {
+          toast.error("Order failed")
+        }
+      }
+
+    } catch( error ) {
+      
+    }
+
     console.log("selectedItems at checkout ", selectedItems);
-    console.log("selectedAddressId at checkout ", selectedAdress);
 
   }
 
@@ -61,8 +115,20 @@ const CheckoutSummary = () => {
         <p>{total.toFixed(2)} đ</p>
       </div>
 
+      <div className="mb-4">
+        <h3 className="text-gray-700 font-bold text-lg">Payment Method:</h3>
+        <Radio.Group
+          onChange={(e) => setPaymentMethod(e.target.value)}
+          value={paymentMethod}
+          className="flex flex-col mt-2 space-y-2"
+        >
+          <Radio value="COD">Cash on Delivery</Radio>
+          <Radio value="VNPay">Online Payment (VNPay)</Radio>
+        </Radio.Group>
+      </div>
+
       {/* , state: { cartItems: selectedItems } */}
-      <Link to={{ pathname: "/checkout" }}>
+      {/* <Link to={{ pathname: "/checkout" }}> */}
         <button
           className={`w-full py-2 text-lg font-semibold rounded-md mt-2  text-black ${subtotal <= 0
             ? "bg-yellow-500 cursor-not-allowed opacity-50"
@@ -73,7 +139,7 @@ const CheckoutSummary = () => {
         >
           Complete Checkout
         </button>
-      </Link>
+      {/* </Link> */}
     </Card>
   );
 };
