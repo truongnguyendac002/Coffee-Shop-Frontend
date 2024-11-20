@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import Header from "../components/layout/Header";
@@ -14,15 +14,23 @@ import Cookies from "js-cookie";
 import BreadcrumbNav from "../components/layout/BreadcrumbNav";
 import { setCartItems } from "../store/cartSlice";
 
+
 const Home = () => {
   const location = useLocation();
   const user = useSelector((state) => state?.user?.user);
   const [isCartLoading, setIsCartLoading] = useState(false);
-
+  console.log("user", user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // console.log("home Page")
+    if (user && user.roleName === "ROLE_ADMIN") {
+      navigate("/admin");
+    }
+  }, [user, navigate]);
+
+
+  useEffect(() => {
     const fetchCartItems = async () => {
       setIsCartLoading(true);
       try {
@@ -35,9 +43,6 @@ const Home = () => {
         if (dataResponse.data) {
           dispatch(setCartItems(dataResponse.data));
           console.log("laays data thanh cong ");
-          // Cookies.set("cart-item-list", JSON.stringify(dataResponse.data));
-          // console.log("fetchCartItems home page "  )
-          // console.log("Cart at home JSOn: ", JSON.parse(Cookies.get("cart-item-list")))
         }
       } catch (error) {
         console.error("Error fetching cart items:", error);
@@ -50,6 +55,7 @@ const Home = () => {
       fetchCartItems();
     }
   }, [user, dispatch]);
+
   if (isCartLoading) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
