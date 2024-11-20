@@ -16,6 +16,7 @@ import ProductsContent from "../components/adminpage/product/ProductsContent";
 import UsersContent from "../components/adminpage/user/UsersContent";
 import HomeContent from "../components/adminpage/HomeContent";
 import NotFound from "../pages/NotFound404";
+import SearchProduct from "../pages/SearchProduct";
 
 
 const router = createBrowserRouter([
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
                             </PrivateRoute>
                         ),
 
+                    },
+                    {
+                        path: "/search", 
+                        element: <SearchProduct/>
                     },
                     {
                         path: "profile",

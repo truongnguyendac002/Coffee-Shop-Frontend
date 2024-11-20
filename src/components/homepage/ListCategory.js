@@ -36,7 +36,7 @@ import summaryApi from "../../common";
 const ListCategory = () => {
   const [categories, setCategories] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
-  const itemsPerPage = 3;
+  const itemsPerPage = 4;
 
   const endIndex = startIndex + itemsPerPage;
   const visibleCategory = categories.slice(startIndex, endIndex);
@@ -83,7 +83,7 @@ const ListCategory = () => {
             Browse Categories
           </h2>
         </div>
-        <div className="flex flex-wrap justify-between gap-y-6 mt-10">
+        <div className="grid grid-cols-4 justify-start gap-x-6 mt-10">
           {visibleCategory.map((category, index) => (
             <CategoryCard key={index} category={category} />
           ))}

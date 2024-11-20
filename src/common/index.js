@@ -108,7 +108,6 @@ const summaryApi = {
         url: `${backendDomain}/profile`,
         method: "GET",
     },
-
     getAllUsers: {
         url: `${backendDomain}/user/all`,
         method: "GET",
@@ -117,6 +116,23 @@ const summaryApi = {
         url: `${backendDomain}/user/`,
         method: "PUT",
     },
+    searchProduct : {
+        url : `${backendDomain}/product/search`,
+        method : 'GET'
+    },
+
+    addFavorite : {
+        url : `${backendDomain}/favorites`,
+        method : "POST"
+    },
+    allFavorites : {
+        url : `${backendDomain}/favorites/`,
+        method : "GET"
+    },
+    deleteFavorites : {
+        url : `${backendDomain}/favorites`,
+        method : "DELETE"
+    }
 }
 
 export default summaryApi;

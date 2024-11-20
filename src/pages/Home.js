@@ -13,6 +13,7 @@ import summaryApi from "../common";
 import Cookies from "js-cookie";
 import BreadcrumbNav from "../components/layout/BreadcrumbNav";
 import { setCartItems } from "../store/cartSlice";
+import { setFavorites } from "../store/favoritesSlice ";
 
 
 const Home = () => {
@@ -51,8 +52,38 @@ const Home = () => {
       }
     };
 
+
+
     if (user && !Cookies.get("cart-item-list")) {
       fetchCartItems();
+    }
+  }, [user, dispatch]);
+
+  useEffect(() => {
+    if (user && user.id) {
+      const fetchFavorites = async () => {
+        try {
+          const response = await fetchWithAuth(
+            summaryApi.allFavorites.url + user.id,
+            {
+              method: summaryApi.allFavorites.method,
+            }
+          );
+  
+          const dataResponse = await response.json();
+  
+          if (dataResponse.data) {
+            dispatch(setFavorites(dataResponse.data));
+            console.log("setFavorites(dataResponse.data)", dataResponse.data);
+          }
+        } catch (error) {
+          console.log("error", error);
+        }
+      };
+  
+      fetchFavorites();
+    } else {
+      console.warn("User hoặc user.id không hợp lệ:", user);
     }
   }, [user, dispatch]);
 
@@ -72,13 +103,14 @@ const Home = () => {
     return (
       <>
         <Header />
+        <div className="mt-36"></div>
         {location.pathname !== "/profile" && <BreadcrumbNav />}
         <main className="container mx-auto ">
           {location.pathname === "/" && (
             <>
               <Slideshow />
               <ListCategory />
-              <ListProduct />
+              <ListProduct title={"Browse Product "} />
             </>
           )}
           <section className="mt-8 mb-8">

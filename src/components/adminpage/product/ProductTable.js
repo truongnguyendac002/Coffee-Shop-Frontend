@@ -51,7 +51,8 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
         console.log(isModalVisible);
         setCurrentProduct(null);
         setIsModalVisible(false);
-        form.resetFields();
+        if (!currentProduct) form.resetFields();
+
     };
 
     const getColumnSearchProps = (dataIndex) => ({
@@ -114,8 +115,8 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
         }
     };
 
-    const showModal = (product=null) => {
-        setCurrentProduct(product);   
+    const showModal = (product = null) => {
+        setCurrentProduct(product);
         setIsModalVisible(true);
         if (product) {
             form.setFieldsValue({
@@ -125,8 +126,8 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
                 brand: product.brand?.id,
             });
         } else {
-            form.resetFields(); // Xóa toàn bộ giá trị nếu là "Add New Product"
-        }    
+            if (!currentProduct) form.resetFields();
+        }
     }
     const handleUpdateProduct = (values) => {
         const fetchUpdateProduct = async () => {
@@ -151,8 +152,6 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
                     return product;
                 });
                 setProducts(updatedProducts);
-                form.resetFields();
-                // setIsModalVisible(false);
                 closeModel();
             } else {
                 console.log(data);
@@ -179,8 +178,6 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
             const data = await response.json();
             if (data.respCode === '000' && data.data) {
                 setProducts([...products, data.data]);
-                form.resetFields();
-                // setIsModalVisible(false);
                 closeModel();
             } else {
                 console.log(data);
@@ -293,31 +290,31 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
             <Button
                 type="primary"
                 icon={<PlusOutlined />}
-                onClick={showModal}
+                onClick={() => showModal(null)}
                 className="mb-4"
             >
                 Add New Product
             </Button>
             <Table rowKey="id" columns={columns} dataSource={products} />
             <Modal
-                title={currentProduct ? "Update Product" : "Add New Product"}  // Change title based on action
+                title={currentProduct ? "Update Product" : "Add New Product"}  
                 open={isModalVisible}
                 onCancel={() => closeModel()}
                 footer={null}
             >
-                <Form form={form} onFinish={currentProduct?handleAddProduct:handleUpdateProduct} layout="vertical">
+                <Form form={form} onFinish={currentProduct ? handleUpdateProduct : handleAddProduct} layout="vertical">
                     <Form.Item
                         name="name"
                         label="Product Name"
                         rules={[{ required: true, message: 'Please enter the product name!' }]}
-                        initialValue={currentProduct?.name}  
+                        initialValue={currentProduct?.name}
                     >
                         <Input placeholder="Enter product name" />
                     </Form.Item>
                     <Form.Item
                         name="description"
                         label="Product Description"
-                        initialValue={currentProduct?.description} 
+                        initialValue={currentProduct?.description}
 
                     >
                         <Input placeholder="Enter product description" />
@@ -326,7 +323,7 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
                         name="category"
                         label="Category"
                         rules={[{ required: true, message: 'Please select a category!' }]}
-                        initialValue={currentProduct?.category?.id} 
+                        initialValue={currentProduct?.category?.id}
 
                     >
                         <Select
@@ -379,7 +376,7 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
                             ))}
                         </Select>
                     </Form.Item>
-                
+
                     <Button type="primary" htmlType="submit" className="w-full">
                         {currentProduct ? 'Update Product' : 'Add Product'}
                     </Button>

@@ -21,8 +21,8 @@ const ProductCard = ({ product }) => {
           <div className="font-medium text-base ">{product.name}</div>
           <p className="text-gray-400 text-sm font-normal">{product.brand.name}</p>
           <div className="flex items-center justify-between">
-            {/* <span className="text-base font-medium">{product.price}</span> */}
-            <span className="text-base font-medium">{price}</span>
+            <span className="text-base font-medium">{product.price} đ</span>
+            {/* <span className="text-base font-medium">{price}</span> */}
             <div className="flex items-center">
               <span className="text-yellow-500 text-lg">★</span>
               {/* <span className="ml-1 font-medium">{product.rating}</span> */}
