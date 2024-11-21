@@ -319,6 +319,7 @@ const ProductItemsModal = ({ product, visible, onClose }) => {
                             setEditingItem(record);
                             setIsAdding(true);
                         }}
+                        className='mr-2'
                     >
                         Update
                     </Button>

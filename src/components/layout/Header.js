@@ -57,7 +57,6 @@ const Header = () => {
 
   const user = useSelector((state) => state?.user?.user);
   const carts = useSelector((store) => store.cart.items);
-  // console.log(carts);
 
   const loading = useSelector((state) => state.user.loading);
   const [totalQuantity, setTotalQuantity] = useState(0);

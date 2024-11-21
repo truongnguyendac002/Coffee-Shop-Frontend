@@ -10,9 +10,7 @@ function Checkout() {
   const user = useSelector((state) => state?.user?.user);
   const [loading, setLoading] = useState(true);
   const cartItems = useSelector((store) => store.cart.items);
-  const selectedItems = cartItems
-    ? cartItems.filter((item) => item.isSelected)
-    : [];
+  
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -47,7 +45,7 @@ function Checkout() {
               <ShippingAddress />
             </div>
             <div className="w-full mt-5">
-              <CartItems cartItems={selectedItems} />
+              <CartItems cartItems={cartItems} />
             </div>
           </div>
           <div className="w-full lg:w-1/3">
