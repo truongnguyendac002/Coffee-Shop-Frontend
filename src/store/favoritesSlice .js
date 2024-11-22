@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// Lấy dữ liệu từ localStorage với kiểm tra lỗi
 const loadFavoritesFromLocalStorage = () => {
   const savedFavorites = localStorage.getItem('favorites');
   if (savedFavorites) {
@@ -31,8 +30,10 @@ const favoritesSlice = createSlice({
       localStorage.removeItem('favorites');
     },
     removeFromFavorites: (state, action) => {
-      state.items = state.items.filter(item => item.id !== action.payload.id);
-      localStorage.setItem('favorites', JSON.stringify(state.items)); 
+      debugger;
+      state.items = state.items.filter(item => item.product.id !== action.payload.id);
+  
+      localStorage.setItem('favorites', JSON.stringify(state.items));
     },
     setFavorites: (state, action) => {
       state.items = action.payload;

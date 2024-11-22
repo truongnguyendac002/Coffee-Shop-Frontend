@@ -20,7 +20,6 @@ const Home = () => {
   const location = useLocation();
   const user = useSelector((state) => state?.user?.user);
   const [isCartLoading, setIsCartLoading] = useState(false);
-  console.log("user", user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -103,7 +102,7 @@ const Home = () => {
     return (
       <>
         <Header />
-        <div className="mt-36"></div>
+        <div className="mt-32"></div>
         {location.pathname !== "/profile" && <BreadcrumbNav />}
         <main className="container mx-auto ">
           {location.pathname === "/" && (

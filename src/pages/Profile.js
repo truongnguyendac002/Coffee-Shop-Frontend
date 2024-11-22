@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Typography, List, Button, Spin } from "antd";
-import { UserOutlined, LoadingOutlined } from "@ant-design/icons";
+import { Avatar, Typography, List, Spin, Button } from "antd";
+import { UserOutlined, LoadingOutlined, EditOutlined } from "@ant-design/icons";
 import {
   FiHome,
   FiMail,
-  // FiHeart,
   FiGift,
   FiAlertCircle,
   FiPhone,
@@ -12,6 +11,9 @@ import {
 import { TbInfoSquare } from "react-icons/tb";
 import fetchWithAuth from "../helps/fetchWithAuth";
 import summaryApi from "../common";
+import Wishlist from "../components/profile/wishlist";
+import Address from "../components/profile/address";
+import Info from "../components/profile/InforProfile";
 
 const { Title, Text } = Typography;
 
@@ -19,6 +21,8 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const [selectedMenu, setSelectedMenu] = useState("personalInfo");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -61,9 +65,21 @@ const Profile = () => {
         </div>
       </>
     );
-  } 
+  }
 
-  // Nội dung hiển thị theo menu
+  const showEditInfoModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleSave = (updatedData) => {
+    setProfileData((prev) => ({ ...prev, ...updatedData }));
+  };
+
+  const handleClose = () => {
+    setIsModalVisible(false);
+  };
+
+
   const renderContent = () => {
     switch (selectedMenu) {
       case "personalInfo":
@@ -72,8 +88,15 @@ const Profile = () => {
             {/* Right Content */}
             <section className="lg:col-span-3 space-y-6">
               {/* Account Info */}
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <Title level={3}>Account info</Title>
+              <div className="bg-white p-6  rounded-lg shadow-md">
+                <div className="flex items-center justify-between">
+                  <Title level={3}>Account info</Title>
+                  <Button type="link" icon={<EditOutlined />} className="text-gray-500"
+                    onClick={() => showEditInfoModal(profileData)}
+                  >
+                    Edit
+                  </Button>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div className="p-4 bg-gray-100 rounded-lg flex items-center">
                     <FiMail className="mr-4 text-xl" />
@@ -94,34 +117,15 @@ const Profile = () => {
               </div>
 
               {/* Lists */}
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <Title level={3}>Wish List</Title>
-                <div className="mt-4 space-y-4">
-                  <div className="p-4 bg-gray-100 rounded-lg flex justify-between items-center">
-                    <div>
-                      <Text className="block">Coffee Beans - Espresso Arabica and Robusta Beans</Text>
-                      <Text className="text-lg font-semibold">$47.00</Text>
-                    </div>
-                    <Button type="primary">Add to cart</Button>
-                  </div>
-                  <div className="p-4 bg-gray-100 rounded-lg flex justify-between items-center">
-                    <div>
-                      <Text className="block">Lavazza Coffee Blends - Try the Italian Espresso</Text>
-                      <Text className="text-lg font-semibold">$53.00</Text>
-                    </div>
-                    <Button type="primary">Add to cart</Button>
-                  </div>
-                </div>
-              </div>
+              <Wishlist />
             </section>
           </div>
         );
       case "addresses":
         return (
-          <div>
-            <Title level={3}>Addresses</Title>
-            <p>Here you can manage your addresses.</p>
-          </div>
+          <>
+            <Address />
+          </>
         );
       case "communications":
         return (
@@ -137,13 +141,7 @@ const Profile = () => {
             <p>View and reorder your favorite items.</p>
           </div>
         );
-      // case "lists":
-      //   return (
-      //     <div>
-      //       <Title level={3}>Lists</Title>
-      //       <p>Manage your wish lists here.</p>
-      //     </div>
-      //   );
+
       case "help":
         return (
           <div>
@@ -182,14 +180,14 @@ const Profile = () => {
         <List
           itemLayout="horizontal"
           dataSource={[
-            { key: "personalInfo", title: "Personal info", icon: <UserOutlined className="text-2xl" /> },
-            { key: "addresses", title: "Addresses", icon: <FiHome className="text-2xl" /> },
-            { key: "communications", title: "Communications & privacy", icon: <FiMail className="text-2xl" /> },
+            { key: "personalInfo", title: "Personal info", icon: <UserOutlined className="text-2xl " /> },
+            { key: "addresses", title: "Addresses", icon: <FiHome className="text-2xl " /> },
+            { key: "communications", title: "Communications & privacy", icon: <FiMail className="text-2xl " /> },
           ]}
           renderItem={(item) => (
             <List.Item
               onClick={() => setSelectedMenu(item.key)}
-              className={`cursor-pointer p-2 rounded-lg transition-all duration-300 ${selectedMenu === item.key ? "bg-gray-200" : "bg-white"}`}
+              className={`cursor-pointer my-2 p-2 rounded-lg transition-all duration-300 ${selectedMenu === item.key ? "bg-gray-200" : "bg-white"}`}
             >
               <List.Item.Meta avatar={<div className="pl-2">{item.icon}</div>} title={item.title} />
             </List.Item>
@@ -201,7 +199,6 @@ const Profile = () => {
         <List
           itemLayout="horizontal"
           dataSource={[
-            // { key: "reorder", title: "Reorder", icon: <FiHeart className="text-2xl" /> },
             { key: "orderHistory", title: "Order History", icon: <FiGift className="text-2xl" /> },
           ]}
           renderItem={(item) => (
@@ -239,6 +236,12 @@ const Profile = () => {
       <section className="lg:col-span-3 space-y-6  pl-6 rounded-lg">
         {renderContent()}
       </section>
+      <Info
+        visible={isModalVisible}
+        data={profileData}
+        onClose={handleClose}
+        onSave={handleSave}
+      />
     </div>
   );
 };

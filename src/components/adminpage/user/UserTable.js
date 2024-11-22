@@ -196,7 +196,6 @@ const UserTable = ({ userList, setUserList }) => {
 
     ];
     const onSelectChange = (newSelectedRowKeys) => {
-        debugger;
         setSelectedRowKeys(newSelectedRowKeys);
     };
 
