@@ -78,15 +78,17 @@ const OrderStatus = () => {
         <div className="p-6 bg-white border border-gray-200 shadow-lg rounded-md text-center">
           <div className="text-green-500">
             <svg
-              className="w-16 h-16 mx-auto"
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-16 h-16 mx-auto"
             >
               <path
-                fillRule="evenodd"
-                d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586l-2.293-2.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l7-7a1 1 0 000-1.414z"
-                clipRule="evenodd"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
               />
             </svg>
           </div>
@@ -135,13 +137,14 @@ const OrderStatus = () => {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
+              strokeWidth={1.5}
               stroke="currentColor"
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
+                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
               />
             </svg>
           </div>
@@ -149,7 +152,8 @@ const OrderStatus = () => {
             Đặt hàng không thành công!
           </h1>
           <p className="text-gray-700 mt-2">
-            Rất tiếc, đơn hàng đặt không thành công. Vui lòng thử lại hoặc liên hệ với chúng tôi để được hỗ trợ.
+            Rất tiếc, đơn hàng đặt không thành công. Vui lòng thử lại hoặc liên
+            hệ với chúng tôi để được hỗ trợ.
           </p>
           <div className="mt-6">
             <button
