@@ -116,6 +116,21 @@ const summaryApi = {
         method: "DELETE",
     },
 
+    createRefund: {
+        url: `${backendDomain}/payment`,
+        method: "POST",
+    },
+
+    createOnlinePayment: {
+        url: `${backendDomain}/payment`,
+        method: "GET",
+    },
+
+    addOrder: {
+        url: `${backendDomain}/order`,
+        method: "POST",
+    },
+
     getProfile: {
         url: `${backendDomain}/profile`,
         method: "GET",
@@ -153,10 +168,17 @@ const summaryApi = {
         url : `${backendDomain}/type-product/all`,
         method : "GET"
     },
+<<<<<<< HEAD
+    addTransaction : {
+        url : `${backendDomain}/transaction`,
+        method : "POST"
+    },
+=======
     getProductByCategory : {
         url : `${backendDomain}/product/category/`,
         method : "GET"
     }
+>>>>>>> 19a30a53866ca79a57ce7dcc7d4db6f8685a7010
 }
 
 export default summaryApi;
