@@ -40,7 +40,7 @@ function Checkout() {
     return <></>;
   } else
     return (
-      <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
+      <div className="container mx-auto  bg-gray-100 min-h-screen">
         <div className="flex flex-col lg:flex-row justify-between items-start space-y-4 lg:space-y-0 lg:space-x-4">
           <div className="flex flex-col w-full  lg:w-2/3">
             <div className="w-full ">
