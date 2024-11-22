@@ -17,6 +17,7 @@ import UsersContent from "../components/adminpage/user/UsersContent";
 import HomeContent from "../components/adminpage/HomeContent";
 import NotFound from "../pages/NotFound404";
 import SearchProduct from "../pages/SearchProduct";
+import OrderStatus from "../components/cart/OrderStatus";
 
 
 const router = createBrowserRouter([
@@ -59,6 +60,14 @@ const router = createBrowserRouter([
                         element: (
                             <PrivateRoute>
                                 <Profile />
+                            </PrivateRoute>
+                        ),
+                    },
+                    {
+                        path: "/order-status",
+                        element: (
+                            <PrivateRoute>
+                                <OrderStatus />
                             </PrivateRoute>
                         ),
                     },

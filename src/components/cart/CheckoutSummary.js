@@ -40,45 +40,33 @@ const CheckoutSummary = () => {
   const handleCheckout = async () => {
     console.log("selectedAddressId at checkout ", selectedAddress);
     const order = {
-      orderItems: selectedItems.map(item => ({
+      OrderItems: selectedItems.map(item => ({
         ProductItemId: item.productItem.id,
         Amount: item.quantity,
         Price: item.productItem.price,
         Discount: item.productItem.discount,
       })),
-      shippingAddressId: selectedAddress,
-      paymentMethod: paymentMethod,
+      ShippingAddressId: selectedAddress,
+      PaymentMethod: paymentMethod,
     };
 
     localStorage.setItem("order", JSON.stringify(order));
 
     try {
       if( paymentMethod === "COD" ){
-        const addOrder = await fetchWithAuth(summaryApi.addOrder.url, {
-        method: summaryApi.addOrder.method,
-        body: JSON.stringify(order),
-        });
-        const response = await addOrder.json()
-        if( response.respCode === "000"){
-          toast.success("Order successful")
-          navigate("/order-success")
-        } else {
-          toast.error("Order failed")
-        }
+        navigate("/order-status?status=success")
       } else if( paymentMethod === "VNPay" ) {
-        // console.log(summaryApi.createOnlinePayment.url + `?amount=${total}`)
-        const amount = total + "000";
+        const amount = total + "000"
         const createOnlinePayment = await fetchWithAuth(summaryApi.createOnlinePayment.url + `?amount=${amount}`, {
           method: summaryApi.createOnlinePayment.method,
         })
 
         const response = await createOnlinePayment.json();
         console.log(response)
-        if(response.respCode === "000" ){
-          toast.success("Order successful")
+        if( response.respCode === "000" ){
           window.location.href = response.data.URL
         } else {
-          toast.error("Order failed")
+          navigate("/order-status?status=fail")
         }
       }
 

@@ -25,7 +25,8 @@ const ShippingAddress = () => {
 
     const handleSelectAddress = (id) => {
         setSelectedAddress(id);
-        localStorage.setItem("selected-address-id", JSON.stringify(selectedAddress));
+        // console.log("selectedAddress at shipping address component", selectedAddress)
+        localStorage.setItem("selected-address-id", JSON.stringify(id));
     };
 
     const handleAddingAddress = () => {

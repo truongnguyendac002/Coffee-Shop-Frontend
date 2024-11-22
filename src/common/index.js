@@ -160,6 +160,10 @@ const summaryApi = {
         url : `${backendDomain}/type-product/all`,
         method : "GET"
     },
+    addTransaction : {
+        url : `${backendDomain}/transaction`,
+        method : "POST"
+    },
 }
 
 export default summaryApi;
