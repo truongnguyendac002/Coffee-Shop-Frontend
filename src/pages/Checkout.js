@@ -10,6 +10,9 @@ function Checkout() {
   const user = useSelector((state) => state?.user?.user);
   const [loading, setLoading] = useState(true);
   const cartItems = useSelector((store) => store.cart.items);
+  const selectedItems = cartItems
+    ? cartItems.filter((item) => item.isSelected)
+    : [];
   
 
   useEffect(() => {
@@ -45,7 +48,7 @@ function Checkout() {
               <ShippingAddress />
             </div>
             <div className="w-full mt-5">
-              <CartItems cartItems={cartItems} />
+              <CartItems cartItems={selectedItems} />
             </div>
           </div>
           <div className="w-full lg:w-1/3">

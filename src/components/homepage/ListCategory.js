@@ -1,57 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import CategoryCard from "../layout/CategoryCard";
-import { MdArrowBackIos } from "react-icons/md";
-import { MdArrowForwardIos } from "react-icons/md";
 
 import summaryApi from "../../common";
 
-// const listCategory = [
-//   {
-//     name: "New Sumatra Mandheling Coffee Blend",
-//     description: "Rich and smooth coffee beans from Sumatra.",
-//     price: "$24 - $150",
-//     image: image1,
-//   },
-//   {
-//     name: "Espresso Arabica and Robusta Beans",
-//     description: "Perfect blend for espresso lovers.",
-//     price: "$37 - $160",
-//     image: image2,
-//   },
-//   {
-//     name: "Lavazza Top Class Whole Bean Coffee Blend",
-//     description: "Premium blend for an exceptional taste ",
-//     price: "$32 - $160",
-//     image: image1,
-//   },
-//   {
-//     name: "Lavazza Top Class Whole Bean Coffee Blend",
-//     description: "Premium blend for an exceptional taste ",
-//     price: "$32 - $160",
-//     image: image2,
-//   },
-// ];
-
 const ListCategory = () => {
   const [categories, setCategories] = useState([]);
-  const [startIndex, setStartIndex] = useState(0);
-  const itemsPerPage = 4;
-
-  const endIndex = startIndex + itemsPerPage;
-  const visibleCategory = categories.slice(startIndex, endIndex);
-
-  const handlePrevious = () => {
-    if (startIndex > 0) {
-      setStartIndex(startIndex - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (endIndex < categories.length) {
-      setStartIndex(startIndex + 1);
-    }
-  };
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -63,7 +17,7 @@ const ListCategory = () => {
           },
         });
 
-        const dataResult =await categoryResponse.json();
+        const dataResult = await categoryResponse.json();
         if (dataResult.respCode === "000") {
           setCategories(dataResult.data);
         }
@@ -77,35 +31,14 @@ const ListCategory = () => {
 
   return (
     <>
-      <div className="container w-full mx-auto mt-10">
+      <div className="container w-full mx-auto mt-10 bg-white min-h-screen p-4 shadow-md rounded-md">
         <div>
-          <h2 className="font-bold text-2xl bg-white shadow-sm rounded px-4">
-            Browse Categories
-          </h2>
+          <h2 className="font-bold text-base ">Danh mục</h2>
         </div>
-        <div className="grid grid-cols-4 justify-start gap-x-6 mt-10">
-          {visibleCategory.map((category, index) => (
+        <div className="mt-4 space-y-1">
+          {categories.map((category, index) => (
             <CategoryCard key={index} category={category} />
           ))}
-        </div>
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={handlePrevious}
-            disabled={startIndex === 0}
-            className= {`px-4 py-2 rounded-l ${startIndex === 0 ? "bg-gray-200 cursor-not-allowed" :"bg-gray-300 hover:bg-gray-400"}`}
-          >
-            <MdArrowBackIos />
-          </button>
-
-          <button
-            onClick={handleNext}
-            disabled={endIndex === categories.length }
-            className={`px-4 py-2 rounded-r ${
-              endIndex === categories.length  ? "bg-gray-200 cursor-not-allowed" : "bg-gray-300 hover:bg-gray-400"
-            }`}
-          >
-            <MdArrowForwardIos />
-          </button>
         </div>
       </div>
     </>

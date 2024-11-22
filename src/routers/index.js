@@ -17,6 +17,7 @@ import UsersContent from "../components/adminpage/user/UsersContent";
 import HomeContent from "../components/adminpage/HomeContent";
 import NotFound from "../pages/NotFound404";
 import SearchProduct from "../pages/SearchProduct";
+import CategoryPage from "../pages/CategoryPage";
 
 
 const router = createBrowserRouter([
@@ -66,7 +67,11 @@ const router = createBrowserRouter([
                         path: "*",
                         element: <NotFound />,
 
-                    }
+                    },
+                    {
+                        path: "category/:categoryName/:categoryId",
+                        element: <CategoryPage />
+                    },
                 ]
             },
             {

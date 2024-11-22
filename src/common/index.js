@@ -153,6 +153,10 @@ const summaryApi = {
         url : `${backendDomain}/type-product/all`,
         method : "GET"
     },
+    getProductByCategory : {
+        url : `${backendDomain}/product/category/`,
+        method : "GET"
+    }
 }
 
 export default summaryApi;

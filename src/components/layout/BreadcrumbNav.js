@@ -36,7 +36,7 @@ const BreadcrumbNav = () => {
     return null; 
   }
 
-  const pathSnippets = location.pathname.split('/').filter((i) => i);
+  const pathSnippets = location.pathname.split('/').filter((i) => i).map((snippet) => decodeURIComponent(snippet));
 
   const items = [
     {
@@ -63,7 +63,7 @@ const BreadcrumbNav = () => {
   ];
 
   return (
-    <div className="container mx-auto rounded-xl mt-4 flex items-center">
+    <div className="container mx-auto rounded-xl mt-3 flex items-center">
       <CustomBreadcrumb separator="/" items={items} />
     </div>
   );
