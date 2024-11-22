@@ -43,7 +43,6 @@ const cartSlice = createSlice({
       const itemIndex = state.items.findIndex((item) => {
         return item.id === itemId;
       });
-      console.log("index", itemIndex);
       if (itemIndex >= 0) {
         state.items[itemIndex].isSelected = !state.items[itemIndex].isSelected;
         Cookies.set("cart-item-list", JSON.stringify(state.items), {

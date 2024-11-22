@@ -19,6 +19,17 @@ import CartTab from "../cart/CartTab";
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state?.user?.user);
+  const carts = useSelector((store) => store.cart.items);
+
+  const loading = useSelector((state) => state.user.loading);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+
+  
+  const [showCartTab, setShowCartTab] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+
   const handleLogout = () => {
     Cookies.remove("token");
     Cookies.remove("refreshToken");
@@ -26,41 +37,33 @@ const Header = () => {
     localStorage.removeItem("shipping-address");
     dispatch(clearUser());
     dispatch(clearCart());
-    dispatch(clearFavorites())
+    dispatch(clearFavorites());
     navigate("/");
     message.success("Logout Successfully!");
   };
 
-  const [showCartTab, setShowCartTab] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
   const handleSearch = () => {
-    if(searchTerm) {
+    if (searchTerm) {
       const query = encodeURIComponent(searchTerm);
-      // console.log("search ", searchTerm)
-      navigate(`/search?q=${query}`)
-      setSearchTerm("")
-    }else {
-      navigate("/search")
-    }
-  }
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSearch(); // Gọi hàm `handleSearch` khi nhấn Enter
+      navigate(`/search?q=${query}`);
+      // setSearchTerm("");
+    } else {
+      navigate("/search");
     }
   };
 
-  const user = useSelector((state) => state?.user?.user);
-  const carts = useSelector((store) => store.cart.items);
-  // console.log(carts);
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch(); 
+    }
+  };
 
-  const loading = useSelector((state) => state.user.loading);
-  const [totalQuantity, setTotalQuantity] = useState(0);
+
 
   useEffect(() => {
     const total = carts.length;
@@ -82,8 +85,6 @@ const Header = () => {
     );
   }
 
-  
-
   return (
     <header className="bg-gray-150 dark:bg-gray-900 px-10 py-7 fixed top-0 w-full z-20">
       <div className="container mx-auto flex items-center justify-between">
@@ -97,58 +98,53 @@ const Header = () => {
 
           {/* nav */}
 
-          <div className="hidden md:flex space-x-5">
-            <div className="relative">
-              <button className="text-gray-700 dark:text-white hover:underline">
-                Departments
+          {/* <div className="hidden md:flex space-x-5">
+            <Link to="/">
+              <div className="relative">
+                <button className="text-gray-700 font-semibold  dark:text-white hover:underline">
+                  Trang chủ
+                </button>
+              </div>
+            </Link>
+            <div 
+
+            className="relative"
+            onMouseEnter={() => setshowCategoryMenu(true)}
+            onMouseLeave={() => setshowCategoryMenu(false)}
+            >
+              <button className="text-gray-700 font-semibold dark:text-white hover:underline">
+                Danh mục
               </button>
+              {
+                showCategoryMenu && (
+                  <div className="absolute">
+                    <CategoryMenu/>
+                  </div>
+                )
+              }
             </div>
-            <div className="relative">
-              <button className="text-gray-700 dark:text-white hover:underline">
-                Grocery
-              </button>
-            </div>
-            <div className="relative">
-              <button className="text-gray-700 dark:text-white hover:underline">
-                Beauty
-              </button>
-            </div>
-          </div>
+          </div> */}
         </div>
         {/* search */}
         <div className="bg-white hidden w-full max-w-xs lg:flex items-center justify-between rounded-full border pl-2 focus-within:shadow">
           <input
             type="text"
             placeholder="Search product here..."
-            className="w-full outline-none px-4 "
+            className="w-full outline-none px-4 font-medium "
             value={searchTerm}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
           />
-          <div 
-          onClick={handleSearch}
-          className="flex h-8 min-w-[50px] items-center justify-center rounded-r-full bg-teal-500 text-lg text-white cursor-pointer hover:bg-teal-600">
+          <div
+            onClick={handleSearch}
+            className="flex h-8 min-w-[50px] items-center justify-center rounded-r-full bg-teal-500 text-lg text-white cursor-pointer hover:bg-teal-600"
+          >
             <GrSearch />
           </div>
         </div>
 
         {/* user */}
         <div className="flex items-center space-x-6">
-          {/* <Link to="/cart">
-            <div
-              className="relative cursor-pointer text-4xl"
-              onMouseEnter={() => setShowCartTab(true)}
-              onMouseLeave={() => setShowCartTab(false)}
-            >
-              <Badge count={totalQuantity} size="large" showZero>
-                <MdOutlineShoppingCart style={{ fontSize: "30px" }} />
-              </Badge>
-
-              <div className="absolute top-12 -right-4 z-50">
-                {showCartTab && <CartTab items={carts} />}
-              </div>
-            </div>
-          </Link> */}
           <div
             className="flex items-center space-x-6 relative"
             onMouseEnter={() => setShowCartTab(true)}
@@ -168,8 +164,6 @@ const Header = () => {
               </div>
             )}
           </div>
-
-
 
           {user?.id && (
             <Link to="/profile">

@@ -5,40 +5,42 @@ import styled from 'styled-components';
 
 const CustomBreadcrumb = styled(Breadcrumb)`
   .ant-breadcrumb-link {
-    color: #9E9DA8;
     font-weight: 500;
     font-size: 18px;
-  }
 
-  .ant-breadcrumb-link:hover {
-    color: #3b82f6;
-    text-decoration: underline;
+    a {
+      display: inline-block;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: rgb(246,246,246); /* Màu nền khi hover */
+        color: #000; /* Màu chữ khi hover */
+      }
+    }
   }
 
   .ant-breadcrumb-separator {
-    color: #9ca3af;
     font-size: 18px;
   }
 
-  background-color: #f3f4f6;
   padding: 4px;
   border-radius: 8px;
 `;
 
+
 const BreadcrumbNav = () => {
   const location = useLocation();
 
-  // Kiểm tra nếu đường dẫn là trang chủ ('/')
   if (location.pathname === '/') {
-    return null; // Không render breadcrumb ở trang chủ
+    return null; 
   }
 
-  // Tách đường dẫn thành các phần
-  const pathSnippets = location.pathname.split('/').filter((i) => i);
+  const pathSnippets = location.pathname.split('/').filter((i) => i).map((snippet) => decodeURIComponent(snippet));
 
   const items = [
     {
-      title: <Link to="/" className="text-gray-800 hover:text-blue-500">Trang chủ</Link>,
+      title: <Link to="/" className=" ">Trang chủ</Link>,
       key: 'home',
     },
     ...pathSnippets.map((_, index) => {
@@ -51,7 +53,7 @@ const BreadcrumbNav = () => {
             {_}
           </span>
         ) : (
-          <Link to={url} className="text-gray-800 hover:text-blue-500">
+          <Link to={url} className="text-gray-800 ">
             {_}
           </Link>
         ),
@@ -61,8 +63,8 @@ const BreadcrumbNav = () => {
   ];
 
   return (
-    <div className="container mx-auto rounded-xl mt-10 shadow-lg p-4 flex items-center">
-      <CustomBreadcrumb separator=">" items={items} />
+    <div className="container mx-auto rounded-xl mt-3 flex items-center">
+      <CustomBreadcrumb separator="/" items={items} />
     </div>
   );
 };

@@ -15,12 +15,10 @@ import BreadcrumbNav from "../components/layout/BreadcrumbNav";
 import { setCartItems } from "../store/cartSlice";
 import { setFavorites } from "../store/favoritesSlice ";
 
-
 const Home = () => {
   const location = useLocation();
   const user = useSelector((state) => state?.user?.user);
   const [isCartLoading, setIsCartLoading] = useState(false);
-  console.log("user", user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -29,7 +27,6 @@ const Home = () => {
       navigate("/admin");
     }
   }, [user, navigate]);
-
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -52,8 +49,6 @@ const Home = () => {
       }
     };
 
-
-
     if (user && !Cookies.get("cart-item-list")) {
       fetchCartItems();
     }
@@ -69,9 +64,9 @@ const Home = () => {
               method: summaryApi.allFavorites.method,
             }
           );
-  
+
           const dataResponse = await response.json();
-  
+
           if (dataResponse.data) {
             dispatch(setFavorites(dataResponse.data));
             console.log("setFavorites(dataResponse.data)", dataResponse.data);
@@ -80,7 +75,7 @@ const Home = () => {
           console.log("error", error);
         }
       };
-  
+
       fetchFavorites();
     } else {
       console.warn("User hoặc user.id không hợp lệ:", user);
@@ -103,17 +98,25 @@ const Home = () => {
     return (
       <>
         <Header />
-        <div className="mt-36"></div>
+        <div className="mt-32"></div>
         {location.pathname !== "/profile" && <BreadcrumbNav />}
         <main className="container mx-auto ">
           {location.pathname === "/" && (
             <>
               <Slideshow />
-              <ListCategory />
-              <ListProduct title={"Browse Product "} />
+              <div className="flex mt-8">
+                <div className="w-1/5 pr-4">
+                  <div className="sticky top-28 ">
+                    <ListCategory />
+                  </div>
+                </div>
+                <div className="w-4/5 pl-4">
+                  <ListProduct title={"Dành cho bạn "} />
+                </div>
+              </div>
             </>
           )}
-          <section className="mt-8 mb-8">
+          <section className=" mb-8">
             <Outlet />
           </section>
         </main>

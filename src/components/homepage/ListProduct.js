@@ -14,7 +14,7 @@ const ListProduct = ({ products: initialProducts, title }) => {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const titleRef = useRef();
   const filterRef = useRef(null);
-  const itemsPerPage = 10;
+  const itemsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(1);
 
   const productList = filteredProducts.length > 0 ? filteredProducts : products;
@@ -85,18 +85,19 @@ const ListProduct = ({ products: initialProducts, title }) => {
 
   // Sử dụng useLocation để lấy thông tin URL hiện tại
   const location = useLocation();
-  const isSearchPage = location.pathname === "/search"; // Kiểm tra xem có ở trang tìm kiếm không
+  const isSearchPage = location.pathname === "/search"; 
+  
 
   return (
-    <div className="container mx-auto mt-10">
+    <div className="container bg-white shadow-md p-3 mx-auto mt-10">
       {title && (
         <div className="grid grid-cols-2 items-center">
           <div>
-            <h2 ref={titleRef} className="font-bold text-2xl bg-white">
+            <h2 ref={titleRef} className="font-bold text-base ">
               {`${title} ( ${productList.length} )`}
             </h2>
           </div>
-          {isSearchPage && ( // Chỉ hiển thị khi ở trang tìm kiếm
+          {(isSearchPage ) && ( // Chỉ hiển thị khi ở trang tìm kiếm
             <div className="relative">
               <div
                 ref={filterRef}
@@ -127,7 +128,7 @@ const ListProduct = ({ products: initialProducts, title }) => {
         </div>
       )}
 
-      <div className="grid grid-cols-5 gap-6 mt-5">
+      <div className="grid grid-cols-4 gap-6 mt-5">
         {currentProducts.map((product, index) => (
           <ProductCard product={product} key={index} />
         ))}
@@ -137,7 +138,7 @@ const ListProduct = ({ products: initialProducts, title }) => {
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
-          className={`px-4 py-2 rounded-l ${
+          className={`px-2 py-1 rounded-l ${
             currentPage === 1
               ? "bg-gray-200 cursor-not-allowed"
               : "bg-gray-300 hover:bg-gray-400"
@@ -146,14 +147,14 @@ const ListProduct = ({ products: initialProducts, title }) => {
           <MdArrowBackIos />
         </button>
 
-        <span className="px-4 py-2">
+        <span className="px-2 py-1">
           Page {currentPage} of {totalPages}
         </span>
 
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
-          className={`px-4 py-2 rounded-r ${
+          className={`px-2 py-1 rounded-r ${
             currentPage === totalPages
               ? "bg-gray-200 cursor-not-allowed"
               : "bg-gray-300 hover:bg-gray-400"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Radio, Modal, Input, message, Popconfirm } from 'antd';
+import { Button, Modal, Input, message, Popconfirm } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import summaryApi from '../../common';
 import { useSelector } from 'react-redux';
@@ -8,7 +8,6 @@ import fetchWithAuth from '../../helps/fetchWithAuth';
 const ShippingAddress = () => {
 
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedAddress, setSelectedAddress] = useState(null);
     const [editingAddress, setEditingAddress] = useState({});
     const [errors, setErrors] = useState({});
     const [addresses, setAddresses] = useState([]);
@@ -22,11 +21,6 @@ const ShippingAddress = () => {
         }
     }, []);
 
-    const handleSelectAddress = (id) => {
-        setSelectedAddress(id);
-        // console.log("selectedAddress at shipping address component", selectedAddress)
-        localStorage.setItem("selected-address-id", JSON.stringify(id));
-    };
 
     const handleAddingAddress = () => {
         setEditingAddress({});
@@ -145,11 +139,13 @@ const ShippingAddress = () => {
 
     return (
         <div className="p-6 bg-white rounded-md shadow-md">
-            <h2 className="text-lg font-semibold mb-4">1. Shipping, arrives between Mon, May 16—Tue, May 24</h2>
+            <h2 className="text-xl font-semibold mb-4">Your address list</h2>
             <div className="flex justify-between">
                 <div className="mb-4">
-                    <p className="text-sm text-gray-600">Shipping address</p>
-                    <p className="text-base font-medium mb-4">Where should we deliver your order?</p>
+                    {addresses.length === 0
+                        ? <p className="text-sm text-gray-600">Do you want to add new address?</p>
+                        : <p className="text-sm text-gray-600">Manage your addresses here!</p>
+                    }
                 </div>
                 <div className="flex justify-between items-center mb-6">
                     <Button type="primary" icon={<PlusOutlined />} onClick={handleAddingAddress}>
@@ -160,11 +156,10 @@ const ShippingAddress = () => {
 
             <div className="space-y-4">
                 {addresses.map((address) => (
-                    <div key={address.id} className={`p-4 border rounded-md flex justify-between items-start space-x-4 ${selectedAddress === address.id ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
-                        <Radio.Group onChange={() => handleSelectAddress(address.id)} value={selectedAddress}>
-                            <Radio value={address.id} />
-                        </Radio.Group>
-                        <div className="flex-1" onClick={() => handleSelectAddress(address.id)}>
+                    <div key={address.id} className={`p-4 border rounded-md flex justify-between items-start space-x-4
+                    `}>
+
+                        <div className="flex-1" >
                             <h3 className="font-semibold">{address.receiverName}</h3>
                             <p className="text-gray-700">Location: {address.location}</p>
                             <p className="text-gray-500">Phone: {address.receiverPhone}</p>

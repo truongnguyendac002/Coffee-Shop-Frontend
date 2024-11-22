@@ -3,15 +3,28 @@ import { Modal, Table, Button, Form, Input, InputNumber, Select } from 'antd';
 import fetchWithAuth from '../../../helps/fetchWithAuth';
 import summaryApi from '../../../common';
 
-const AddItemModal = ({ visible, onClose, onSave, types, onAddType }) => {
+const AddItemModal = ({ visible, onClose, onSave, types, onAddType, editingItem }) => {
     const [form] = Form.useForm();
-    const [isAddingType, setIsAddingType] = useState(false); // Trạng thái thêm mới Type
+    const [isAddingType, setIsAddingType] = useState(false);
     const [newTypeName, setNewTypeName] = useState('');
+
+    useEffect(() => {
+        if (editingItem) {
+            form.setFieldsValue({
+                price: editingItem.price,
+                stock: editingItem.stock,
+                discount: editingItem.discount,
+                type: editingItem.type?.name,
+            });
+        } else {
+            form.resetFields();
+        }
+    }, [editingItem, form]);
 
     const handleSave = () => {
         form.validateFields().then((values) => {
-            onSave(values);
-            form.resetFields(); // Reset form sau khi lưu
+            onSave(values, editingItem?.id);
+            form.resetFields();
         });
     };
 
@@ -37,14 +50,13 @@ const AddItemModal = ({ visible, onClose, onSave, types, onAddType }) => {
         }
     };
 
-
     return (
         <Modal
-            title="Thêm mới item"
+            title={editingItem ? "Cập nhật item" : "Thêm mới item"}
             open={visible}
             onCancel={onClose}
             onOk={handleSave}
-            okText="Lưu"
+            okText={editingItem ? "Cập nhật" : "Lưu"}
             cancelText="Hủy"
         >
             <Form form={form} layout="vertical">
@@ -118,11 +130,13 @@ const AddItemModal = ({ visible, onClose, onSave, types, onAddType }) => {
     );
 };
 
+
 const ProductItemsModal = ({ product, visible, onClose }) => {
     const [productItems, setProductItems] = useState([]);
-    const [types, setTypes] = useState([]); // Danh sách Type
+    const [types, setTypes] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
+    const [editingItem, setEditingItem] = useState(null);
 
     useEffect(() => {
         const fetchProductItems = async () => {
@@ -202,10 +216,71 @@ const ProductItemsModal = ({ product, visible, onClose }) => {
         };
         fetchAddItem();
     };
+    const handleSaveItem = (item, itemId) => {
+        if (itemId) {
+            // Update existing item
+            const fetchUpdateItem = async () => {
+                try {
+                    const response = await fetchWithAuth(
+                        `${summaryApi.updateProductItem.url}${itemId}`,
+                        {
+                            method: summaryApi.updateProductItem.method,
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                Price: item.price,
+                                Stock: item.stock,
+                                Discount: item.discount,
+                                TypeId: types.find((t) => t.name === item.type)?.id,
+                                ProductId: product.id,
+                             }),
+                        }
+                    );
+                    const data = await response.json();
+                    if (data && data.respCode === '000') {
+                        setProductItems((prevItems) =>
+                            prevItems.map((i) => (i.id === itemId ? data.data : i))
+                        );
+                        setEditingItem(null);
+                        setIsAdding(false);
+                    }
+                } catch (error) {
+                    console.error('Error updating item:', error);
+                }
+            };
+            fetchUpdateItem();
+        } else {
+            handleAddNewItem(item);
+        }
+    };
+
 
     const handleAddType = (type) => {
         setTypes((prevTypes) => [...prevTypes, type]);
     };
+
+    const handleDeleteItem = (item) => {
+        const fetchDeleteItem = async () => {
+            try {
+                const response = await fetchWithAuth(
+                    summaryApi.deleteProductItem.url + item.id,
+                    {
+                        method: summaryApi.deleteProductItem.method,
+                    }
+                );
+                const data = await response.json();
+                if (data && data.respCode === '000') {
+                    setProductItems((prevItems) =>
+                        prevItems.filter((i) => i.id !== item.id)
+                    );
+                } else {
+                    console.error('Failed to delete item:', data || 'Unknown error');
+                }
+            } catch (error) {
+                console.error('Error deleting item:', error);
+            }
+        };
+        fetchDeleteItem();
+    }
 
     const columns = [
         {
@@ -233,6 +308,28 @@ const ProductItemsModal = ({ product, visible, onClose }) => {
             dataIndex: ['type', 'name'],
             key: 'type',
         },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (text, record) => (
+                <>
+                    <Button
+                        type="primary"
+                        onClick={() => {
+                            setEditingItem(record);
+                            setIsAdding(true);
+                        }}
+                        className='mr-2'
+                    >
+                        Update
+                    </Button>
+
+                    <Button onClick={() => handleDeleteItem(record)} type="primary" danger>
+                        Delete
+                    </Button>
+                </>
+            ),
+        }
     ];
 
     return (
@@ -258,10 +355,14 @@ const ProductItemsModal = ({ product, visible, onClose }) => {
             </Modal>
             <AddItemModal
                 visible={isAdding}
-                onClose={() => setIsAdding(false)}
-                onSave={handleAddNewItem}
+                onClose={() => {
+                    setEditingItem(null);
+                    setIsAdding(false);
+                }}
+                onSave={handleSaveItem}
                 types={types}
                 onAddType={handleAddType}
+                editingItem={editingItem}
             />
         </>
     );

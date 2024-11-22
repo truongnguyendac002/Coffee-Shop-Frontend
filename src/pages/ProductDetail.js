@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import summaryApi from "../common";
 import { FaRegStar } from "react-icons/fa6";
-import { FaRegHeart } from "react-icons/fa";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa6";
 import { FaChevronRight } from "react-icons/fa6";
@@ -51,7 +51,6 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (product) {
-      
       const isProductFavorite = favorites.some(
         (item) => item.product && item.product.id === product.id
       );
@@ -417,7 +416,6 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* add to cart or buy now */}
             <div className="flex mt-8  flex-col">
               {error && <div className="text-red-500 ">{error}</div>}
               <div className="flex space-x-5 mt-8">
@@ -434,15 +432,22 @@ const ProductDetail = () => {
                 >
                   Mua Ngay
                 </button>
-                <button
-                  onClick={handleClickFavorites}
-                  className={`text-gray-500 hover:text-red-500 w-9 ${
-                    isFavorite ? "text-red-500" : ""
-                  }`}
-                >
-                  {/* {console.log("first" ,isFavorite)} */}
-                  <FaRegHeart style={{ width: "32px", height: "32px" }} />
-                </button>
+                {
+                  !isFavorite ? (<button
+                    onClick={handleClickFavorites}
+                    className={`text-gray-500 hover:text-red-500 w-9`}
+                  >
+                    <FaRegHeart style={{ width: "32px", height: "32px" }} />
+                  </button>
+                  ) : (<button
+                    onClick={handleClickFavorites}
+                    className={`text-red-500  w-9 `}
+                  >
+                    <FaHeart style={{ width: "32px", height: "32px" }} />
+                  </button>)
+
+                }
+                
               </div>
             </div>
           </div>
