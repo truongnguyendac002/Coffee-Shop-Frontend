@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { Card, InputNumber, Button, Checkbox } from 'antd';
-import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import React, { useState } from "react";
+import { Card, InputNumber, Button, Checkbox } from "antd";
+import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
-import fetchWithAuth from '../../helps/fetchWithAuth';
-import summaryApi from '../../common';
-import { useDispatch } from 'react-redux';
-import { addToCart, toggleSelected } from '../../store/cartSlice';
+import fetchWithAuth from "../../helps/fetchWithAuth";
+import summaryApi from "../../common";
+import { useDispatch } from "react-redux";
+import { addToCart, toggleSelected , removeFromCart} from "../../store/cartSlice";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { message } from "antd";
 
-const CartItems = ({cartItems}) => {
-
+const CartItems = ({ cartItems }) => {
   const dispatch = useDispatch();
 
   const [errorItemId, setErrorItemId] = useState(null);
@@ -23,14 +24,10 @@ const CartItems = ({cartItems}) => {
         if (updatedCartItems(updatedItem)) {
           // console.log("update true")
           dispatch(addToCart(updatedItem));
-        }
-        else  console.log("update false")
-         
-      }
-      catch (error) {
+        } else console.log("update false");
+      } catch (error) {
         toast.error("Error updating cart item");
       }
-
     }
   };
   const updatedCartItems = async (item) => {
@@ -40,7 +37,7 @@ const CartItems = ({cartItems}) => {
         body: JSON.stringify({
           Quantity: item.quantity,
           ProductItemId: item.productItem.id,
-          UserId: item.userId
+          UserId: item.userId,
         }),
       });
       const result = await response.json();
@@ -64,27 +61,55 @@ const CartItems = ({cartItems}) => {
     dispatch(toggleSelected(item.id));
   };
 
+  const handleDeleteCartItem = async(itemId) => {
+    try {
+      const response = await fetchWithAuth(summaryApi.deleteCartItem.url + itemId , {
+        method: summaryApi.deleteCartItem.method,
+        
+      });
+      const result = await response.json();
+      if (result.respCode === "000") {
+        console.log("Delete cart item successfully")
+        message.success("Delete cart item successfully");
+        dispatch(removeFromCart(itemId));
+      }
+    } catch (error) {
+      message.error(" Error delete cart item");
+      console.error("Error delete cart item:", error);
+    }
+  }
+
   return (
     <div className="space-y-4">
-      {cartItems.map(item => (
+      {cartItems.map((item) => (
         <Card key={item.id} className="bg-white shadow-md border rounded-md">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between space-x-5">
             <Checkbox
               checked={item.isSelected}
               onClick={() => handleSelectItem(item)}
-              className='mr-6'
+              className="mr-6"
             />
             <img
-              src={'https://media.licdn.com/dms/image/v2/C5112AQEw1fXuabCTyQ/article-inline_image-shrink_1500_2232/article-inline_image-shrink_1500_2232/0/1581099611064?e=1736380800&v=beta&t=_b3qxld3t1gqDcKHKKtPDxuhIFU94zB31rb2nuc5Ygw'}
+              src={
+                "https://media.licdn.com/dms/image/v2/C5112AQEw1fXuabCTyQ/article-inline_image-shrink_1500_2232/article-inline_image-shrink_1500_2232/0/1581099611064?e=1736380800&v=beta&t=_b3qxld3t1gqDcKHKKtPDxuhIFU94zB31rb2nuc5Ygw"
+              }
               alt={item.productItem.product.name}
               className="w-16 h-16 object-cover"
             />
-            <div className="flex justify-between flex-1  mx-5">
+            <div className="flex justify-between flex-1  ">
               <div onClick={() => handleSelectItem(item)}>
-                <h2 className="text-lg font-semibold text-gray-800">{item.productItem.product.name}</h2>
-                <p className="text-gray-600">Type: {item.productItem.type.name}</p>
-                <p className="text-gray-600">Category: {item.productItem.product.category.name}</p>
-                <p className="text-gray-600">Brand: {item.productItem.product.brand.name}</p>
+                <h2 className="text-lg font-semibold text-gray-800">
+                  {item.productItem.product.name}
+                </h2>
+                <p className="text-gray-600">
+                  Type: {item.productItem.type.name}
+                </p>
+                <p className="text-gray-600">
+                  Category: {item.productItem.product.category.name}
+                </p>
+                <p className="text-gray-600">
+                  Brand: {item.productItem.product.brand.name}
+                </p>
               </div>
 
               <div className="flex items-center mt-2 space-x-2">
@@ -100,8 +125,11 @@ const CartItems = ({cartItems}) => {
                   value={item.quantity}
                   onChange={(value) => handleQuantityChange(value, item)}
                   controls={false}
-                  className={`text-center border rounded-md transition-all duration-500 ${errorItemId === item.id ? 'border-red-500 animate-shake' : 'border-gray-300'
-                    }`}
+                  className={`text-center border rounded-md transition-all duration-500 ${
+                    errorItemId === item.id
+                      ? "border-red-500 animate-shake"
+                      : "border-gray-300"
+                  }`}
                 />
 
                 <Button
@@ -114,10 +142,15 @@ const CartItems = ({cartItems}) => {
             <div className="text-base font-semibold text-red-500">
               ${(item.productItem.price * item.quantity).toFixed(2)}
             </div>
+
+            <div 
+            onClick={() => handleDeleteCartItem(item.id)}
+            className="text-2xl hover:text-red-500 " >
+              <RiDeleteBin6Line />
+            </div>
           </div>
         </Card>
       ))}
-
     </div>
   );
 };

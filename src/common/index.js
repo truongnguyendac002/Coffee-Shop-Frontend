@@ -78,6 +78,10 @@ const summaryApi = {
         url: `${backendDomain}/cart/item`,
         method: "POST"
     },
+    deleteCartItem : {
+        url: `${backendDomain}/cart/item/`,
+        method: "DELETE"
+    },
     getAddressByUser: {
         url: `${backendDomain}/address`,
         method: "GET"

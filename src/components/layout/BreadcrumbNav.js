@@ -36,7 +36,7 @@ const BreadcrumbNav = () => {
     return null; 
   }
 
-  const pathSnippets = location.pathname.split('/').filter((i) => i).map((snippet) => decodeURIComponent(snippet));
+  const pathSnippets = location.pathname.split('/').filter((i) => i).map((snippet) => decodeURIComponent(snippet)).filter((i) => isNaN(i));
 
   const items = [
     {

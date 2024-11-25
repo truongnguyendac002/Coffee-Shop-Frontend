@@ -8,7 +8,7 @@ const CategoryCard = ({category}) => {
 
   const handleCategoryClick = () => {
    
-    navigate(`/category/${category.name}/${category.id}`);
+    navigate(`/${category.name}/${category.id}`);
   };
 
   return (

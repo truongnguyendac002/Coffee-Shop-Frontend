@@ -28,6 +28,13 @@ const cartSlice = createSlice({
         expires: 7,
       });
     },
+    removeFromCart: (state, action) => {
+      const itemId = action.payload;
+      state.items = state.items.filter((item) => item.id !== itemId);
+      Cookies.set("cart-item-list", JSON.stringify(state.items), {
+        expires: 7,
+      });
+    },
     clearCart: (state) => {
       state.items = [];
       Cookies.remove("cart-item-list");
@@ -53,7 +60,7 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, clearCart, setCartItems, toggleSelected } =
+export const { addToCart, clearCart, setCartItems, toggleSelected , removeFromCart } =
   cartSlice.actions;
 
 export default cartSlice.reducer;

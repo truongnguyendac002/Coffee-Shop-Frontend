@@ -13,7 +13,7 @@ import summaryApi from "../common";
 import Cookies from "js-cookie";
 import BreadcrumbNav from "../components/layout/BreadcrumbNav";
 import { setCartItems } from "../store/cartSlice";
-import { setFavorites } from "../store/favoritesSlice ";
+import { selectFavorites, setFavorites } from "../store/favoritesSlice ";
 
 const Home = () => {
   const location = useLocation();
@@ -21,6 +21,8 @@ const Home = () => {
   const [isCartLoading, setIsCartLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const cartItems = useSelector((state) => state.cart.items);
+  const favorites = useSelector(selectFavorites);
 
   useEffect(() => {
     if (user && user.roleName === "ROLE_ADMIN") {
@@ -49,13 +51,16 @@ const Home = () => {
       }
     };
 
-    if (user && !Cookies.get("cart-item-list")) {
-      fetchCartItems();
+    if (user) {
+      if (!Cookies.get("cart-item-list") && cartItems.length === 0) {
+        fetchCartItems(); 
+      }
     }
-  }, [user, dispatch]);
+  }, [user, dispatch , cartItems.length ]);
+  
 
   useEffect(() => {
-    if (user && user.id) {
+    
       const fetchFavorites = async () => {
         try {
           const response = await fetchWithAuth(
@@ -76,11 +81,13 @@ const Home = () => {
         }
       };
 
-      fetchFavorites();
-    } else {
-      console.warn("User hoặc user.id không hợp lệ:", user);
-    }
-  }, [user, dispatch]);
+      if (user) {
+        if (!localStorage.getItem('favorites') && favorites.length === 0) {
+          fetchFavorites(); 
+        }
+      }
+   
+  }, [user, dispatch , favorites.length]);
 
   if (isCartLoading) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
