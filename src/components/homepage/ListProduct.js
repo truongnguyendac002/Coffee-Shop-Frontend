@@ -84,12 +84,11 @@ const ListProduct = ({ products: initialProducts, title }) => {
   }, [initialProducts]);
 
   // Sử dụng useLocation để lấy thông tin URL hiện tại
-  const location = useLocation();
-  const isSearchPage = location.pathname === "/search"; 
-  
+  // const location = useLocation();
+  // const isSearchPage = location.pathname === "/search";
 
   return (
-    <div className="container bg-white shadow-md p-3 mx-auto mt-10">
+    <div className="container bg-white shadow-md p-3 mx-auto mt-10 ">
       {title && (
         <div className="grid grid-cols-2 items-center">
           <div>
@@ -97,38 +96,10 @@ const ListProduct = ({ products: initialProducts, title }) => {
               {`${title} ( ${productList.length} )`}
             </h2>
           </div>
-          {(isSearchPage ) && ( // Chỉ hiển thị khi ở trang tìm kiếm
-            <div className="relative">
-              <div
-                ref={filterRef}
-                onClick={toggleFilterDropdown}
-                className="flex h-8 items-center bg-white shadow-sm rounded px-4 justify-end cursor-pointer"
-              >
-                <span className="mr-3 text-base font-medium text-gray-500">
-                  Filter
-                </span>
-                <CiFilter className="text-2xl" />
-              </div>
-
-              {isFilterVisible && (
-                <div
-                  className="absolute mt-3"
-                  style={{
-                    top: "100%",
-                    right: "0",
-                    width: "auto",
-                    zIndex: 10,
-                  }}
-                >
-                  <Filter closeFilter={closeFilter} onFilter={handleFilterProducts} />
-                </div>
-              )}
-            </div>
-          )}
         </div>
       )}
 
-      <div className="grid grid-cols-4 gap-6 mt-5">
+      <div className="grid grid-cols-4 gap-6 mt-5 ">
         {currentProducts.map((product, index) => (
           <ProductCard product={product} key={index} />
         ))}

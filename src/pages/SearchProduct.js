@@ -2,20 +2,34 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import summaryApi from "../common";
 import ListProduct from "../components/homepage/ListProduct";
+import Filter from "../components/homepage/Filter";
 
 const SearchProduct = () => {
   const location = useLocation();
-  const [data, setData] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showList, setShowList] = useState(false); 
+  const [showList, setShowList] = useState(false);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+
+  const handleFilterProducts = (filtered) => {
+    setFilteredProducts(filtered);
+    
+  };
+  const productList = filteredProducts.length > 0 ? filteredProducts : products;
+  
+  const closeFilter = () => {
+    setIsFilterVisible(false);
+  };
 
   const queryParams = new URLSearchParams(location.search);
   const searchTerm = queryParams.get("q");
 
+
   const fetchSearchProduct = useCallback(async () => {
-    if (!searchTerm) return; 
+    if (!searchTerm) return;
     setLoading(true);
-    
+
     try {
       const response = await fetch(
         summaryApi.searchProduct.url + `?q=${searchTerm}`,
@@ -25,30 +39,29 @@ const SearchProduct = () => {
       );
       const dataResponse = await response.json();
       if (dataResponse.respCode === "000") {
-        setData(dataResponse.data);
+        setProducts(dataResponse.data);
       } else {
         console.log("Error fetching search data");
       }
     } catch (error) {
       console.log("Error:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   }, [searchTerm]);
 
   useEffect(() => {
     fetchSearchProduct();
-  }, [fetchSearchProduct]); 
+  }, [fetchSearchProduct]);
 
- 
   useEffect(() => {
-    if (data.length > 0) {
+    if (products.length > 0) {
       const timer = setTimeout(() => {
-        setShowList(true); 
-      }, 100); 
+        setShowList(true);
+      }, 100);
       return () => clearTimeout(timer);
     }
-  }, [data]);
+  }, [products]);
 
   const title = `Sản Phẩm liên quan đến "${searchTerm}" :`;
 
@@ -56,11 +69,22 @@ const SearchProduct = () => {
     <div className="container mx-auto">
       {loading && <p className="text-lg text-center">Loading ...</p>}
 
-      {data.length === 0 && !loading && (
-        <p className="bg-white text-lg text-center p-4">No Data Found....</p>
+      {products.length === 0 && !loading && (
+        <p className="bg-white text-lg text-center p-4">No products Found....</p>
       )}
 
-      {showList && <ListProduct products={data} title={title} />}
+      <div className=" grid grid-cols-12 gap-x-10 ">
+        <div className="col-span-3 mt-10 min-h-screen">
+          <div className="sticky top-28 ">
+            <Filter closeFilter={closeFilter} onFilter={handleFilterProducts} />
+          </div>
+        </div>
+        <div className="col-start-4 col-span-9">
+          {showList && (
+            <ListProduct products={productList} title={title} />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

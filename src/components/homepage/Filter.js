@@ -1,15 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Range, getTrackBackground } from "react-range";
 import summaryApi from "../../common";
+import { Slider, Box, Typography } from "@mui/material";
 
-const Filter = ({ closeFilter , onFilter  }) => {
+const Filter = ({ closeFilter, onFilter }) => {
   const [brands, setBrands] = useState([]);
   const [selectBrand, setSelectBrand] = useState("");
-  const [values, setValues] = useState([100, 500]);
+  const [value, setValue] = useState([0, 100]);
   const [products, setProducts] = useState([]);
-  const STEP = 100;
-  const MIN = 100;
-  const MAX = 900;
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+  const marks = [
+    {
+      value: 0,
+      label: 0,
+    },
+    {
+      value: 100,
+      label: 100,
+    },
+  ];
 
   useEffect(() => {
     const fetchBrands = async () => {
@@ -57,95 +68,54 @@ const Filter = ({ closeFilter , onFilter  }) => {
     setSelectBrand(brand.name);
   };
 
-   
-   const handleClickFilter = () => {
+  const handleClickFilter = () => {
     const filtered = products.filter((product) => {
-      const inPriceRange = product.price >= values[0] && product.price <= values[1];
-      const matchesBrand = selectBrand ? product.brand.name === selectBrand : true;
+      const inPriceRange =
+        product.price >= value[0] && product.price <= value[1];
+      const matchesBrand = selectBrand
+        ? product.brand.name === selectBrand
+        : true;
       return inPriceRange && matchesBrand;
     });
 
-    onFilter(filtered); 
-    closeFilter(); 
+    onFilter(filtered);
+    closeFilter();
   };
 
   return (
     <div className="relative p-6 w-full bg-white rounded-lg shadow-xl">
-      <div className="absolute top-0 right-6 w-4 h-4 rounded-sm bg-white rotate-45 transform -translate-y-1/2"></div>
-      <h2 className="text-xl font-semibold mb-4">Filter</h2>
-      <div className="w-full grid grid-cols-3 justify-between items-start gap-x-14">
+      <div className="w-full grid grid-cols-1 justify-between items-start gap-y-8">
         <div>
-          <p className="text-xl font-semibold mb-4">Mức giá</p>
-          <Range
-            values={values}
-            step={STEP}
-            min={MIN}
-            max={MAX}
-            onChange={(values) => setValues(values)}
-            renderTrack={({ props, children }) => {
-              const { key, ...otherProps } = props;
-              return (
-                <div
-                  {...otherProps}
-                  key={key}
-                  style={{
-                    ...props.style,
-                    height: "6px",
-                    width: "100%",
-                    background: getTrackBackground({
-                      values,
-                      colors: ["#ccc", "#4caf50", "#ccc"],
-                      min: MIN,
-                      max: MAX,
-                    }),
-                    boxSizing: "border-box",
-                  }}
-                >
-                  {children}
-                </div>
-              );
-            }}
-            renderThumb={({ index, props }) => {
-              const { key, ...otherProps } = props;
-              return (
-                <div
-                  {...otherProps}
-                  key={key}
-                  style={{
-                    ...props.style,
-                    height: "24px",
-                    width: "24px",
-                    borderRadius: "12px",
-                    backgroundColor: "#FFF",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    boxShadow: "0px 2px 6px #AAA",
-                    boxSizing: "border-box",
-                  }}
-                >
-                  <div
-                    style={{
-                      height: "16px",
-                      width: "5px",
-                      backgroundColor: "#4caf50",
-                    }}
-                  />
-                </div>
-              );
-            }}
-          />
-
-          <div className="flex justify-between gap-x-28 mt-4">
-            <div className="w-15 text-center">{values[0].toLocaleString()}</div>
-            <div className="w-15 text-center">{values[1].toLocaleString()}</div>
-          </div>
+          <Box margin="0 auto">
+            <Typography
+              gutterBottom
+              sx={{
+                fontSize: "1.25rem",
+                fontWeight: "500",
+                marginBottom: "1rem",
+              }} 
+            >
+              Mức giá
+            </Typography>
+            <Slider
+              value={value}
+              onChange={handleChange}
+              valueLabelDisplay="auto"
+              min={0}
+              max={100}
+              disableSwap
+              marks={marks}
+            />
+            <Typography>
+              Giá trị hiện tại: {value[0] + "đ"} - {value[1] + "đ"}
+            </Typography>
+          </Box>
         </div>
 
         {/* Lọc theo thương hiệu */}
-        <div className="col-span-2">
+        <div className="">
           <p className="text-xl font-semibold mb-4">Brand</p>
-          <div className="grid grid-cols-3 gap-3 mt-2">
+          <div className="grid grid-cols-2 gap-3 mt-2">
             {brands.map((brand, index) => (
               <button
                 key={index}
@@ -161,7 +131,6 @@ const Filter = ({ closeFilter , onFilter  }) => {
         </div>
       </div>
 
-      {/* Nút Cancel và Show Result */}
       <div className="flex justify-end space-x-2 mt-10">
         <button onClick={closeFilter} className="border rounded p-2">
           Cancel

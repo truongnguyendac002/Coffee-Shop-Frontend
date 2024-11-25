@@ -41,9 +41,6 @@ function ForgotPassword() {
         navigate("/otp-auth");
         toast.info("OTP has already been sent and is still valid.")
       }
-       else {
-        toast.error(forgotPassResult.respDesc);
-      }
     } catch (error) {
       console.log("error", error);
     }
