@@ -179,6 +179,10 @@ const summaryApi = {
     getProductByCategory : {
         url : `${backendDomain}/product/category/`,
         method : "GET"
+    }, 
+    getReviewByProductId : {
+        url : `${backendDomain}/review/`,
+        method : "GET"
     }
 }
 
