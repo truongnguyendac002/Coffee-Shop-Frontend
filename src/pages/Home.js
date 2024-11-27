@@ -111,9 +111,9 @@ const Home = () => {
           {location.pathname === "/" && (
             <>
               <Slideshow />
-              <div className="flex mt-8">
+              <div className="flex mt-5">
                 <div className="w-1/5 pr-4">
-                  <div className="sticky top-28 ">
+                  <div className="sticky top-24 ">
                     <ListCategory />
                   </div>
                 </div>

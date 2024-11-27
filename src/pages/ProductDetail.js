@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import summaryApi from "../common";
-import { FaRegStar } from "react-icons/fa6";
+import { FaStar } from "react-icons/fa6";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa6";
@@ -21,6 +21,7 @@ import {
   addToFavorites,
   setFavorites,
 } from "../store/favoritesSlice ";
+import ListReview from "../components/layout/ListReview";
 
 const images = [image1, image2, image3, image4];
 
@@ -45,7 +46,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
 
   const maxQuantity = itemStock;
-  const tabs = ["Description", "Review ", "Similar"];
+  const tabs = ["Description", "Review", "Similar"];
   
   const [isFavorite, setIsFavorite] = useState(false); 
 
@@ -257,8 +258,8 @@ const ProductDetail = () => {
             </p>
           </>
         );
-      case "Review (1100)":
-        return <p>Reviews content goes here.</p>;
+      case "Review":
+        return <ListReview/>;
       case "Similar":
         return <p>Similar products content goes here.</p>;
       default:
@@ -314,7 +315,7 @@ const ProductDetail = () => {
             <h2 className="text-2xl font-bold">{product.name}</h2>
             <div className="flex items-center mt-8">
               <div className="flex text-yellow-500">
-                <FaRegStar />
+                <FaStar  />
               </div>
               <span className="ml-2 text-gray-700">4.6</span>
               <span className="ml-2 text-gray-700">(1100 reviews)</span>
