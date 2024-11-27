@@ -4,20 +4,14 @@ import { MdArrowBackIos } from "react-icons/md";
 import { MdArrowForwardIos } from "react-icons/md";
 import { useRef } from "react";
 import summaryApi from "../../common";
-import { CiFilter } from "react-icons/ci";
-import Filter from "./Filter";
-import { useLocation } from "react-router-dom"; // Import useLocation
 
 const ListProduct = ({ products: initialProducts, title }) => {
   const [products, setProducts] = useState(initialProducts || []);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
   const titleRef = useRef();
-  const filterRef = useRef(null);
   const itemsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(1);
 
-  const productList = filteredProducts.length > 0 ? filteredProducts : products;
+  const productList = products;
   const totalPages = Math.ceil(productList.length / itemsPerPage);
 
   const currentProducts = productList.slice(
@@ -41,19 +35,6 @@ const ListProduct = ({ products: initialProducts, title }) => {
         titleRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 0);
     }
-  };
-
-  const toggleFilterDropdown = () => {
-    setIsFilterVisible((prev) => !prev);
-  };
-
-  const closeFilter = () => {
-    setIsFilterVisible(false);
-  };
-
-  const handleFilterProducts = (filtered) => {
-    setFilteredProducts(filtered);
-    setCurrentPage(1);
   };
 
   useEffect(() => {
@@ -83,10 +64,6 @@ const ListProduct = ({ products: initialProducts, title }) => {
     }
   }, [initialProducts]);
 
-  // Sử dụng useLocation để lấy thông tin URL hiện tại
-  // const location = useLocation();
-  // const isSearchPage = location.pathname === "/search";
-
   return (
     <div className="container bg-white shadow-md p-3 mx-auto mt-10 ">
       {title && (
@@ -99,11 +76,17 @@ const ListProduct = ({ products: initialProducts, title }) => {
         </div>
       )}
 
-      <div className="grid grid-cols-4 gap-6 mt-5 ">
-        {currentProducts.map((product, index) => (
-          <ProductCard product={product} key={index} />
-        ))}
-      </div>
+      {productList.length === 0 ? (
+        <div className="text-center text-lg font-bold text-gray-500 mt-5">
+          No results found
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-6 mt-5 ">
+          {currentProducts.map((product, index) => (
+            <ProductCard product={product} key={index} />
+          ))}
+        </div>
+      )}
 
       <div className="flex justify-center mt-4">
         <button

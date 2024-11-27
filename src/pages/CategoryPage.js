@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import summaryApi from "../common";
 import ListProduct from "../components/homepage/ListProduct";
 import { useParams } from "react-router-dom";
@@ -9,24 +9,23 @@ const CategoryPage = () => {
   const { categoryName, categoryId } = useParams();
   const [loading, setLoading] = useState(false);
   const [showList, setShowList] = useState(false);
+  const [onClickFilter , setOnClickFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   const handleFilterProducts = (filtered) => {
     setFilteredProducts(filtered);
-    
-  };
-  const productList = filteredProducts.length > 0 ? filteredProducts : products;
   
-  const closeFilter = () => {
-    setIsFilterVisible(false);
   };
+  const handleClickFilter = () => {
+    setOnClickFilter(true);
+  };
+  const productList = useMemo(() => {
+    return filteredProducts.length > 0 ? filteredProducts : products;
+  }, [  products , filteredProducts]);
 
   useEffect(() => {
     setLoading(true);
     const fetchCategory = async () => {
-      console.log("id", categoryId);
-      console.log("url", summaryApi.getProductByCategory.url + `${categoryId}`);
       try {
         const categoryResponse = await fetch(
           summaryApi.getProductByCategory.url + `${categoryId}`,
@@ -65,19 +64,26 @@ const CategoryPage = () => {
     <div className="container  mx-auto ">
       {loading && <p className="text-lg text-center">Loading ...</p>}
 
-      {products.length === 0 && !loading && (
-        <p className="bg-white text-lg text-center p-4">No Data Found....</p>
-      )}
-
       <div className=" grid grid-cols-12 gap-x-10 ">
         <div className="col-span-3 mt-10 min-h-screen">
           <div className="sticky top-28 ">
-            <Filter closeFilter={closeFilter} onFilter={handleFilterProducts} />
+            <Filter onFilter={handleFilterProducts} onClickFilter={handleClickFilter} products={products} />
           </div>
         </div>
-        <div className="col-start-4 col-span-9">
-          {showList && <ListProduct products={productList} title={categoryName} />}
-        </div>
+
+        {((filteredProducts.length === 0 && onClickFilter) || productList.length === 0 ) ? (
+          <div className="col-start-4 col-span-9 bg-white shadow-md mt-10 ">
+            <p className="text-center text-lg font-bold text-gray-500 ">
+              No results found
+            </p>
+          </div>
+        ) : (
+          <div className="col-start-4 col-span-9">
+            {showList && (
+              <ListProduct products={productList} title={categoryName} />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

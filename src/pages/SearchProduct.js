@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback , useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import summaryApi from "../common";
 import ListProduct from "../components/homepage/ListProduct";
@@ -10,17 +10,19 @@ const SearchProduct = () => {
   const [loading, setLoading] = useState(false);
   const [showList, setShowList] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [onClickFilter , setOnClickFilter] = useState(false);
 
   const handleFilterProducts = (filtered) => {
     setFilteredProducts(filtered);
-    
   };
-  const productList = filteredProducts.length > 0 ? filteredProducts : products;
+  const handleClickFilter = () => {
+    setOnClickFilter(true);
+  };
+  const productList = useMemo(() => {
+    return filteredProducts.length > 0 ? filteredProducts : products;
+  }, [filteredProducts, products]);
   
-  const closeFilter = () => {
-    setIsFilterVisible(false);
-  };
+
 
   const queryParams = new URLSearchParams(location.search);
   const searchTerm = queryParams.get("q");
@@ -69,21 +71,27 @@ const SearchProduct = () => {
     <div className="container mx-auto">
       {loading && <p className="text-lg text-center">Loading ...</p>}
 
-      {products.length === 0 && !loading && (
-        <p className="bg-white text-lg text-center p-4">No products Found....</p>
-      )}
 
       <div className=" grid grid-cols-12 gap-x-10 ">
         <div className="col-span-3 mt-10 min-h-screen">
           <div className="sticky top-28 ">
-            <Filter closeFilter={closeFilter} onFilter={handleFilterProducts} />
+            <Filter  onFilter={handleFilterProducts} products={productList} onClickFilter={handleClickFilter} />
           </div>
         </div>
-        <div className="col-start-4 col-span-9">
-          {showList && (
-            <ListProduct products={productList} title={title} />
-          )}
-        </div>
+        
+         {((filteredProducts.length === 0 && onClickFilter) || productList.length === 0 ) ? (
+          <div className="col-start-4 col-span-9 bg-white shadow-md mt-10 ">
+            <p className="text-center text-lg font-bold text-gray-500 ">
+              No results found
+            </p>
+          </div>
+        ) : (
+          <div className="col-start-4 col-span-9">
+            {showList && (
+              <ListProduct products={productList} title={title} />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

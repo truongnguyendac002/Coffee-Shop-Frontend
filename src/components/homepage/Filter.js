@@ -2,25 +2,17 @@ import React, { useEffect, useState } from "react";
 import summaryApi from "../../common";
 import { Slider, Box, Typography } from "@mui/material";
 
-const Filter = ({ closeFilter, onFilter }) => {
+const Filter = ({ onFilter, products ,onClickFilter }) => {
+  const min = 0 ;
+  const max = 400;
+  const step= 10;
   const [brands, setBrands] = useState([]);
   const [selectBrand, setSelectBrand] = useState("");
-  const [value, setValue] = useState([0, 100]);
-  const [products, setProducts] = useState([]);
+  const [value, setValue] = useState([min, max]);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event, newValue) => { 
     setValue(newValue);
   };
-  const marks = [
-    {
-      value: 0,
-      label: 0,
-    },
-    {
-      value: 100,
-      label: 100,
-    },
-  ];
 
   useEffect(() => {
     const fetchBrands = async () => {
@@ -40,27 +32,6 @@ const Filter = ({ closeFilter, onFilter }) => {
         console.log("error", error);
       }
     };
-
-    const fetchProduct = async () => {
-      try {
-        const productResponse = await fetch(summaryApi.allProduct.url, {
-          method: summaryApi.allProduct.method,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        const productResult = await productResponse.json();
-
-        if (productResult.respCode === "000") {
-          setProducts(productResult.data);
-        }
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
-
-    fetchProduct();
     fetchBrands();
   }, []);
 
@@ -74,16 +45,16 @@ const Filter = ({ closeFilter, onFilter }) => {
         product.price >= value[0] && product.price <= value[1];
       const matchesBrand = selectBrand
         ? product.brand.name === selectBrand
-        : true;
+        : false;
       return inPriceRange && matchesBrand;
     });
-
+    console.log(" setFilteredProducts(filtered);" , filtered )
+    onClickFilter();
     onFilter(filtered);
-    closeFilter();
   };
 
   return (
-    <div className="relative p-6 w-full bg-white rounded-lg shadow-xl">
+    <div className="relative p-6 w-full bg-white rounded-lg shadow-xl ">
       <div className="w-full grid grid-cols-1 justify-between items-start gap-y-8">
         <div>
           <Box margin="0 auto">
@@ -91,9 +62,9 @@ const Filter = ({ closeFilter, onFilter }) => {
               gutterBottom
               sx={{
                 fontSize: "1.25rem",
-                fontWeight: "500",
+                fontWeight: "600",
                 marginBottom: "1rem",
-              }} 
+              }}
             >
               Mức giá
             </Typography>
@@ -101,14 +72,50 @@ const Filter = ({ closeFilter, onFilter }) => {
               value={value}
               onChange={handleChange}
               valueLabelDisplay="auto"
-              min={0}
-              max={100}
+              step={step}
+              min={min}
+              max={max}
               disableSwap
-              marks={marks}
+              // marks={marks}
+              sx={{
+                width: "100%",
+                "& .MuiSlider-thumb": {
+                  width: 12,
+                  height: 12,
+                },
+                "& .MuiSlider-track": {
+                  height: 6,
+                },
+                "& .MuiSlider-rail": {
+                  height: 6,
+                },
+              }}
             />
-            <Typography>
-              Giá trị hiện tại: {value[0] + "đ"} - {value[1] + "đ"}
-            </Typography>
+
+            <div className="grid grid-cols-2 gap-6 justify-between ">
+              <Box
+                sx={{
+                  border: "1px solid #ccc",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  fontWeight: "bold",
+                  fontSize: "14px",
+                }}
+              >
+                {value[0]}
+              </Box>
+              <Box
+                sx={{
+                  border: "1px solid #ccc",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  fontWeight: "bold",
+                  fontSize: "14px",
+                }}
+              >
+                {value[1]}
+              </Box>
+            </div>
           </Box>
         </div>
 
@@ -131,15 +138,12 @@ const Filter = ({ closeFilter, onFilter }) => {
         </div>
       </div>
 
-      <div className="flex justify-end space-x-2 mt-10">
-        <button onClick={closeFilter} className="border rounded p-2">
-          Cancel
-        </button>
+      <div className=" mt-10">
         <button
           onClick={handleClickFilter}
-          className="bg-yellow-500 text-white rounded p-2"
+          className="bg-yellow-500 text-white rounded p-2  w-full"
         >
-          Show Result
+          Áp dụng
         </button>
       </div>
     </div>
