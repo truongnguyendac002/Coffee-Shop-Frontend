@@ -50,11 +50,11 @@ const CartSummary = () => {
       {/* , state: { cartItems: selectedItems } */}
       <Link to={{ pathname: "/checkout" }}>
         <button
-          className={`w-full py-2 text-lg font-semibold rounded-md mt-2  text-black ${subtotal <= 0
+          className={`w-full py-2 text-lg font-semibold rounded-md mt-2  text-black
+             ${subtotal <= 0
               ? "bg-yellow-500 cursor-not-allowed opacity-50"
-              : "bg-yellow-500 hover:bg-yellow-400 hover:text-black"
+              : "bg-yellow-400 hover:bg-yellow-500 hover:text-black"
             }`}
-          disabled={subtotal <= 0}
         >
           Continue to checkout
         </button>

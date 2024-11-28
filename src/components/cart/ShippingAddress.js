@@ -5,10 +5,9 @@ import summaryApi from '../../common';
 import { useSelector } from 'react-redux';
 import fetchWithAuth from '../../helps/fetchWithAuth';
 
-const ShippingAddress = () => {
+const ShippingAddress = ({selectedAddress,setSelectedAddress}) => {
 
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedAddress, setSelectedAddress] = useState(null);
     const [editingAddress, setEditingAddress] = useState({});
     const [errors, setErrors] = useState({});
     const [addresses, setAddresses] = useState([]);
@@ -24,7 +23,6 @@ const ShippingAddress = () => {
 
     const handleSelectAddress = (id) => {
         setSelectedAddress(id);
-        // console.log("selectedAddress at shipping address component", selectedAddress)
         localStorage.setItem("selected-address-id", JSON.stringify(id));
     };
 

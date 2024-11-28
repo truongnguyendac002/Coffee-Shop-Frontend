@@ -1,18 +1,16 @@
 import React from "react";
 import { Card } from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import summaryApi from "../../common";
 import fetchWithAuth from "../../helps/fetchWithAuth";
-// import { toast } from "react-toastify";
 import { Radio } from 'antd';
 
-
-const CheckoutSummary = () => {
+const CheckoutSummary = ({selectedAddress}) => {
+  console.log("selectedAddress at checkout ", selectedAddress);
   // Lay Cac Item Trong Cart
   const cartItems = useSelector((store) => store.cart.items)
-  const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const navigate = useNavigate();
 
@@ -31,11 +29,6 @@ const CheckoutSummary = () => {
 
   const total = subtotal + shipping;
 
-
-  useEffect(() => {
-    setSelectedAddress(JSON.parse(localStorage.getItem("selected-address-id")));
-  }, []);
-
   // Thuc lam tu day
   const handleCheckout = async () => {
     console.log("selectedAddressId at checkout ", selectedAddress);
@@ -53,9 +46,9 @@ const CheckoutSummary = () => {
     localStorage.setItem("order", JSON.stringify(order));
 
     try {
-      if( paymentMethod === "COD" ){
+      if (paymentMethod === "COD") {
         navigate("/order-status?status=success")
-      } else if( paymentMethod === "VNPay" ) {
+      } else if (paymentMethod === "VNPay") {
         const amount = total + "000"
         const createOnlinePayment = await fetchWithAuth(summaryApi.createOnlinePayment.url + `?amount=${amount}`, {
           method: summaryApi.createOnlinePayment.method,
@@ -63,15 +56,15 @@ const CheckoutSummary = () => {
 
         const response = await createOnlinePayment.json();
         console.log(response)
-        if( response.respCode === "000" ){
+        if (response.respCode === "000") {
           window.location.href = response.data.URL
         } else {
           navigate("/order-status?status=fail")
         }
       }
 
-    } catch( error ) {
-      
+    } catch (error) {
+
     }
 
     console.log("selectedItems at checkout ", selectedItems);
@@ -114,20 +107,20 @@ const CheckoutSummary = () => {
           <Radio value="VNPay">Online Payment (VNPay)</Radio>
         </Radio.Group>
       </div>
+      {console.log("Disabled condition:", (subtotal <= 0 || !selectedAddress))}
+      {console.log("subtotal condition:", (subtotal <= 0 ))}
+      {console.log("selectedAddress condition:", ( !selectedAddress))}
 
-      {/* , state: { cartItems: selectedItems } */}
-      {/* <Link to={{ pathname: "/checkout" }}> */}
-        <button
-          className={`w-full py-2 text-lg font-semibold rounded-md mt-2  text-black ${subtotal <= 0
+      <button
+        className={`w-full py-2 text-lg font-semibold rounded-md mt-2  text-black 
+          ${(subtotal <= 0 || !selectedAddress)
             ? "bg-yellow-500 cursor-not-allowed opacity-50"
-            : "bg-yellow-500 hover:bg-yellow-400 hover:text-black"
-            }`}
-          disabled={subtotal <= 0}
-          onClick={handleCheckout}
-        >
-          Complete Checkout
-        </button>
-      {/* </Link> */}
+            : "bg-yellow-400 hover:bg-yellow-500  hover:text-black"
+          }`}
+        onClick={handleCheckout}
+      >
+        Complete Checkout
+      </button>
     </Card>
   );
 };

@@ -71,8 +71,31 @@ const Profile = () => {
     setIsModalVisible(true);
   };
 
-  const handleSave = (updatedData) => {
-    setProfileData((prev) => ({ ...prev, ...updatedData }));
+  const handleSave = async (updatedData) => {
+    const fetchUpdateProfile = async (data) => {
+      const response = await fetchWithAuth(summaryApi.updateProfile.url, {
+        method: summaryApi.updateProfile.method,
+        body: JSON.stringify({
+          Name: data.name,
+          Phone: data.phone,
+          Password: data.password,
+          ConfirmPassword: data.confirmPassword,
+        }),
+      });
+      const updateRespData = await response.json();
+      if (updateRespData.respCode === "000") {
+        return updateRespData.data;
+      } else {
+        console.log("Loi fetchUpdateProfile:",updateRespData);
+        return null;
+      }
+    }
+
+    const respData = await fetchUpdateProfile(updatedData);
+
+    if (respData) {
+      setProfileData(respData);
+    }
   };
 
   const handleClose = () => {
@@ -92,7 +115,7 @@ const Profile = () => {
                 <div className="flex items-center justify-between">
                   <Title level={3}>Account info</Title>
                   <Button type="link" icon={<EditOutlined />} className="text-gray-500"
-                    onClick={() => showEditInfoModal(profileData)}
+                    onClick={() => showEditInfoModal()}
                   >
                     Edit
                   </Button>
@@ -110,6 +133,14 @@ const Profile = () => {
                     <div>
                       <Text className="block">Phone number</Text>
                       <Text>{profileData.phone}</Text>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-gray-100 rounded-lg flex items-center">
+                    <FiPhone className="mr-4 text-xl" />
+                    <div>
+                      <Text className="block">Password</Text>
+                      <Text>•••••••••••••••••••••</Text>
                     </div>
                   </div>
 

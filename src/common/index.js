@@ -179,7 +179,11 @@ const summaryApi = {
     getProductByCategory : {
         url : `${backendDomain}/product/category/`,
         method : "GET"
-    }
+    },
+    updateProfile : {
+        url : `${backendDomain}/profile`,
+        method : "PUT"
+    },
 }
 
 export default summaryApi;

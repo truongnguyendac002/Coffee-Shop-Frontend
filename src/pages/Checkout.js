@@ -13,7 +13,19 @@ function Checkout() {
   const selectedItems = cartItems
     ? cartItems.filter((item) => item.isSelected)
     : [];
-  
+  const [selectedAddress, setSelectedAddress] = useState(null);
+
+  useEffect(() => {
+    const storedAddress = localStorage.getItem("selected-address-id");
+    console.log("selectedAddress at checkout ", storedAddress);
+
+    if (storedAddress) {
+      setSelectedAddress(JSON.parse(storedAddress));
+
+    } else {
+      setSelectedAddress(null);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -45,14 +57,14 @@ function Checkout() {
         <div className="flex flex-col lg:flex-row justify-between items-start space-y-4 lg:space-y-0 lg:space-x-4">
           <div className="flex flex-col w-full  lg:w-2/3">
             <div className="w-full ">
-              <ShippingAddress />
+              <ShippingAddress selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} />
             </div>
             <div className="w-full mt-5">
               <CartItems cartItems={selectedItems} />
             </div>
           </div>
           <div className="w-full lg:w-1/3">
-            <CheckoutSummary />
+            <CheckoutSummary selectedAddress={selectedAddress}  />
           </div>
         </div>
       </div>
