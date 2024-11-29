@@ -259,7 +259,7 @@ const ProductDetail = () => {
           </>
         );
       case "Review":
-        return <ListReview/>;
+        return <ListReview productId={product.id}/>;
       case "Similar":
         return <p>Similar products content goes here.</p>;
       default:

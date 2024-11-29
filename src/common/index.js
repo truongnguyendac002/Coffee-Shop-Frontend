@@ -184,6 +184,10 @@ const summaryApi = {
         url : `${backendDomain}/profile`,
         method : "PUT"
     },
+    getReviewByProductId : {
+        url : `${backendDomain}/review/`,
+        method : "GET"
+    }
 }
 
 export default summaryApi;
