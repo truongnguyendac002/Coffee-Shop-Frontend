@@ -7,6 +7,8 @@ import {
   FiGift,
   FiAlertCircle,
   FiPhone,
+  FiKey,
+  FiUser,
 } from "react-icons/fi";
 import { TbInfoSquare } from "react-icons/tb";
 import fetchWithAuth from "../helps/fetchWithAuth";
@@ -24,6 +26,7 @@ const Profile = () => {
   const [selectedMenu, setSelectedMenu] = useState("personalInfo");
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  console.log("profileData", profileData);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -87,7 +90,7 @@ const Profile = () => {
       if (updateRespData.respCode === "000") {
         return updateRespData.data;
       } else {
-        console.log("Loi fetchUpdateProfile:",updateRespData);
+        console.log("Loi fetchUpdateProfile:", updateRespData);
         return null;
       }
     }
@@ -122,6 +125,13 @@ const Profile = () => {
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div className="p-4 bg-gray-100 rounded-lg flex items-center">
+                    <FiUser className="mr-4 text-xl" />
+                    <div>
+                      <Text className="block">Name</Text>
+                      <Text>{profileData.name}</Text>
+                    </div>
+                  </div>
                   <div className="p-4 bg-gray-100 rounded-lg flex items-center">
                     <FiMail className="mr-4 text-xl" />
                     <div>
@@ -138,7 +148,7 @@ const Profile = () => {
                   </div>
 
                   <div className="p-4 bg-gray-100 rounded-lg flex items-center">
-                    <FiPhone className="mr-4 text-xl" />
+                    <FiKey className="mr-4 text-xl" />
                     <div>
                       <Text className="block">Password</Text>
                       <Text>•••••••••••••••••••••</Text>
@@ -198,7 +208,7 @@ const Profile = () => {
         <section className="text-center mb-8">
           <Avatar
             size={100}
-            src="./assets/img/avatar/avatar-3.png"
+            src={profileData.profile_img !== null ? profileData.profile_img : null}
             icon={<UserOutlined />}
           />
           <Title level={4} className="mt-4">

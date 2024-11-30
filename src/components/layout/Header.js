@@ -173,7 +173,7 @@ const Header = () => {
                   <img
                     src={user?.profile_img}
                     alt="Avatar User"
-                    className="w-10 rounded-full"
+                    className="w-10 h-10 object-cover rounded-full"
                   />
                 ) : (
                   <PiUserCircle />
