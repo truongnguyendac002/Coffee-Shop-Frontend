@@ -3,7 +3,6 @@ import { Modal, Form, Input } from "antd";
 import Password from "antd/es/input/Password";
 
 const Info = ({ visible, data, onClose, onSave }) => {
-    console.log("data trong profile", data);
 
     const [form] = Form.useForm();
 

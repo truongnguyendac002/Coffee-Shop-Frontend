@@ -134,7 +134,14 @@ const summaryApi = {
         url: `${backendDomain}/order`,
         method: "POST",
     },
-
+    addReview: {
+        url: `${backendDomain}/review`,
+        method: "POST",
+    },
+    getUserOrders: {
+        url: `${backendDomain}/order/user/all`,
+        method: "GET",
+    },
     getProfile: {
         url: `${backendDomain}/profile`,
         method: "GET",

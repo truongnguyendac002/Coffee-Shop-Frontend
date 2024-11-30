@@ -15,9 +15,27 @@ const ShippingAddress = () => {
     const user = useSelector((state) => state?.user?.user);
 
     useEffect(() => {
+        const fetchAddresses = async () => {
+            try {
+                const response = await fetchWithAuth(summaryApi.getAddressByUser.url, {
+                    method: summaryApi.getAddressByUser.method,
+                });
+                const responseData = await response.json();
+
+                if (responseData.respCode === "000" && responseData.data) {
+                    const addresses = responseData.data;
+                    localStorage.setItem("shipping-address", JSON.stringify(addresses));
+                }
+            } catch (error) {
+                console.error("Error fetching addresses:", error);
+            } 
+        };
         const addressesData = localStorage.getItem("shipping-address");
         if (addressesData) {
             setAddresses(JSON.parse(addressesData));
+        }
+        else {
+            fetchAddresses();
         }
     }, []);
 

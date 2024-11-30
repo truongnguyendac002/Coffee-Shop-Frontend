@@ -14,6 +14,7 @@ import summaryApi from "../common";
 import Wishlist from "../components/profile/wishlist";
 import Address from "../components/profile/address";
 import Info from "../components/profile/InforProfile";
+import OrderHistory from "../components/profile/orderHistory";
 
 const { Title, Text } = Typography;
 
@@ -168,8 +169,7 @@ const Profile = () => {
       case "orderHistory":
         return (
           <div>
-            <Title level={3}>Order History</Title>
-            <p>View and reorder your favorite items.</p>
+            <OrderHistory />
           </div>
         );
 
