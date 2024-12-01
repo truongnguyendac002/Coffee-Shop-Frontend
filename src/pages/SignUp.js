@@ -74,7 +74,6 @@ const SignUp = () => {
             Cookies.set("token", accessToken);
             Cookies.set("refreshToken", refreshToken);
             fetchUserDetails();
-            console.log("auto login Successfully");
           }
         } else {
           toast.error(signUpResult.data, {

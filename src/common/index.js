@@ -146,6 +146,10 @@ const summaryApi = {
         url: `${backendDomain}/profile`,
         method: "GET",
     },
+    uploadAvatarProfile: {
+        url: `${backendDomain}/profile/avatar`,
+        method: "POST",
+    },
     getAllUsers: {
         url: `${backendDomain}/user/all`,
         method: "GET",

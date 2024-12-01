@@ -2,9 +2,13 @@ import Cookies from "js-cookie";
 
 const fetchWithAuth = async (url, options = {}, authRequired = true) => {
   const headers = {
-    "Content-Type": "application/json",
-    ...options.headers,
+    ...options.headers, // Giữ nguyên các headers khác nếu được truyền vào
   };
+
+  // Bỏ Content-Type nếu body là FormData
+  if (!(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (authRequired) {
     const token = Cookies.get("token"); 

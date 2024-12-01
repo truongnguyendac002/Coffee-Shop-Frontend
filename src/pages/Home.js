@@ -42,7 +42,6 @@ const Home = () => {
 
         if (dataResponse.data) {
           dispatch(setCartItems(dataResponse.data));
-          console.log("laays data thanh cong ");
         }
       } catch (error) {
         console.error("Error fetching cart items:", error);

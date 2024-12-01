@@ -47,7 +47,6 @@ const SignIn = () => {
       const loginResult = await loginResponse.json();
 
       if (loginResult.respCode === "000") {
-        console.log("loginResult", loginResult);
         navigate("/");
         message.success("Login Successfully !");
 

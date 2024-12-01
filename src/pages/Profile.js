@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Typography, List, Spin, Button } from "antd";
+import { Typography, List, Spin, Button } from "antd";
 import { UserOutlined, LoadingOutlined, EditOutlined } from "@ant-design/icons";
 import {
   FiHome,
@@ -17,49 +17,51 @@ import Wishlist from "../components/profile/wishlist";
 import Address from "../components/profile/address";
 import Info from "../components/profile/InforProfile";
 import OrderHistory from "../components/profile/orderHistory";
+import ProfileSection from "../components/profile/ProfileSection";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../store/userSlice";
 
 const { Title, Text } = Typography;
 
 const Profile = () => {
   const [loading, setLoading] = useState(false);
-  const [profileData, setProfileData] = useState(null);
   const [selectedMenu, setSelectedMenu] = useState("personalInfo");
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const user = useSelector((state) => state?.user?.user);
+  const dispatch = useDispatch();
+  console.log("user dispatch", user);
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     const response = await fetchWithAuth(summaryApi.getProfile.url, {
+  //       method: summaryApi.getProfile.method,
+  //     });
+  //     const profileRespData = await response.json();
+  //     if (profileRespData.respCode === "000") {
+  //       return profileRespData.data;
+  //     } else {
+  //       console.log(profileRespData);
+  //       return null;
+  //     }
+  //   };
 
-  console.log("profileData", profileData);
+  //   const loadProfileData = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const profileResponse = await fetchProfile();
+  //       if (profileResponse) {
+  //         dispatch(setUser(profileResponse));
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const response = await fetchWithAuth(summaryApi.getProfile.url, {
-        method: summaryApi.getProfile.method,
-      });
-      const profileRespData = await response.json();
-      if (profileRespData.respCode === "000") {
-        return profileRespData.data;
-      } else {
-        console.log(profileRespData);
-        return null;
-      }
-    };
+  //   loadProfileData();
+  // }, [dispatch]);
 
-    const loadProfileData = async () => {
-      setLoading(true);
-      try {
-        const profileResponse = await fetchProfile();
-        if (profileResponse) {
-          setProfileData(profileResponse);
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProfileData();
-  }, []);
-
-  if (loading || !profileData) {
+  if (loading || !user) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     return (
@@ -98,7 +100,8 @@ const Profile = () => {
     const respData = await fetchUpdateProfile(updatedData);
 
     if (respData) {
-      setProfileData(respData);
+      console.log("respData", respData);
+      dispatch(setUser(respData));
     }
   };
 
@@ -129,21 +132,21 @@ const Profile = () => {
                     <FiUser className="mr-4 text-xl" />
                     <div>
                       <Text className="block">Name</Text>
-                      <Text>{profileData.name}</Text>
+                      <Text>{user.name}</Text>
                     </div>
                   </div>
                   <div className="p-4 bg-gray-100 rounded-lg flex items-center">
                     <FiMail className="mr-4 text-xl" />
                     <div>
                       <Text className="block">Email Address</Text>
-                      <Text>{profileData.email}</Text>
+                      <Text>{user.email}</Text>
                     </div>
                   </div>
                   <div className="p-4 bg-gray-100 rounded-lg flex items-center">
                     <FiPhone className="mr-4 text-xl" />
                     <div>
                       <Text className="block">Phone number</Text>
-                      <Text>{profileData.phone}</Text>
+                      <Text>{user.phone}</Text>
                     </div>
                   </div>
 
@@ -205,18 +208,7 @@ const Profile = () => {
   return (
     <div className="container mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
       <aside className="lg:col-span-1 bg-white p-6 rounded-lg shadow-md">
-        <section className="text-center mb-8">
-          <Avatar
-            size={100}
-            src={profileData.profile_img !== null ? profileData.profile_img : null}
-            icon={<UserOutlined />}
-          />
-          <Title level={4} className="mt-4">
-            {profileData.name}
-          </Title>
-          <Text type="secondary">Registered: {profileData.created_at}</Text>
-        </section>
-
+        <ProfileSection  />
         <Title level={5}>Manage Account</Title>
         <List
           itemLayout="horizontal"
@@ -279,7 +271,7 @@ const Profile = () => {
       </section>
       <Info
         visible={isModalVisible}
-        data={profileData}
+        data={user}
         onClose={handleClose}
         onSave={handleSave}
       />
