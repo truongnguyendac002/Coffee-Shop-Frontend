@@ -37,9 +37,11 @@ function ForgotPassword() {
         navigate("/otp-auth");
         toast.success("OTP đã được gửi đến email của bạn!");
         
-      }if (forgotPassResult.respCode ==="104") {
+      }else if (forgotPassResult.respCode ==="104") {
         navigate("/otp-auth");
         toast.info("OTP has already been sent and is still valid.")
+      }else if (forgotPassResponse.status === 404) {
+        toast.error("Email sai hoặc chưa được đăng ký ")
       }
     } catch (error) {
       console.log("error", error);

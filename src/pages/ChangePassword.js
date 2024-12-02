@@ -21,8 +21,8 @@ function ChangePassword() {
     repeatPassword: "",
   });
 
-  const handleOnchange = (dataPass) => {
-    const { name, value } = dataPass;
+  const handleOnchange = (e) => {
+    const { name, value } = e.target;
 
     setData((pre) => {
       return {

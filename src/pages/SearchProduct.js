@@ -75,7 +75,7 @@ const SearchProduct = () => {
       <div className=" grid grid-cols-12 gap-x-10 ">
         <div className="col-span-3 mt-10 min-h-screen">
           <div className="sticky top-28 ">
-            <Filter  onFilter={handleFilterProducts} products={productList} onClickFilter={handleClickFilter} />
+            <Filter  onFilter={handleFilterProducts} products={products} onClickFilter={handleClickFilter} />
           </div>
         </div>
         
