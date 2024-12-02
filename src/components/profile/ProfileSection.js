@@ -53,7 +53,7 @@ const ProfileSection = () => {
                     showUploadList={false}
                     beforeUpload={(file) => {
                         handleUpload(file);
-                        return false; // Ngăn Ant Design tự động upload.
+                        return false; 
                     }}
                 >
                     <Button

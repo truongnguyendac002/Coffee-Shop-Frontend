@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Typography, List, Spin, Button } from "antd";
 import { UserOutlined, LoadingOutlined, EditOutlined } from "@ant-design/icons";
 import {
@@ -30,36 +30,7 @@ const Profile = () => {
   const user = useSelector((state) => state?.user?.user);
   const dispatch = useDispatch();
   console.log("user dispatch", user);
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     const response = await fetchWithAuth(summaryApi.getProfile.url, {
-  //       method: summaryApi.getProfile.method,
-  //     });
-  //     const profileRespData = await response.json();
-  //     if (profileRespData.respCode === "000") {
-  //       return profileRespData.data;
-  //     } else {
-  //       console.log(profileRespData);
-  //       return null;
-  //     }
-  //   };
 
-  //   const loadProfileData = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const profileResponse = await fetchProfile();
-  //       if (profileResponse) {
-  //         dispatch(setUser(profileResponse));
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   loadProfileData();
-  // }, [dispatch]);
 
   if (loading || !user) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;

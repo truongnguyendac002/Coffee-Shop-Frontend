@@ -198,7 +198,15 @@ const summaryApi = {
     getReviewByProductId : {
         url : `${backendDomain}/review/`,
         method : "GET"
-    }
+    },
+    uploadProductImage: {
+        url: `${backendDomain}/product/`,
+        method: "POST"
+    },
+    deleteProductImage: {
+        url: `${backendDomain}/product/image/`,
+        method: "DELETE"
+    },
 }
 
 export default summaryApi;

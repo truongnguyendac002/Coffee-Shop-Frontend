@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Table, Button, Form, Input, InputNumber, Select } from 'antd';
+import { Modal, Table, Button, Form, Input, InputNumber, Select, Upload, message } from 'antd';
 import fetchWithAuth from '../../../helps/fetchWithAuth';
 import summaryApi from '../../../common';
+import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 
 const AddItemModal = ({ visible, onClose, onSave, types, onAddType, editingItem }) => {
     const [form] = Form.useForm();
@@ -49,6 +50,9 @@ const AddItemModal = ({ visible, onClose, onSave, types, onAddType, editingItem 
             }
         }
     };
+
+
+
 
     return (
         <Modal
@@ -131,13 +135,14 @@ const AddItemModal = ({ visible, onClose, onSave, types, onAddType, editingItem 
 };
 
 
-const ProductItemsModal = ({ product, visible, onClose }) => {
+const ProductItemsModal = ({ product, setProduct, visible, onClose, setProductList, productList }) => {
     const [productItems, setProductItems] = useState([]);
     const [types, setTypes] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
 
+    console.log("product", product);
     useEffect(() => {
         const fetchProductItems = async () => {
             setLoading(true);
@@ -173,11 +178,68 @@ const ProductItemsModal = ({ product, visible, onClose }) => {
             }
         };
 
+
         if (product && visible) {
             fetchProductItems();
             fetchTypes();
         }
     }, [product, visible]);
+
+    const handleAddImage = async (file) => {
+        const fetchAddImage = async () => {
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                const response = await fetchWithAuth(
+                    summaryApi.uploadProductImage.url + product.id + "/image", {
+                    method: summaryApi.uploadProductImage.method,
+                    body: formData,
+                });
+                const data = await response.json();
+                if (data && data.respCode === '000') {
+                    const product = data.data;
+                    setProduct(product);
+                    const productListUpdate = productList.map((item) => {
+                        if (item.id === product.id) {
+                            return product;
+                        }
+                        return item;
+                    });
+                    setProductList(productListUpdate);
+                    message.success("Ảnh đã được thêm thành công.");
+                } else {
+                    console.error('Failed to upload image:', data || 'Unknown error');
+                }
+            } catch (error) {
+                console.error('Error uploading image:', error);
+            }
+        };
+        fetchAddImage();
+    };
+
+    const handleRemoveImage = async (id) => {
+        // Xử lý xóa ảnh
+        const fetchRemoveImage = async (id) => {
+            try {
+                const response = await fetchWithAuth(summaryApi.deleteProductImage.url + id, {
+                    method: summaryApi.deleteProductImage.method,
+                });
+                const data = await response.json();
+                if (data && data.respCode === '000') {
+                    const product = data.data;
+                    setProduct(product);
+                    console.log("product ressp data", product);
+                    message.success("Ảnh đã được xóa.");
+
+                } else {
+                    console.error('Failed to remove image:', data || 'Unknown error');
+                }
+            } catch (error) {
+                console.error('Error removing image:', error);
+            }
+        };
+        fetchRemoveImage(id);
+    };
 
     const handleAddNewItem = (newItem) => {
         const { price, stock, discount, type } = newItem;
@@ -232,7 +294,7 @@ const ProductItemsModal = ({ product, visible, onClose }) => {
                                 Discount: item.discount,
                                 TypeId: types.find((t) => t.name === item.type)?.id,
                                 ProductId: product.id,
-                             }),
+                            }),
                         }
                     );
                     const data = await response.json();
@@ -342,9 +404,45 @@ const ProductItemsModal = ({ product, visible, onClose }) => {
                     <Button key="add" type="primary" onClick={() => setIsAdding(true)}>
                         Thêm mới item
                     </Button>,
+
                 ]}
                 width={800}
             >
+                <>
+                    {/* Hiển thị danh sách ảnh */}
+                    <div className="mt-4 p-4 rounded-md">
+                        <div className="flex flex-wrap gap-4">
+                            {product?.images?.map((img) => (
+                                <div key={img.id} className="relative w-32 h-32">
+                                    <img
+                                        src={img.url}
+                                        alt="product"
+                                        className="w-full h-full object-cover rounded-md border"
+                                    />
+                                    <button
+                                        onClick={() => handleRemoveImage(img.id)}
+                                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                                    >
+                                        <CloseOutlined />
+                                    </button>
+                                </div>
+                            ))}
+                            {/* Nút thêm ảnh */}
+                            <Upload
+                                showUploadList={false}
+                                beforeUpload={(file) => {
+                                    handleAddImage(file);
+                                    return false;
+                                }}
+
+                            >
+                                <div className="w-32 h-32 flex items-center justify-center border-2 border-dashed rounded-md cursor-pointer">
+                                    <PlusOutlined className="text-gray-400" />
+                                </div>
+                            </Upload>
+                        </div>
+                    </div>
+                </>
                 <Table
                     rowKey="id"
                     dataSource={productItems}
@@ -352,6 +450,7 @@ const ProductItemsModal = ({ product, visible, onClose }) => {
                     loading={loading}
                     pagination={false}
                 />
+
             </Modal>
             <AddItemModal
                 visible={isAdding}
@@ -364,6 +463,8 @@ const ProductItemsModal = ({ product, visible, onClose }) => {
                 onAddType={handleAddType}
                 editingItem={editingItem}
             />
+
+
         </>
     );
 };

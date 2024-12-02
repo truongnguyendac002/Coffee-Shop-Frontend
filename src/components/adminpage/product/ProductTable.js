@@ -9,11 +9,12 @@ import {
     Modal,
     Form,
     Select,
+    Image
 } from 'antd';
 import Highlighter from 'react-highlight-words';
 import fetchWithAuth from '../../../helps/fetchWithAuth';
 import summaryApi from '../../../common';
-import ProductItemsModal from './ProductItemModal';
+import ProductItemModal from './ProductItemModal';
 
 const { Option } = Select;
 
@@ -31,9 +32,13 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
 
     const [form] = Form.useForm();
 
-    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(
+        
+    );
     const [isProductItemsModalVisible, setIsProductItemsModalVisible] = useState(false);
 
+    console.log("products able", products);
+    console.log("selectedProduct at table", selectedProduct);
     const showProductItemsModal = (product) => {
         setSelectedProduct(product);
         setIsProductItemsModalVisible(true);
@@ -246,6 +251,21 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
             ...getColumnSearchProps('id'),
         },
         {
+            title: 'Default Image',
+            key: 'productImage',
+            render: (_, record) => (
+                record.images && record.images.length > 0 ? (
+                    <Image
+                        src={record.images[0].url}  
+                        alt="Product"
+                        style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                    />
+                ) : (
+                    <span>No image</span>
+                )
+            ),
+        },
+        {
             title: 'Product Name',
             dataIndex: 'name',
             key: 'name',
@@ -275,6 +295,7 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
             key: 'action',
             render: (_, record) => (
                 <>
+                {console.log("record", record)}
                     <Button onClick={() => showProductItemsModal(record)}
                         className='mr-5 bg-green-500 hover:bg-green-300' type="primary">
                         View
@@ -310,10 +331,13 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
             <Table rowKey="id" columns={columns} dataSource={products} />
 
             {selectedProduct && (
-                <ProductItemsModal
+                <ProductItemModal
                     product={selectedProduct}
+                    setProduct={setSelectedProduct}
                     visible={isProductItemsModalVisible}
                     onClose={closeProductItemsModal}
+                    setProductList={setProducts}
+                    productList={products}
                 />
             )}
 
