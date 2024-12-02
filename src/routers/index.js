@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, ScrollRestoration } from "react-router-dom";
 import App from '../App'
 import Home from "../pages/Home";
 import Login from "../pages/Login";
@@ -19,12 +19,18 @@ import NotFound from "../pages/NotFound404";
 import SearchProduct from "../pages/SearchProduct";
 import OrderStatus from "../components/cart/OrderStatus";
 import CategoryPage from "../pages/CategoryPage";
+import OrdersContent from "../components/adminpage/order/OrdersContent";
 
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <App />,
+        element: (
+            <>
+             <ScrollRestoration />
+             <App />
+            </>
+        ),
         children: [
             {
                 path: "",
@@ -128,6 +134,9 @@ const router = createBrowserRouter([
                         element: (
                             <UsersContent />
                         ),
+                    },{
+                        path: "orders",
+                        element: <OrdersContent />
                     },
                     {
                         path: "*",

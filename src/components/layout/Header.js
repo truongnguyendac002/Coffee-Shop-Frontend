@@ -52,7 +52,7 @@ const Header = () => {
     if (searchTerm) {
       const query = encodeURIComponent(searchTerm);
       navigate(`/search?q=${query}`);
-      // setSearchTerm("");
+      setSearchTerm("");
     } else {
       navigate("/search");
     }
@@ -97,34 +97,7 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* nav */}
-
-          {/* <div className="hidden md:flex space-x-5">
-            <Link to="/">
-              <div className="relative">
-                <button className="text-gray-700 font-semibold  dark:text-white hover:underline">
-                  Trang chủ
-                </button>
-              </div>
-            </Link>
-            <div 
-
-            className="relative"
-            onMouseEnter={() => setshowCategoryMenu(true)}
-            onMouseLeave={() => setshowCategoryMenu(false)}
-            >
-              <button className="text-gray-700 font-semibold dark:text-white hover:underline">
-                Danh mục
-              </button>
-              {
-                showCategoryMenu && (
-                  <div className="absolute">
-                    <CategoryMenu/>
-                  </div>
-                )
-              }
-            </div>
-          </div> */}
+        
         </div>
         {/* search */}
         <div className="bg-white hidden w-full max-w-xs lg:flex items-center justify-between rounded-full border pl-2 focus-within:shadow">

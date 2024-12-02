@@ -37,7 +37,8 @@ const PasswordInput = ({
       setError(''); 
     }
   
-    return onChange(e.target); 
+    // return onChange(e.target); 
+    return onChange(e); 
   };
 
 

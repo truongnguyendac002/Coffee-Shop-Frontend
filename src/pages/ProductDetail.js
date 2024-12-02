@@ -59,9 +59,7 @@ const ProductDetail = () => {
     }
   }, [product, favorites]);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+
 
   useEffect(() => {
     const fetchProductItems = async () => {

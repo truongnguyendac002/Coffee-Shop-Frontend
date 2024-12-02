@@ -4,18 +4,17 @@ import { useState } from "react";
 import img_login from "../assets/img/img-login.png";
 import Logo from "../components/layout/Logo";
 
-import { FaEye } from "react-icons/fa";
-import { FaEyeSlash } from "react-icons/fa";
+
 import summaryApi from "../common";
 import Context from "../context";
 
 import Cookies from "js-cookie";
 
 import { toast } from "react-toastify";
+import PasswordInput from "../components/validateInputForm/PasswordInput";
 
 const SignUp = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const { fetchUserDetails } = useContext(Context);
@@ -83,8 +82,7 @@ const SignUp = () => {
       } catch (error) {
         console.log("Error SignUp", error);
       }
-    }
-    else {
+    } else {
       toast.error("Password and Confirm Password not match", {
         autoClose: 1000,
       });
@@ -124,7 +122,7 @@ const SignUp = () => {
             {/* email */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Email
+                Email <span className="text-red-500">*</span>
               </label>
               <input
                 required
@@ -137,59 +135,22 @@ const SignUp = () => {
               />
             </div>
 
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
+           
+            <PasswordInput
+              label={"Password"}
+              placeholder={"Enter password"}
+              name={"password"}
+              onChange={handleOnchange}
+            />
 
-              <div className=" relative flex items-center justify-center ">
-                <input
-                  required
-                  placeholder="Password"
-                  name="password"
-                  value={data.password}
-                  onChange={handleOnchange}
-                  type={showPassword ? "text" : "password"}
-                  className=" mt-1 block  w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
-                />
-                <div
-                  className="absolute right-4 top-4 cursor-pointer text-xl"
-                  onClick={() => setShowPassword((pre) => !pre)}
-                >
-                  <span>{showPassword ? <FaEye /> : <FaEyeSlash />}</span>
-                </div>
-              </div>
-            </div>
+            <PasswordInput
+              label={"Confirm Password"}
+              placeholder={"Enter confirmPassword"}
+              name={"confirmPassword"}
+              onChange={handleOnchange}
+            />
 
-            {/* confirmPassword */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Confirm Password
-              </label>
-
-              <div className=" relative flex items-center justify-center ">
-                <input
-                  required
-                  placeholder="Confirm Password"
-                  value={data.confirmPassword}
-                  name="confirmPassword"
-                  onChange={handleOnchange}
-                  type={showConfirmPassword ? "text" : "password"}
-                  className=" mt-1 block  w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
-                />
-                <div
-                  className="absolute right-4 top-4 cursor-pointer text-xl"
-                  onClick={() => setShowConfirmPassword((pre) => !pre)}
-                >
-                  <span>
-                    {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* button submit */}
+           
             <button
               type="submit"
               className="w-full py-2 px-4 bg-yellow-500 text-black font-semibold rounded-md shadow hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
@@ -198,7 +159,6 @@ const SignUp = () => {
             </button>
           </form>
 
-          {/* don't have an account */}
           <div className="flex items-center mt-5 space-x-3 justify-center">
             <span className=" text-center text-gray-500">
               You have an account yet?{" "}

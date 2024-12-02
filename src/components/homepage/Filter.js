@@ -45,7 +45,7 @@ const Filter = ({ onFilter, products ,onClickFilter }) => {
         product.price >= value[0] && product.price <= value[1];
       const matchesBrand = selectBrand
         ? product.brand.name === selectBrand
-        : false;
+        : true  ;
       return inPriceRange && matchesBrand;
     });
     console.log(" setFilteredProducts(filtered);" , filtered )

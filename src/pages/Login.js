@@ -77,7 +77,7 @@ const SignIn = () => {
 
       <div className="bg-white md:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          {/* Logo */}
+          
           <div className="flex justify-center  ">
             <Link to="/">
               <Logo />
@@ -134,21 +134,12 @@ const SignIn = () => {
             </div>
 
             {/*  */}
-            <div className="flex items-center justify-between">
-              <label className="inline-flex items-center text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  className="w-6 form-checkbox text-yellow-600 "
-                />
-                <span className="ml-2 font-medium text-gray-400 ">
-                  Stay signed in
-                </span>
-              </label>
-              {/* forgot password */}
+            <div className="text-right">
+              
               <div>
                 <Link to="/forgot-password">
                   <p className="text-sm text-blue-600 font-medium hover:underline">
-                    Recovery Password
+                    Forgot Password
                   </p>
                 </Link>
               </div>
