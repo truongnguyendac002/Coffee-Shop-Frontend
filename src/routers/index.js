@@ -19,6 +19,7 @@ import NotFound from "../pages/NotFound404";
 import SearchProduct from "../pages/SearchProduct";
 import OrderStatus from "../components/cart/OrderStatus";
 import CategoryPage from "../pages/CategoryPage";
+import OrdersContent from "../components/adminpage/order/OrdersContent";
 
 
 const router = createBrowserRouter([
@@ -128,6 +129,9 @@ const router = createBrowserRouter([
                         element: (
                             <UsersContent />
                         ),
+                    },{
+                        path: "orders",
+                        element: <OrdersContent />
                     },
                     {
                         path: "*",

@@ -5,7 +5,7 @@ import {
   MdTrendingUp,
   MdPermIdentity,
   MdStore,
-  MdAttachMoney,
+  // MdAttachMoney,
   MdBarChart,
   MdMailOutline,
   MdDynamicFeed,
@@ -13,6 +13,7 @@ import {
   MdWorkOutline,
   MdReport,
 } from "react-icons/md";
+import { LiaClipboardListSolid } from "react-icons/lia";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
@@ -54,16 +55,21 @@ const Sidebar = () => {
                 Users
               </li>
             </Link>
+
             <Link to="products" className="no-underline">
               <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
                 <MdStore className="mr-2 text-lg" />
                 Products
               </li>
             </Link>
-            <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
-              <MdAttachMoney className="mr-2 text-lg" />
-              Transactions
-            </li>
+
+            <Link to="orders">
+              <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
+                <LiaClipboardListSolid className="mr-2 text-lg" />
+                Đơn hàng
+              </li>
+            </Link>
+
             <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
               <MdBarChart className="mr-2 text-lg" />
               Reports

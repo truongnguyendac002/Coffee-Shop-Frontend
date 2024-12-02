@@ -194,6 +194,18 @@ const summaryApi = {
     getReviewByProductId : {
         url : `${backendDomain}/review/`,
         method : "GET"
+    },
+    getAllOrder : {
+        url : `${backendDomain}/order/get-all`,
+        method : "GET"
+    },
+    getOrderByStatus : {
+        url : `${backendDomain}/order/status/`,
+        method : "GET"
+    },
+    updateOrderStatus : {
+        url : `${backendDomain}/order/`,
+        method : "PUT"
     }
 }
 
