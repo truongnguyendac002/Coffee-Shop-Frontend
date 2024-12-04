@@ -31,11 +31,12 @@ const ListCategory = () => {
 
   return (
     <>
-      <div className="container w-full mx-auto mt-10 bg-white min-h-screen p-4 shadow-md rounded-md">
+      <div className="container  mx-auto mt-10 bg-white  md:p-4 p-2 shadow-md rounded-md">
         <div>
           <h2 className="font-bold text-base ">Danh mục</h2>
         </div>
-        <div className="mt-4 space-y-1">
+        <div className="mt-4 grid md:grid-cols-1 grid-cols-2 md:gap-2 lg:gap-4   ">
+
           {categories.map((category, index) => (
             <CategoryCard key={index} category={category} />
           ))}

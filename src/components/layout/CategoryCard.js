@@ -19,8 +19,8 @@ const CategoryCard = ({category}) => {
       {/* <img className="w-28 h-28 bg-white rounded-2xl object-cover" src={category.image} alt={"img category "} /> */}
       <img className="w-7 h-7 bg-white rounded-sm object-cover" src={image1} alt={"img category "} />
 
-      <div className=" px-4 py-2">
-        <div className=" font-medium text-sm ">{category.name}</div>
+      <div className=" lg:px-4 md:px-2 px-4 py-2">
+        <div className=" font-medium lg:text-base  text-sm ">{category.name}</div>
       </div>
     </div>
   );

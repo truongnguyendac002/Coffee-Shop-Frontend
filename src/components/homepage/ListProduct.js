@@ -64,15 +64,14 @@ const ListProduct = ({ products: initialProducts, title }) => {
     }
   }, [initialProducts]);
 
+  // console.log(products[0]);
   return (
     <div className="container bg-white shadow-md p-3 mx-auto mt-10 ">
       {title && (
-        <div className="grid grid-cols-2 items-center">
-          <div>
-            <h2 ref={titleRef} className="font-bold text-base ">
-              {`${title} ( ${productList.length} )`}
-            </h2>
-          </div>
+        <div>
+          <h2 ref={titleRef} className="font-bold text-base ">
+            {`${title} ( ${productList.length} )`}
+          </h2>
         </div>
       )}
 
@@ -81,7 +80,7 @@ const ListProduct = ({ products: initialProducts, title }) => {
           No results found
         </div>
       ) : (
-        <div className="grid grid-cols-4 gap-6 mt-5 ">
+        <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-2 lg:gap-6 md:gap-3 gap-2 mt-5 ">
           {currentProducts.map((product, index) => (
             <ProductCard product={product} key={index} />
           ))}
