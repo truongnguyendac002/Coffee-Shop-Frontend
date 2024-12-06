@@ -2,6 +2,19 @@
 const backendDomain = "http://localhost:8080/api";
 
 const summaryApi = {
+    getConversationOfUser: {
+        url: `${backendDomain}/conversation/user/`,
+        method: "GET"
+    },
+    getAllConversation: {
+        url: `${backendDomain}/conversation/all`,
+        method: "GET"
+    },
+    createConversation: {
+        url: `${backendDomain}/conversation/user`,
+        method: "POST"
+    },
+
     signUP: {
         url: `${backendDomain}/auth/register`,
         method: "POST"

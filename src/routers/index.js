@@ -20,6 +20,7 @@ import SearchProduct from "../pages/SearchProduct";
 import OrderStatus from "../components/cart/OrderStatus";
 import CategoryPage from "../pages/CategoryPage";
 import OrdersContent from "../components/adminpage/order/OrdersContent";
+import ChatContent from "../components/adminpage/message/ChatContent";
 
 
 const router = createBrowserRouter([
@@ -134,9 +135,14 @@ const router = createBrowserRouter([
                         element: (
                             <UsersContent />
                         ),
-                    },{
+                    },
+                    {
                         path: "orders",
                         element: <OrdersContent />
+                    },
+                    {
+                        path: "messages",
+                        element: <ChatContent />
                     },
                     {
                         path: "*",

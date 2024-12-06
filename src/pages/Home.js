@@ -14,6 +14,7 @@ import Cookies from "js-cookie";
 import BreadcrumbNav from "../components/layout/BreadcrumbNav";
 import { setCartItems } from "../store/cartSlice";
 import { selectFavorites, setFavorites } from "../store/favoritesSlice ";
+import ChatWidget from "../components/layout/ChatWidget";
 
 const Home = () => {
   const location = useLocation();
@@ -52,41 +53,41 @@ const Home = () => {
 
     if (user) {
       if (!Cookies.get("cart-item-list") && cartItems.length === 0) {
-        fetchCartItems(); 
+        fetchCartItems();
       }
     }
-  }, [user, dispatch , cartItems.length ]);
-  
+  }, [user, dispatch, cartItems.length]);
+
 
   useEffect(() => {
-    
-      const fetchFavorites = async () => {
-        try {
-          const response = await fetchWithAuth(
-            summaryApi.allFavorites.url + user.id,
-            {
-              method: summaryApi.allFavorites.method,
-            }
-          );
 
-          const dataResponse = await response.json();
-
-          if (dataResponse.data) {
-            dispatch(setFavorites(dataResponse.data));
-            console.log("setFavorites(dataResponse.data)", dataResponse.data);
+    const fetchFavorites = async () => {
+      try {
+        const response = await fetchWithAuth(
+          summaryApi.allFavorites.url + user.id,
+          {
+            method: summaryApi.allFavorites.method,
           }
-        } catch (error) {
-          console.log("error", error);
-        }
-      };
+        );
 
-      if (user) {
-        if (!localStorage.getItem('favorites') && favorites.length === 0) {
-          fetchFavorites(); 
+        const dataResponse = await response.json();
+
+        if (dataResponse.data) {
+          dispatch(setFavorites(dataResponse.data));
+          console.log("setFavorites(dataResponse.data)", dataResponse.data);
         }
+      } catch (error) {
+        console.log("error", error);
       }
-   
-  }, [user, dispatch , favorites.length]);
+    };
+
+    if (user) {
+      if (!localStorage.getItem('favorites') && favorites.length === 0) {
+        fetchFavorites();
+      }
+    }
+
+  }, [user, dispatch, favorites.length]);
 
   if (isCartLoading) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -124,6 +125,7 @@ const Home = () => {
           )}
           <section className=" mb-8">
             <Outlet />
+            <ChatWidget />
           </section>
         </main>
         <Footer />
