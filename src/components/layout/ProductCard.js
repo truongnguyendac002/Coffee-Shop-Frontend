@@ -9,11 +9,8 @@ const ProductCard = ({ product }) => {
   };
   return (
     <>
-      <div
-        className="min-h-80 bg-white rounded border p-3 overflow-hidden shadow-lg"
-        // onClick={handleCardClick}
-      >
-        <div className="border-b ">
+      <div className="min-h-80 bg-white rounded border p-3 overflow-hidden shadow-lg">
+        <div className="border-b cursor-pointer" onClick={handleCardClick}>
           {product?.images?.[0]?.url ? (
             <img
               className="w-full rounded object-cover h-36 md:h-40"
@@ -28,27 +25,27 @@ const ProductCard = ({ product }) => {
         </div>
         <div className="mt-3">
           <div className="font-medium text-lg ">{product.name}</div>
-          {/* <p className="text-gray-400  font-normal mt-1">
+          <p className="text-gray-400  font-normal mt-1">
             {product.brand.name}
-          </p> */}
+          </p>
 
-          <div className="flex flex-col items-start justify-between ">
-            <span className="flex  items-center ">
-              {product.rating}
-              <FaStar className="text-yellow-500 mx-1" />
-              <span className="text-gray-400  font-normal ">
-                ( {product.totalReview} review ){" "}
-              </span>
-            </span>
-
+          <div className="flex items-start justify-between mt-2 ">
             <span className="text-base font-medium text-red-500 mt-1">
               {/* {product.minPrice}đ */}
               120000 đ
             </span>
+
+            <span className="flex  items-center ">
+              {product.rating}
+              <FaStar className="text-yellow-500 mx-1" />
+              {/* <span className="text-gray-400  font-normal ">
+                ( {product.totalReview} review ){" "}
+              </span> */}
+            </span>
           </div>
           <div className="flex items-center justify-between mt-4">
             <div
-              className="py-2 px-7 w-full text-center bg-gradient-to-r from-orange-400 to-red-400 text-white rounded-full hover:cursor-pointer"
+              className="py-2 px-7 w-full text-center bg-gradient-to-r from-orange-400 to-red-400 text-white rounded-full cursor-pointer hover:scale-105 transition-transform duration-300 "
               onClick={handleCardClick}
             >
               <button>Xem chi tiết</button>

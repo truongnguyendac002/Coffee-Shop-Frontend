@@ -6,21 +6,30 @@ function EmailInput({ onEmailChange }) {
   const [error, setError] = useState("");
 
   const validateEmail = (value) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^(([^<>()[\],;:\s@"]+(\.[^<>()[\],;:\s@"]+)*)|(".+"))@(([^<>()[\],;:\s@"]+\.)+[^<>()[\],;:\s@"]{2,})$/i;
     return emailRegex.test(value);
   };
 
+  const handleBlur = () => {
+    if(!validateEmail(email)) {
+      setError("Email không hợp lệ")
+    }else {
+      setError(false);
+    }
+  }
+
+  // const handleChange = (e) => {
+  //   const value = e.target.value;
+  //   setEmail(value);
+  //   setError(false);
+  //   return onEmailChange(value);
+  // };
+
   const handleChange = (e) => {
     const value = e.target.value;
-
     setEmail(value);
-
-    if (!validateEmail(value)) {
-      setError("Email is not in correct format");
-    } else {
-      setError("");
-    }
-    return onEmailChange(value);
+    setError(false);
+    return onEmailChange(e);
   };
 
   return (
@@ -28,9 +37,11 @@ function EmailInput({ onEmailChange }) {
       <InPutForm
         label="Email"
         type="email"
+        name="email"
         placeholder="Enter your email"
         value={email}
         onChange={handleChange}
+        onBlur={handleBlur}
         error={error}
         required
       />

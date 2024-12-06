@@ -8,6 +8,7 @@ const InPutForm = ({
   name,
   value,
   onChange,
+  onBlur,
   error = "",
   required = false,
   showEye =false 
@@ -34,6 +35,7 @@ const InPutForm = ({
           value={value}
           name={name}
           onChange={onChange}
+          onBlur={onBlur}
           className={`w-full px-4 py-2 border rounded-md focus:outline-none 
                 ${
                   error

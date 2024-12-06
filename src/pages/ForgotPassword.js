@@ -13,8 +13,10 @@ function ForgotPassword() {
   const email = useSelector((state) => state.forgotPassword.email);
   const navigate = useNavigate();
 
-  const handleEmailChange = (newEmail) => {
-    dispatch(setEmail(newEmail))
+
+
+  const handleEmailChange = (e) => {
+    dispatch(setEmail(e.target.value))
   };
 
   const handleSubmit = async (e) => {

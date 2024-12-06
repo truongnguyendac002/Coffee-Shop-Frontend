@@ -35,7 +35,7 @@ const ListCategory = () => {
         <div>
           <h2 className="font-bold text-base ">Danh mục</h2>
         </div>
-        <div className="mt-4 grid md:grid-cols-1 grid-cols-2 md:gap-2 lg:gap-4   ">
+        <div className="mt-4 grid md:grid-cols-1 grid-cols-2 gap-1 lg:gap-2   ">
 
           {categories.map((category, index) => (
             <CategoryCard key={index} category={category} />

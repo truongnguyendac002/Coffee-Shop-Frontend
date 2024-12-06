@@ -23,6 +23,7 @@ function ChangePassword() {
 
   const handleOnchange = (e) => {
     const { name, value } = e.target;
+    setError(false);
 
     setData((pre) => {
       return {
@@ -105,10 +106,10 @@ function ChangePassword() {
 
           <ul className="mb-6 text-sm text-gray-500 list-disc list-inside">
             <li className="marker:text-red-500 ">
-              Must be at least 8 characters
+            Mật khẩu phải có ít nhất 8 ký tự 
             </li>
             <li className="marker:text-red-500 ">
-              Must contain one special character
+            1 ký tự đặc biệt
             </li>
           </ul>
 
