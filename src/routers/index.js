@@ -20,6 +20,7 @@ import SearchProduct from "../pages/SearchProduct";
 import OrderStatus from "../components/cart/OrderStatus";
 import CategoryPage from "../pages/CategoryPage";
 import OrdersContent from "../components/adminpage/order/OrdersContent";
+import Statistics from "../components/adminpage/statistic/Statistics";
 
 
 const router = createBrowserRouter([
@@ -137,6 +138,10 @@ const router = createBrowserRouter([
                     },{
                         path: "orders",
                         element: <OrdersContent />
+                    },
+                    {
+                        path: "statistics",
+                        element: <Statistics />,
                     },
                     {
                         path: "*",
