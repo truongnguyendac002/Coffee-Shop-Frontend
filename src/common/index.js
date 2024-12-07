@@ -231,6 +231,22 @@ const summaryApi = {
     updateOrderStatus : {
         url : `${backendDomain}/order/`,
         method : "PUT"
+    },
+    getTop5MonthlySellingProduct : {
+        url : `${backendDomain}/statistic/product/monthly`,
+        method : "GET"
+    },
+    getTop5BestSellingProduct : {
+        url : `${backendDomain}/statistic/product`,
+        method : "GET"
+    },
+    getTop5MonthlyUsers : {
+        url : `${backendDomain}/statistic/user/monthly`,
+        method : "GET"
+    },
+    getUsersStatistic : {
+        url : `${backendDomain}/statistic/user`,
+        method : "GET"
     }
 }
 

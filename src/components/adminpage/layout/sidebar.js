@@ -69,11 +69,12 @@ const Sidebar = () => {
                 Đơn hàng
               </li>
             </Link>
-
-            <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
-              <MdBarChart className="mr-2 text-lg" />
-              Reports
-            </li>
+            <Link to="statistics" className="no-underline">
+              <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
+                <MdBarChart className="mr-2 text-lg" />
+                Thống kê
+              </li>
+            </Link>
           </ul>
         </div>
 

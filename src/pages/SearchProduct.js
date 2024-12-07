@@ -72,21 +72,21 @@ const SearchProduct = () => {
       {loading && <p className="text-lg text-center">Loading ...</p>}
 
 
-      <div className=" grid grid-cols-12 gap-x-10 ">
-        <div className="col-span-3 mt-10 min-h-screen">
+      <div className="grid grid-cols-12 lg:gap-x-10 gap-x-3">
+        <div className="lg:col-span-3 md:col-span-4 col-span-12 mt-10 sm:min-h-screen">
           <div className="sticky top-28 ">
             <Filter  onFilter={handleFilterProducts} products={products} onClickFilter={handleClickFilter} />
           </div>
         </div>
         
          {((filteredProducts.length === 0 && onClickFilter) || productList.length === 0 ) ? (
-          <div className="col-start-4 col-span-9 bg-white shadow-md mt-10 ">
+          <div className="lg:col-start-4 lg:col-span-9 md:col-start-5 md:col-span-8 bg-white shadow-md mt-10 ">
             <p className="text-center text-lg font-bold text-gray-500 ">
               No results found
             </p>
           </div>
         ) : (
-          <div className="col-start-4 col-span-9">
+          <div className="lg:col-start-4 lg:col-span-9 md:col-start-5 md:col-span-8  col-span-12">
             {showList && (
               <ListProduct products={productList} title={title} />
             )}

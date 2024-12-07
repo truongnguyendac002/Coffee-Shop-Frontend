@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import fetchWithAuth from "../../helps/fetchWithAuth";
 import summaryApi from "../../common";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 const OrderStatus = () => {
   const location = useLocation();
@@ -66,6 +67,8 @@ const OrderStatus = () => {
       }
     }
     localStorage.removeItem("order");
+    Cookies.remove("cart-item-list");
+
   };
 
   useEffect(() => {

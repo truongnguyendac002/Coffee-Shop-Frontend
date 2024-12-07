@@ -7,10 +7,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa6";
 import { FaChevronRight } from "react-icons/fa6";
 
-import image1 from "../assets/img/img1.jpg";
-import image2 from "../assets/img/img2.png";
-import image3 from "../assets/img/image3.jpg";
-import image4 from "../assets/img/image4.jpg";
+import image1 from "../assets/img/empty.jpg";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart, toggleSelected } from "../store/cartSlice";
 import fetchWithAuth from "../helps/fetchWithAuth";
@@ -23,12 +20,11 @@ import {
 } from "../store/favoritesSlice ";
 import ListReview from "../components/layout/ListReview";
 
-const images = [image1, image2, image3, image4];
+
 
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState({});
-  const [currentImage, setCurrentImage] = useState(0);
   const [productItems, setProductItems] = useState([]);
   const [itemStock, setItemStock] = useState(null);
   const [clickButtonSize, setClickButtonSize] = useState(null);
@@ -38,6 +34,9 @@ const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("Description");
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [images, setImages] = useState([]);
+  const [currentImage, setCurrentImage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const user = useSelector((store) => store?.user?.user);
   const favorites = useSelector(selectFavorites);
@@ -47,19 +46,17 @@ const ProductDetail = () => {
 
   const maxQuantity = itemStock;
   const tabs = ["Description", "Review", "Similar"];
-  
-  const [isFavorite, setIsFavorite] = useState(false); 
+
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     if (product) {
       const isProductFavorite = favorites.some(
         (item) => item.product && item.product.id === product.id
       );
-      setIsFavorite(isProductFavorite); 
+      setIsFavorite(isProductFavorite);
     }
   }, [product, favorites]);
-
-
 
   useEffect(() => {
     const fetchProductItems = async () => {
@@ -74,7 +71,6 @@ const ProductDetail = () => {
         if (result.respCode === "000") {
           setProductItems(result.data);
           if (result.data.length > 0) {
-            setProduct(result.data[0].product);
             setProductItemPrice(result.data[0].price);
           }
         } else {
@@ -86,6 +82,34 @@ const ProductDetail = () => {
     };
 
     fetchProductItems();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(summaryApi.productDetails.url + `${id}`, {
+          method: summaryApi.productDetails.method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const result = await response.json();
+        if (result.respCode === "000") {
+          setProduct(result.data);
+          setImages(result.data.images);
+          setCurrentImage(0);
+        } else {
+          console.log("Error:", result.respDesc);
+        }
+      } catch (error) {
+        console.log("Error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProduct();
   }, [id]);
 
   const handlePrevClick = () => {
@@ -225,24 +249,24 @@ const ProductDetail = () => {
       case "Description":
         return (
           <>
-            <h2 className="text-xl font-bold mt-10">Chi tiết sản phẩm</h2>
-            <div className="container mx-auto mt-8">
+            <h2 className="text-xl font-bold lg:mt-10 mt-6 ">Chi tiết sản phẩm</h2>
+            <div className="container mx-auto lg:mt-8 mt-4">
               <div className="bg-white shadow-lg rounded-lg p-6">
                 <ul>
                   <li className="flex justify-start border-b py-2">
-                    <span className="font-semibold w-1/4">Thương hiệu:</span>
+                    <span className="font-semibold md:w-1/4 w-1/3">Thương hiệu:</span>
                     <span>{product.brand.name}</span>
                   </li>
                   <li className="flex justify-start border-b py-2">
-                    <span className="font-semibold w-1/4">Xuất xứ:</span>
+                    <span className="font-semibold md:w-1/4 w-1/3">Xuất xứ:</span>
                     <span>Việt Nam </span>
                   </li>
                   <li className="flex justify-start border-b py-2">
-                    <span className="font-semibold w-1/4">Loại thực phẩm:</span>
+                    <span className="font-semibold md:w-1/4 w-1/3">Loại thực phẩm:</span>
                     <span>Đồ uống </span>
                   </li>
                   <li className="flex justify-start border-b py-2">
-                    <span className="font-semibold w-1/4">Loại Cafe:</span>
+                    <span className="font-semibold md:w-1/4 w-1/3">Loại Cafe:</span>
                     <span>{product.category.name}</span>
                   </li>
                 </ul>
@@ -257,7 +281,7 @@ const ProductDetail = () => {
           </>
         );
       case "Review":
-        return <ListReview productId={product.id}/>;
+        return <ListReview productId={product.id} />;
       case "Similar":
         return <p>Similar products content goes here.</p>;
       default:
@@ -267,62 +291,65 @@ const ProductDetail = () => {
 
   return (
     <div className="container mx-auto mt-10">
-      <div className="shadow-lg rounded-lg overflow-hidden flex flex-col lg:flex-row">
-        {/* Product Image */}
-        <div className="p-8 w-full sm:w-2/5 bg-white flex flex-col items-center">
-          <img
-            className="w-full h-auto lg:w-[450px] lg:h-[400px] object-cover"
-            src={images[currentImage]}
-            alt="Main product"
-          />
-          {/* Thumbnails */}
-          <div className="mt-8 relative max-w-full w-full">
-            <div className="grid grid-cols-4 grid-rows-1 gap-4">
-              {images.map((image, index) => (
-                <img
-                  key={index}
-                  className={`w-full h-24 object-cover rounded-lg shadow-md cursor-pointer ${
-                    index === currentImage ? "border-2 border-red-500" : ""
-                  }`}
-                  src={image}
-                  alt={`Product ${index + 1}`}
-                  onClick={() => setCurrentImage(index)}
-                />
-              ))}
-            </div>
+      <div className="shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row ">
+        {!isLoading && (
+          <div className="p-8 md:w-2/5 w-full  bg-white flex flex-col items-center">
+            <img
+              className=" md:w-[300px] md:h-[300px] lg:w-[400px] lg:h-[400px] w-60 h-60 rounded-md object-cover"
+              src={images.length > 0 ? images[currentImage].url : image1}
+              alt="Main product"
+            />
+            
+            <div className="mt-8 relative max-w-full w-full">
+              <div className="grid grid-cols-4 grid-rows-1 gap-1">
+                {(images.length > 0
+                  ? images
+                  : Array(4).fill({ url: image1 })
+                ).map((image, index) => (
+                  <img
+                    key={index}
+                    className={`w-16 h-16  lg:h-24 lg:w-24  object-cover rounded-lg shadow-md cursor-pointer ${
+                      index === currentImage ? "border-2 border-red-500" : ""
+                    }`}
+                    src={image.url}
+                    alt={`Product ${index + 1}`}
+                    onClick={() => setCurrentImage(index)}
+                  />
+                ))}
+              </div>
 
-            {/* Navigation Buttons */}
-            <button
-              onClick={handlePrevClick}
-              className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-100 text-gray-800 pr-2 py-2 shadow-md focus:outline-none"
-            >
-              <FaChevronLeft />
-            </button>
-            <button
-              onClick={handleNextClick}
-              className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-100 text-gray-800 pr-2 py-2 shadow-md focus:outline-none"
-            >
-              <FaChevronRight />
-            </button>
+              <button
+                onClick={handlePrevClick}
+                className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-50 text-gray-800 pr-2 py-2 shadow-md focus:outline-none"
+              >
+                <FaChevronLeft />
+              </button>
+              <button
+                onClick={handleNextClick}
+                className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-50  text-gray-800 pr-2 py-2 shadow-md focus:outline-none"
+              >
+                <FaChevronRight />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Product Details */}
-        <div className="bg-gray-100 w-full lg:w-3/5 xl:w-1/2 p-8 lg:p-16 flex flex-col justify-between">
+        <div className="bg-gray-100 md:w-3/5 w-full p-8  flex flex-col justify-between">
           <div>
-            <h2 className="text-2xl font-bold">{product.name}</h2>
-            <div className="flex items-center mt-8">
+            <h2 className="lg:text-2xl md:text-xl text-lg font-bold">{product.name}</h2>
+            <div className="flex items-center lg:mt-8 mt-5">
               <div className="flex text-yellow-500">
-                <FaStar  />
+                <FaStar />
               </div>
               <span className="ml-2 text-gray-700">4.6</span>
               <span className="ml-2 text-gray-700">(1100 reviews)</span>
             </div>
 
             {/* discount */}
-            <div className="mt-8 flex items-baseline justify-start space-x-10">
-              <div className="w-1/6">
-                <h2 className="text-xl">Discount</h2>
+            <div className="lg:mt-8 mt-5 flex items-baseline justify-start space-x-10">
+              <div className="lg:w-1/6 w-1/5">
+                <h2 className="lg:text-xl md:text-lg text-base">Discount</h2>
               </div>
               <div className="flex gap-x-4 gap-y-3 flex-wrap">
                 {selectedDiscount > 0 ? (
@@ -340,9 +367,9 @@ const ProductDetail = () => {
             </div>
 
             {/* size */}
-            <div className="mt-8 flex items-baseline justify-start space-x-10">
-              <div className="w-1/6">
-                <h2 className="text-xl">Size</h2>
+            <div className="lg:mt-8 mt-5 flex items-baseline justify-start space-x-10">
+              <div className="lg:w-1/6  w-1/5">
+                <h2 className="lg:text-xl md:text-lg text-base">Size</h2>
               </div>
               <div className="flex gap-x-4 gap-y-3 flex-wrap">
                 {productItems.map((item, index) => (
@@ -362,14 +389,14 @@ const ProductDetail = () => {
             </div>
 
             {/* quantity */}
-            <div className="mt-8 flex items-baseline justify-start space-x-10">
-              <div className="w-1/6">
-                <h2 className="text-xl">Số lượng</h2>
+            <div className="lg:mt-8 mt-5 flex items-baseline justify-start lg:space-x-10 md:space-x-6 sm:space-x-4 space-x-4 " >
+              <div className="lg:w-1/6 w-1/5 ">
+                <h2 className="lg:text-xl md:text-lg text-base">Số lượng</h2>
               </div>
               <div className="flex items-center">
                 <button
                   onClick={decrement}
-                  className="px-4 py-1 text-gray-800 rounded-l focus:outline-none border border-solid"
+                  className="px-2 py-1 text-gray-800 rounded-l focus:outline-none border border-solid"
                 >
                   -
                 </button>
@@ -381,11 +408,11 @@ const ProductDetail = () => {
                       Math.max(1, Math.min(maxQuantity, e.target.value))
                     )
                   }
-                  className="w-20 px-4 py-1 text-center border-t border-b border-gray-300 focus:outline-none"
+                  className="lg:w-20 px-2 md:w-14 w-16 py-1 text-center border-t border-b border-gray-300 focus:outline-none"
                 />
                 <button
                   onClick={increment}
-                  className="px-4 py-1 text-gray-800 rounded-r focus:outline-none border border-solid"
+                  className="px-2 py-1 text-gray-800 rounded-r focus:outline-none border border-solid"
                 >
                   +
                 </button>
@@ -404,9 +431,9 @@ const ProductDetail = () => {
             </div>
 
             {/* price item */}
-            <div className="mt-8 flex items-baseline justify-start space-x-10">
-              <div className="w-1/6">
-                <h2 className="text-xl">Giá</h2>
+            <div className="lg:mt-8 mt-5 flex items-baseline justify-start space-x-10">
+              <div className="lg:w-1/6 w-1/5">
+                <h2 className="lg:text-xl md:text-lg text-base">Giá</h2>
               </div>
               <div className="flex gap-x-4 gap-y-3 flex-wrap">
                 <p className="font-semibold text-red-500 text-2xl">
@@ -415,45 +442,44 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            <div className="flex mt-8  flex-col">
+            <div className="flex lg:mt-8 lg:w-5/6  flex-col mt-5  ">
               {error && <div className="text-red-500 ">{error}</div>}
-              <div className="flex space-x-5 mt-8">
+              <div className="flex md:space-x-5 space-x-2 ">
                 <button
                   onClick={handleAddToCart}
-                  className="grow flex items-center justify-center px-4 py-2 bg-red-100 border border-red-500 text-red-500 hover:bg-white"
+                  className="grow flex items-center justify-center md:px-4 py-2 bg-red-100 border border-red-500 text-red-500 hover:bg-white"
                 >
-                  <FaShoppingCart className="mr-2" /> Thêm Vào Giỏ Hàng
+                  <FaShoppingCart className=" md:text-lg text-sm mr-2" /> Thêm Vào Giỏ Hàng
                 </button>
 
                 <button
                   onClick={handleBuyNow}
-                  className="grow px-4 py-2 bg-red-500 text-white hover:bg-red-600"
+                  className="grow md:px-4  py-2 bg-red-500 text-white hover:bg-red-600"
                 >
                   Mua Ngay
                 </button>
-                {
-                  !isFavorite ? (<button
+                {!isFavorite ? (
+                  <button
                     onClick={handleClickFavorites}
                     className={`text-gray-500 hover:text-red-500 w-9`}
                   >
                     <FaRegHeart style={{ width: "32px", height: "32px" }} />
                   </button>
-                  ) : (<button
+                ) : (
+                  <button
                     onClick={handleClickFavorites}
                     className={`text-red-500  w-9 `}
                   >
                     <FaHeart style={{ width: "32px", height: "32px" }} />
-                  </button>)
-
-                }
-                
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="w-full mt-10">
+      <div className="w-full lg:mt-10 mt-6">
         <div className="flex border-b border-gray-300">
           {tabs.map((tab) => (
             <button

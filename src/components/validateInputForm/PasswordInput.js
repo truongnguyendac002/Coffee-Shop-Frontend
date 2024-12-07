@@ -12,17 +12,17 @@ const PasswordInput = ({
   const [error, setError] = useState('');
   const [data, setData] = useState('');
 
-  const validatePassword = (data) => {
-    const minLength = 8;
-    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/g; 
+  const handleBlur = () => {
+    if(!validatePassword(data)) {
+      setError("Mật khẩu phải có ít nhất 8 ký tự , 1 ký tự đặc biệt ")
+    }else {
+      setError(false);
+    }
+  }
 
-    if (data.length < minLength) {
-      return 'Mật khẩu phải có ít nhất 8 ký tự.';
-    }
-    if (!specialCharRegex.test(data)) {
-      return 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt.';
-    }
-    return '';
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.{8,})/; 
+    return regex.test(password);
   };
 
   const handleChange = (e) => {
@@ -30,12 +30,13 @@ const PasswordInput = ({
 
     setData(value);
   
-    const validationError = validatePassword(value);
-    if (validationError) {
-      setError(validationError); 
-    } else {
-      setError(''); 
-    }
+    // const validationError = validatePassword(value);
+    // if (validationError) {
+    //   setError(validationError); 
+    // } else {
+    //   setError(''); 
+    // }
+    setError(false);
   
     // return onChange(e.target); 
     return onChange(e); 
@@ -50,6 +51,7 @@ const PasswordInput = ({
         placeholder={placeholder}
         name={name}
         value={data}
+        onBlur={handleBlur}
         onChange={handleChange}
         error={error}
         required
