@@ -15,6 +15,8 @@ const ChatWidget = () => {
   const [message, setMessage] = useState("");
   const user = useSelector((state) => state?.user?.user);
   const stompClient = useRef(null);
+  const messagesEndRef = useRef(null);
+
   console.log("conversation:", conversation);
   useEffect(() => {
     if (!user) {
@@ -71,8 +73,6 @@ const ChatWidget = () => {
             const response = JSON.parse(data.body);
             if (response.respCode === "000") {
               const conv = response.data;
-              stompClient.current.send(`/app/chat/admin`, {}, JSON.stringify(conv));
-
               console.log("Received conversation:", conv);
               setConversation(conv);
             }
@@ -81,13 +81,19 @@ const ChatWidget = () => {
         (error) => console.error("WebSocket connection error:", error)
       );
     }
-
     return () => {
       if (stompClient.current) {
         stompClient.current.disconnect();
       }
     };
   }, [conversation, isChatOpen, user]);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [conversation]); // Mỗi khi conversation thay đổi (có tin nhắn mới)
+
 
   const handleSendMessage = () => {
     if (message.trim() && stompClient.current) {
@@ -139,6 +145,8 @@ const ChatWidget = () => {
                 }
               </p>
             ))}
+            <div ref={messagesEndRef} />
+
           </div>
           <Input.TextArea
             value={message}

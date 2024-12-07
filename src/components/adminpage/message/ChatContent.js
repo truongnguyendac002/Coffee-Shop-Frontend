@@ -16,6 +16,7 @@ const ChatContent = () => {
   const [newMessage, setNewMessage] = useState("");
   const [conversationList, setConversationList] = useState([]);
   const stompClient = useRef(null);
+  const messagesEndRef = useRef(null);  
 
   const user = useSelector((state) => state?.user?.user);
 
@@ -52,20 +53,25 @@ const ChatContent = () => {
       {},
       () => {
         setLoading(false);
-        stompClient.current.subscribe(`/topic/admin`, (data) => {
+        stompClient.current.subscribe("/topic/admin", (data) => {
           const response = JSON.parse(data.body);
-          const conv = response;
-          setConversationList((prev) => {
-            const index = prev.findIndex((c) => c.id === conv.id);
-            if (index === -1) {
-              return [...prev, conv];
-            }
-            return [
-              ...prev.slice(0, index),
-              conv,
-              ...prev.slice(index + 1),
-            ];
-          });
+          if (response.respCode === "000") {
+            const conv = response.data;
+            console.log(conv);
+            setConversationList((prev) => {
+              const index = prev.findIndex((c) => c.id === conv.id);
+              if (index === -1) {
+                return [...prev, conv];
+              }
+              return [
+                ...prev.slice(0, index),
+                conv,
+                ...prev.slice(index + 1),
+              ];
+            });
+          } else {
+            console.error("Error fetching conversation list:", response);
+          }
         });
       },
       (error) => console.error("WebSocket connection error:", error)
@@ -76,7 +82,7 @@ const ChatContent = () => {
         stompClient.current.disconnect();
       }
     };
-  }, [selectedConversationId]);
+  }, []);
 
   const handleSendMessage = (conversationId) => {
     if (newMessage.trim() && selectedConversationId && stompClient.current) {
@@ -90,10 +96,16 @@ const ChatContent = () => {
         {},
         JSON.stringify(chatMessage)
       );
-
       setNewMessage("");
     }
   };
+
+  // Hook để cuộn tới cuối mỗi khi tin nhắn mới được thêm vào
+  useEffect(() => {
+    if (messagesEndRef?.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [conversationList]); 
 
   if (loading || !user) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -159,6 +171,8 @@ const ChatContent = () => {
               <p>No conversation selected</p>
             </div>
           )}
+          {/* Đoạn cuộn xuống cuối */}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Thanh nhập tin nhắn */}
@@ -182,7 +196,6 @@ const ChatContent = () => {
         )}
       </div>
     </div>
-
   );
 };
 
