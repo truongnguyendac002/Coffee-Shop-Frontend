@@ -6,12 +6,12 @@ const AdminHome = () => {
     return (
         <>
             <Topbar />
-            <div className="flex">
+            <div className="flex ">
                 <div className="w-1/6">
                     <Sidebar />
                 </div>
 
-                <div className="w-5/6 p-5 bg-white">
+                <div className="w-5/6 pt-5 pl-5 bg-white">
                     <Outlet />
                 </div>
             </div>

@@ -2,7 +2,7 @@ import React from "react";
 import {
   MdLineStyle,
   MdTimeline,
-  MdTrendingUp,
+  // MdTrendingUp,
   MdPermIdentity,
   MdStore,
   // MdAttachMoney,
@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
-    <div className="flex-1  bg-white shadow-md shadow-gray-400 sticky ">
+    <div className="flex-1  bg-white shadow-md h-[calc(100vh-60px)] shadow-gray-400 sticky ">
       <div className="p-5 text-gray-600">
         {/* Dashboard Menu */}
         <div className="mb-3">
@@ -30,18 +30,18 @@ const Sidebar = () => {
                 Home
               </li>
             </Link>
-            <Link to="analytics" className="no-underline">
+            {/* <Link to="analytics" className="no-underline">
               <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
                 <MdTimeline className="mr-2 text-lg" />
                 Analytics
               </li>
-            </Link>
-            <Link to="sales" className="no-underline">
+            </Link> */}
+            {/* <Link to="sales" className="no-underline">
               <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
                 <MdTrendingUp className="mr-2 text-lg" />
                 Sales
               </li>
-            </Link>
+            </Link> */}
           </ul>
         </div>
 
@@ -69,11 +69,12 @@ const Sidebar = () => {
                 Đơn hàng
               </li>
             </Link>
-
-            <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
-              <MdBarChart className="mr-2 text-lg" />
-              Reports
-            </li>
+            <Link to="statistics" className="no-underline">
+              <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
+                <MdBarChart className="mr-2 text-lg" />
+                Thống kê
+              </li>
+            </Link>
           </ul>
         </div>
 
@@ -89,10 +90,12 @@ const Sidebar = () => {
               <MdDynamicFeed className="mr-2 text-lg" />
               Feedback
             </li>
-            <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
-              <MdChatBubbleOutline className="mr-2 text-lg" />
-              Messages
-            </li>
+            <Link to="messages">
+              <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
+                <MdChatBubbleOutline className="mr-2 text-lg" />
+                Messages
+              </li>
+            </Link>
           </ul>
         </div>
 

@@ -14,6 +14,7 @@ import Cookies from "js-cookie";
 import BreadcrumbNav from "../components/layout/BreadcrumbNav";
 import { setCartItems } from "../store/cartSlice";
 import { selectFavorites, setFavorites } from "../store/favoritesSlice ";
+import ChatWidget from "../components/layout/ChatWidget";
 
 const Home = () => {
   const location = useLocation();
@@ -121,6 +122,7 @@ const Home = () => {
           )}
           <section className=" mb-8">
             <Outlet />
+            <ChatWidget />
           </section>
         </main>
         <Footer />

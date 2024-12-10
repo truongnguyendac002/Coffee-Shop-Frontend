@@ -25,7 +25,7 @@ const Header = () => {
   const loading = useSelector((state) => state.user.loading);
   const [totalQuantity, setTotalQuantity] = useState(0);
 
-  
+
   const [showCartTab, setShowCartTab] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -60,7 +60,7 @@ const Header = () => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      handleSearch(); 
+      handleSearch();
     }
   };
 
@@ -97,7 +97,7 @@ const Header = () => {
             </Link>
           </div>
 
-        
+
         </div>
         {/* search */}
         <div className="bg-white hidden w-full max-w-xs lg:flex items-center justify-between rounded-full border pl-2 focus-within:shadow">
@@ -140,35 +140,28 @@ const Header = () => {
           </div>
 
           {user?.id && (
-            <Link to="/profile">
-              <div className="relative flex cursor-pointer justify-center text-4xl">
-                {user?.profile_img ? (
-                  <img
-                    src={user?.profile_img}
-                    alt="Avatar User"
-                    className="w-10 h-10 object-cover rounded-full"
-                  />
-                ) : (
-                  <PiUserCircle />
-                )}
-              </div>
-            </Link>
+            <>
+              <Link to="/profile">
+                <div className="relative flex cursor-pointer justify-center text-4xl">
+                  {user?.profile_img ? (
+                    <img
+                      src={user?.profile_img}
+                      alt="Avatar User"
+                      className="w-10 h-10 object-cover rounded-full"
+                    />
+                  ) : (
+                    <PiUserCircle />
+                  )}
+                </div>
+              </Link>
+            </>
           )}
-          {/* sign in, sign up, and sign out */}
           {!user?.id ? (
             <>
               <div>
                 <Link to="/login">
                   <button className="rounded-full bg-teal-500 px-5 py-1 text-white text-lg hover:bg-teal-600">
                     Sign In
-                  </button>
-                </Link>
-              </div>
-
-              <div>
-                <Link to="/sign-up">
-                  <button className="rounded-full bg-teal-500 px-5 py-1 text-white text-lg hover:bg-teal-600">
-                    Sign Up
                   </button>
                 </Link>
               </div>

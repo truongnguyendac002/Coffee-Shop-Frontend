@@ -2,6 +2,19 @@
 const backendDomain = "http://localhost:8080/api";
 
 const summaryApi = {
+    getConversationOfUser: {
+        url: `${backendDomain}/conversation/user/`,
+        method: "GET"
+    },
+    getAllConversation: {
+        url: `${backendDomain}/conversation/all`,
+        method: "GET"
+    },
+    createConversation: {
+        url: `${backendDomain}/conversation/user`,
+        method: "POST"
+    },
+
     signUP: {
         url: `${backendDomain}/auth/register`,
         method: "POST"
@@ -218,6 +231,22 @@ const summaryApi = {
     updateOrderStatus : {
         url : `${backendDomain}/order/`,
         method : "PUT"
+    },
+    getTop5MonthlySellingProduct : {
+        url : `${backendDomain}/statistic/product/monthly`,
+        method : "GET"
+    },
+    getTop5BestSellingProduct : {
+        url : `${backendDomain}/statistic/product`,
+        method : "GET"
+    },
+    getTop5MonthlyUsers : {
+        url : `${backendDomain}/statistic/user/monthly`,
+        method : "GET"
+    },
+    getUsersStatistic : {
+        url : `${backendDomain}/statistic/user`,
+        method : "GET"
     }
 }
 
