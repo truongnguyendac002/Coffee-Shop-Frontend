@@ -4,7 +4,7 @@ import { Button, Typography, message } from "antd";
 import { removeFromFavorites } from "../../store/favoritesSlice ";
 import fetchWithAuth from "../../helps/fetchWithAuth";
 import summaryApi from "../../common";
-import image1 from "../../assets/img/img1.jpg";
+import image1 from "../../assets/img/empty.jpg";
 import { useNavigate } from "react-router-dom";
 
 
@@ -15,6 +15,7 @@ const Wishlist = () => {
     const navigate = useNavigate();
 
     const favorites = useSelector((state) => state.favorites.items);
+    console.log("favorites" , favorites);
 
     const user = useSelector((store) => store?.user?.user);
     const handleRemoveFavorite = async (product) => {
@@ -58,15 +59,18 @@ const Wishlist = () => {
                             className="p-4 bg-gray-100 rounded-lg flex items-center"
                             onClick={() => handleViewItem(item.product)}
                         >
+                            {
+                                console.log("item " , item  )
+                            }
                             <img
-                                className="w-16 h-16 bg-white rounded-lg object-cover"
-                                src={item.product.default_image ? item.product.default_image : image1}
+                                className="w-16 h-16 border-2 rounded-lg object-cover"
+                                src={item.product?.images[0]?.url  ? item.product.images[0].url : image1}
                                 alt={item.product.name}
                             />
                             <div className="ml-4">
-                                <Text className="block mb-4">{item.product.name}</Text>
+                                <Text className="block mb-4 font-medium text-xl ">{item.product.name}</Text>
                                 <div>
-                                    <Text className="text-xl font-semibold">
+                                    <Text className="text-xl font-semibold text-red-500">
                                         ${item.product.price}
                                     </Text>
 

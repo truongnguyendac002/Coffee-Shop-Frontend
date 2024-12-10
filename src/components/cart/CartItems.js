@@ -14,6 +14,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { message } from "antd";
 
 const CartItems = ({ cartItems }) => {
+  console.log("cart Item " , cartItems)
   const dispatch = useDispatch();
 
   const [errorItemId, setErrorItemId] = useState(null);

@@ -121,10 +121,12 @@ const OrderHistory = () => {
           className="mb-4"
           dataSource={order.orderItems}
           renderItem={(item) => (
+            
             <Card
               key={item.id}
               className="border border-gray-200 shadow-sm my-2"
             >
+              {console.log(item)}
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-lg font-semibold">
