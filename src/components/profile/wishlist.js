@@ -7,9 +7,8 @@ import summaryApi from "../../common";
 import image1 from "../../assets/img/empty.jpg";
 import { useNavigate } from "react-router-dom";
 
-
 const { Title, Text } = Typography;
-const Wishlist = () => {
+const Wishlist = ({setLoading}) => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -20,6 +19,7 @@ const Wishlist = () => {
     const user = useSelector((store) => store?.user?.user);
     const handleRemoveFavorite = async (product) => {
         try {
+            setLoading(true);
             const response = await fetchWithAuth(summaryApi.deleteFavorites.url, {
                 method: summaryApi.deleteFavorites.method,
                 body: JSON.stringify({
@@ -39,6 +39,9 @@ const Wishlist = () => {
         } catch (error) {
             console.error("Lỗi khi xóa sản phẩm khỏi danh sách yêu thích:", error);
             message.error("Không thể xóa sản phẩm khỏi danh sách yêu thích");
+        }
+        finally {
+            setLoading(false);
         }
     };
 

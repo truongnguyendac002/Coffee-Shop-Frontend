@@ -17,7 +17,6 @@ const ChatWidget = () => {
   const stompClient = useRef(null);
   const messagesEndRef = useRef(null);
 
-  console.log("conversation:", conversation);
   useEffect(() => {
     if (!user) {
       setIsChatOpen(false);
@@ -41,7 +40,6 @@ const ChatWidget = () => {
         const data = await response.json();
         if (data.respCode === "000") {
           const conversationData = data.data;
-          console.log(" data Conversation:", data);
           if (!conversationData) {
             console.log(" error conversationData is null");
           }

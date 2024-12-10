@@ -26,8 +26,8 @@ const CartItems = ({ cartItems }) => {
       const updatedItem = { ...item, quantity: value };
       setErrorItemId(null);
       try {
+        console.log("da chay den day");
         if (updatedCartItems(updatedItem)) {
-          // console.log("update true")
           dispatch(addToCart(updatedItem));
         } else console.log("update false");
       } catch (error) {
@@ -36,6 +36,7 @@ const CartItems = ({ cartItems }) => {
     }
   };
   const updatedCartItems = async (item) => {
+    console.log("da chay den day 2");
     try {
       const response = await fetchWithAuth(summaryApi.updateCartItem.url, {
         method: summaryApi.updateCartItem.method,
@@ -46,8 +47,8 @@ const CartItems = ({ cartItems }) => {
         }),
       });
       const result = await response.json();
-      if (result.resCode === "000") {
-        toast.success("Cart item updated successfully");
+      console.log("result", result);
+      if (result.respCode === "000") {
         return true;
       }
     } catch (error) {
@@ -97,10 +98,12 @@ const CartItems = ({ cartItems }) => {
               onClick={() => handleSelectItem(item)}
               className="sm:mr-6 "
             />
-
+            {console.log("item", item)}
             {/* Image */}
             <img
               src={
+              //   item.productItem.product.images[0]?
+              //   item.productItem.product.images[0].url:
                 "https://media.licdn.com/dms/image/v2/C5112AQEw1fXuabCTyQ/article-inline_image-shrink_1500_2232/article-inline_image-shrink_1500_2232/0/1581099611064?e=1736380800&v=beta&t=_b3qxld3t1gqDcKHKKtPDxuhIFU94zB31rb2nuc5Ygw"
               }
               alt={item.productItem.product.name}

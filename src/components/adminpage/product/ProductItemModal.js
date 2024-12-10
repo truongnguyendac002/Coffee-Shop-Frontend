@@ -142,7 +142,6 @@ const ProductItemsModal = ({ product, setProduct, visible, onClose, setProductLi
     const [isAdding, setIsAdding] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
 
-    console.log("product", product);
     useEffect(() => {
         const fetchProductItems = async () => {
             setLoading(true);
@@ -228,7 +227,6 @@ const ProductItemsModal = ({ product, setProduct, visible, onClose, setProductLi
                 if (data && data.respCode === '000') {
                     const product = data.data;
                     setProduct(product);
-                    console.log("product ressp data", product);
                     message.success("Ảnh đã được xóa.");
 
                 } else {
@@ -243,7 +241,6 @@ const ProductItemsModal = ({ product, setProduct, visible, onClose, setProductLi
 
     const handleAddNewItem = (newItem) => {
         const { price, stock, discount, type } = newItem;
-        console.log(newItem);
         const selectedType = types.find((t) => t.name === type); // Tìm đối tượng type đầy đủ
         if (!selectedType) {
             console.error('Type không hợp lệ:', type);

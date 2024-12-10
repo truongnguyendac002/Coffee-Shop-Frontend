@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Card,
   List,
@@ -9,12 +9,17 @@ import {
   Tag,
   message,
   Pagination,
+  Spin
 } from "antd";
 import fetchWithAuth from "../../helps/fetchWithAuth";
 import summaryApi from "../../common";
 import { useNavigate } from "react-router-dom";
+import { LoadingOutlined } from "@ant-design/icons";
 
-const OrderHistory = () => {
+
+
+const OrderHistory = React.memo(() => {
+  const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState([]);
   const [reviews, setReviews] = useState({});
   const [reviewedItems, setReviewedItems] = useState(new Set());
@@ -22,25 +27,33 @@ const OrderHistory = () => {
   const [pageSize] = useState(5); // Number of orders per page
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const resp = await fetchWithAuth(summaryApi.getUserOrders.url, {
-          method: summaryApi.getUserOrders.method,
-        });
-        const response = await resp.json();
-        if (response.respCode === "000") {
+  const fetchOrders = useCallback(async () => {
+    try {
+      setLoading(true);
+      console.log("set lodaing TRUE: orderHistory.fetchOrders")
+      const resp = await fetchWithAuth(summaryApi.getUserOrders.url, {
+        method: summaryApi.getUserOrders.method,
+      });
+      const response = await resp.json();
+      if (response.respCode === "000") {
+        if (JSON.stringify(orders) !== JSON.stringify(response.data)) {
           setOrders(response.data);
-        } else {
-          console.error("Error fetching orders:", response);
         }
-      } catch (error) {
-        console.error("Error fetching orders:", error);
+      } else {
+        console.error("Error fetching orders:", response);
       }
-    };
-
-    fetchOrders();
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    } finally {
+      setLoading(false);
+    }
+   
   }, []);
+
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   useEffect(() => {
     const initializeReviewedItems = () => {
@@ -76,6 +89,7 @@ const OrderHistory = () => {
   const handleSubmitReview = async (orderItemId) => {
     const reviewData = reviews[orderItemId];
     try {
+      setLoading(true);
       const response = await fetchWithAuth(summaryApi.addReview.url, {
         method: summaryApi.addReview.method,
         body: JSON.stringify({
@@ -94,8 +108,23 @@ const OrderHistory = () => {
       }
     } catch (error) {
       console.error("Error submitting review:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  
+  if (loading) {
+    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
+    return (
+      <>
+        <div className="flex justify-center h-screen mt-3">
+          <Spin indicator={antIcon} />
+        </div>
+      </>
+    );
+  }
 
   const collapseItems = orders
     .slice((currentPage - 1) * pageSize, currentPage * pageSize)
@@ -123,14 +152,14 @@ const OrderHistory = () => {
           renderItem={(item) => (
             
             <Card
-              key={item.id}
+              key={item.orderItemId}
               className="border border-gray-200 shadow-sm my-2"
             >
               {console.log(item)}
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-lg font-semibold">
-                    {item.productItem.product.name}
+                    {item.productName}
                   </h3>
                   <p className="text-gray-500">
                     {item.price.toFixed(2)}đ x {item.amount}
@@ -140,11 +169,11 @@ const OrderHistory = () => {
                   </p>
                 </div>
                 <div className="flex flex-col items-end">
-                  {reviewedItems.has(item.id) ? (
+                  {reviewedItems.has(item.orderItemId) ? (
                     <Button
                       type="primary"
                       onClick={() =>
-                        navigate(`/product/${item.productItem.product.id}`)
+                        navigate(`/product/${item.productId}`)
                       }
                     >
                       Xem sản phẩm
@@ -153,21 +182,21 @@ const OrderHistory = () => {
                     <>
                       <Rate
                         onChange={(value) =>
-                          handleReviewChange(item.id, {
-                            ...reviews[item.id],
+                          handleReviewChange(item.orderItemId, {
+                            ...reviews[item.orderItemId],
                             rating: value,
                           })
                         }
-                        value={reviews[item.id]?.rating || 0}
+                        value={reviews[item.orderItemId]?.rating || 0}
                         className="mb-2"
                       />
                       <Input.TextArea
                         rows={2}
                         placeholder="Write your review..."
-                        value={reviews[item.id]?.comment || ""}
+                        value={reviews[item.orderItemId]?.comment || ""}
                         onChange={(e) =>
-                          handleReviewChange(item.id, {
-                            ...reviews[item.id],
+                          handleReviewChange(item.orderItemId, {
+                            ...reviews[item.orderItemId],
                             comment: e.target.value,
                           })
                         }
@@ -175,10 +204,10 @@ const OrderHistory = () => {
                       />
                       <Button
                         type="primary"
-                        onClick={() => handleSubmitReview(item.id)}
+                        onClick={() => handleSubmitReview(item.orderItemId)}
                         disabled={
-                          !reviews[item.id]?.comment ||
-                          !reviews[item.id]?.rating
+                          !reviews[item.orderItemId]?.comment ||
+                          !reviews[item.orderItemId]?.rating
                         }
                       >
                         Submit Review
@@ -192,6 +221,8 @@ const OrderHistory = () => {
         />
       ),
     }));
+
+  
 
   return (
     <div className="p-4 max-w-5xl mx-auto">
@@ -212,6 +243,6 @@ const OrderHistory = () => {
       />
     </div>
   );
-};
+});
 
 export default OrderHistory;

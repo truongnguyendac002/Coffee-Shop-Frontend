@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { List, Avatar, Input, Spin, Button, Typography } from "antd";
-import { LoadingOutlined, SendOutlined } from "@ant-design/icons";
-
+import { LoadingOutlined, SendOutlined, UserOutlined } from "@ant-design/icons";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useSelector } from "react-redux";
@@ -16,7 +15,7 @@ const ChatContent = () => {
   const [newMessage, setNewMessage] = useState("");
   const [conversationList, setConversationList] = useState([]);
   const stompClient = useRef(null);
-  const messagesEndRef = useRef(null);  
+  const messagesEndRef = useRef(null);
 
   const user = useSelector((state) => state?.user?.user);
 
@@ -57,7 +56,6 @@ const ChatContent = () => {
           const response = JSON.parse(data.body);
           if (response.respCode === "000") {
             const conv = response.data;
-            console.log(conv);
             setConversationList((prev) => {
               const index = prev.findIndex((c) => c.id === conv.id);
               if (index === -1) {
@@ -105,7 +103,7 @@ const ChatContent = () => {
     if (messagesEndRef?.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [conversationList]); 
+  }, [conversationList]);
 
   if (loading || !user) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -120,7 +118,7 @@ const ChatContent = () => {
   return (
     <div className="flex -mt-5 h-[calc(100vh-60px)]">
       {/* Sidebar */}
-      <div className="w-1/4 border-r p-4">
+      <div className="w-1/4 border-r pt-4 pr-4">
         <Text className="text-xl font-semibold mb-4 block">Conversations</Text>
         <List
           itemLayout="horizontal"
@@ -128,14 +126,23 @@ const ChatContent = () => {
           renderItem={(conversation) => (
             <List.Item
               key={conversation.id}
-              className={`cursor-pointer rounded-lg mb-2 ${selectedConversationId === conversation.id
+              className={`cursor-pointer rounded-lg  ${selectedConversationId === conversation.id
                 ? "bg-blue-100"
                 : "hover:bg-gray-50"
                 }`}
               onClick={() => setselectedConversationId(conversation.id)}
             >
+              {console.log(conversation)}
               <List.Item.Meta
-                avatar={<Avatar>{conversation.hostAvatar}</Avatar>}
+                avatar={
+                  <Avatar
+                    size={40}
+                    src={conversation.hostAvatar !== null ? conversation.hostAvatar : null}
+                    icon={<UserOutlined />}
+                    className="bg-transparent text-gray-500 ml-2"
+
+                  >
+                  </Avatar>}
                 title={<Text>{conversation.hostName}</Text>}
               />
             </List.Item>
@@ -153,17 +160,16 @@ const ChatContent = () => {
             )?.messageList || []).map((msg) => (
               <div
                 key={msg.id}
-                className={`mb-4 ${msg.senderId === user.id ? "text-right" : "text-left"
-                  }`}
+                className={`mb-3 ${msg.senderId === user.id ? "text-right" : "text-left"}`}
               >
-                <Text
-                  className={`inline-block p-2 rounded-lg ${msg.senderId === user.id
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-black"
+                <div
+                  className={`inline-block max-w-[75%] px-3 py-2 rounded-xl ${msg.senderId === user.id
+                      ? "bg-blue-500 text-white rounded-br-none" 
+                      : "bg-gray-200 text-black rounded-bl-none" 
                     }`}
                 >
                   {msg.content}
-                </Text>
+                </div>
               </div>
             ))
           ) : (
@@ -171,7 +177,6 @@ const ChatContent = () => {
               <p>No conversation selected</p>
             </div>
           )}
-          {/* Đoạn cuộn xuống cuối */}
           <div ref={messagesEndRef} />
         </div>
 
@@ -183,12 +188,21 @@ const ChatContent = () => {
               onChange={(e) => setNewMessage(e.target.value)}
               rows={1}
               placeholder="Type your message..."
-              className="flex-1 mr-2 resize-none"
+              className="flex-1 mr-2 p-2 resize-none"
+              autoSize={{ minRows: 1, maxRows: 5 }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendMessage(selectedConversationId);
+                }
+              }}
+
             />
             <Button
               type="primary"
               icon={<SendOutlined />}
               onClick={() => handleSendMessage(selectedConversationId)}
+              className="pt-2 pb-2"
             >
               Send
             </Button>

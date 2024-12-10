@@ -27,10 +27,10 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState("personalInfo");
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const user = useSelector((state) => state?.user?.user);
-  const dispatch = useDispatch();
-  console.log("user dispatch", user);
+  const user = useSelector((state) => state.user.user, (prev, next) => prev === next);
 
+  const dispatch = useDispatch();
+  console.log("loading at profile", loading);
 
   if (loading || !user) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -50,6 +50,8 @@ const Profile = () => {
 
   const handleSave = async (updatedData) => {
     const fetchUpdateProfile = async (data) => {
+      setLoading(true);
+      console.log("set loading TRUE at profile.handleSave")
       const response = await fetchWithAuth(summaryApi.updateProfile.url, {
         method: summaryApi.updateProfile.method,
         body: JSON.stringify({
@@ -74,6 +76,7 @@ const Profile = () => {
       console.log("respData", respData);
       dispatch(setUser(respData));
     }
+    setLoading(false);
   };
 
   const handleClose = () => {
@@ -133,14 +136,14 @@ const Profile = () => {
               </div>
 
               {/* Lists */}
-              <Wishlist />
+              <Wishlist setLoading = {setLoading} />
             </section>
           </div>
         );
       case "addresses":
         return (
           <>
-            <Address />
+            <Address setLoading = {setLoading} />
           </>
         );
       case "communications":
@@ -237,7 +240,7 @@ const Profile = () => {
 
 
       {/* Right Content */}
-      <section className="lg:col-span-3 space-y-6  pl-6 rounded-lg">
+      <section className="lg:col-span-3 space-y-6 lg:ml-6 rounded-lg">
         {renderContent()}
       </section>
       <Info
