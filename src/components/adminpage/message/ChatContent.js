@@ -160,10 +160,10 @@ const ChatContent = () => {
             )?.messageList || []).map((msg) => (
               <div
                 key={msg.id}
-                className={`mb-4 ${msg.senderId === user.id ? "text-right" : "text-left"}`}
+                className={`mb-3 ${msg.senderId === user.id ? "text-right" : "text-left"}`}
               >
                 <div
-                  className={`inline-block max-w-[75%] p-3 rounded-lg ${msg.senderId === user.id
+                  className={`inline-block max-w-[75%] px-3 py-2 rounded-xl ${msg.senderId === user.id
                       ? "bg-blue-500 text-white rounded-br-none" 
                       : "bg-gray-200 text-black rounded-bl-none" 
                     }`}
