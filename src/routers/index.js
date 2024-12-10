@@ -14,7 +14,6 @@ import Profile from "../pages/Profile";
 import AdminHome from "../pages/AdminHome";
 import ProductsContent from "../components/adminpage/product/ProductsContent";
 import UsersContent from "../components/adminpage/user/UsersContent";
-import HomeContent from "../components/adminpage/HomeContent";
 import NotFound from "../pages/NotFound404";
 import SearchProduct from "../pages/SearchProduct";
 import OrderStatus from "../components/cart/OrderStatus";
@@ -121,9 +120,7 @@ const router = createBrowserRouter([
                 children: [
                     {
                         path: "",
-                        element: (
-                            <HomeContent />
-                        ),
+                        element: <Statistics />,
                     },
                     {
                         path: "products",
