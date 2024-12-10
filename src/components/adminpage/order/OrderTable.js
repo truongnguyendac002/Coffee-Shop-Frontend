@@ -4,7 +4,7 @@ import summaryApi from "../../../common";
 import { useState } from "react";
 import img1 from "../../../assets/img/img2.png";
 
-const OrderTable = ({ orderList }) => {
+const OrderTable = ({ orderList , refreshOrderList }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [orderDetail, setOrderDetail] = useState(null);
 
@@ -21,6 +21,7 @@ const OrderTable = ({ orderList }) => {
 
       if (result.respCode === "000") {
         message.success("cập nhật trạng thái đơn hàng thành công");
+        refreshOrderList();
       } else {
         message.error("cập nhật trạng thái đơn hàng thất bại");
         console.log("error cập nhật trạng thái đơn hàng");

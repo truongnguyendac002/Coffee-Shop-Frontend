@@ -33,6 +33,10 @@ const SignIn = () => {
     });
   };
 
+  const googleLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google"
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -119,6 +123,7 @@ const SignIn = () => {
 
             <button
               type="button"
+              onClick= {googleLogin}
               className="mt-2 w-full py-2 px-4 bg-gray-200 text-black font-semibold rounded-md shadow hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
               Sign in with Gmail
