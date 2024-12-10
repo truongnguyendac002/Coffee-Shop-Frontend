@@ -18,7 +18,8 @@ import ChatWidget from "../components/layout/ChatWidget";
 
 const Home = () => {
   const location = useLocation();
-  const user = useSelector((state) => state?.user?.user);
+  const user = useSelector((state) => state.user.user, (prev, next) => prev === next);
+
   const [isCartLoading, setIsCartLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();

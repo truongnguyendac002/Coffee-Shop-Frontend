@@ -5,7 +5,7 @@ import summaryApi from '../../common';
 import { useSelector } from 'react-redux';
 import fetchWithAuth from '../../helps/fetchWithAuth';
 
-const ShippingAddress = () => {
+const ShippingAddress = ({ setLoading }) => {
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editingAddress, setEditingAddress] = useState({});
@@ -16,6 +16,7 @@ const ShippingAddress = () => {
 
     useEffect(() => {
         const fetchAddresses = async () => {
+            setLoading(true);
             try {
                 const response = await fetchWithAuth(summaryApi.getAddressByUser.url, {
                     method: summaryApi.getAddressByUser.method,
@@ -28,7 +29,10 @@ const ShippingAddress = () => {
                 }
             } catch (error) {
                 console.error("Error fetching addresses:", error);
-            } 
+            }
+            finally {
+                setLoading(false);
+            }
         };
         const addressesData = localStorage.getItem("shipping-address");
         if (addressesData) {
@@ -37,7 +41,7 @@ const ShippingAddress = () => {
         else {
             fetchAddresses();
         }
-    }, []);
+    }, [setLoading]);
 
 
     const handleAddingAddress = () => {
@@ -67,6 +71,7 @@ const ShippingAddress = () => {
 
         try {
             const fetchUpdateAddress = async (requestMethod) => {
+                setLoading(true);
                 try {
                     const response = await fetchWithAuth(
                         summaryApi.updateShippingAddress.url,
@@ -92,6 +97,7 @@ const ShippingAddress = () => {
                 } catch (error) {
                     message.error("Error when process address:", error);
                 }
+                setLoading(false);
                 return null;
             }
 
@@ -120,6 +126,7 @@ const ShippingAddress = () => {
             console.error("Error saving address:", error);
             message.error("Failed to save address.");
         }
+        setLoading(false);
     };
 
     const handleCancel = () => {
@@ -131,6 +138,7 @@ const ShippingAddress = () => {
     const handleDeleteAddress = (id) => {
         const updatedAddresses = addresses.filter((address) => address.id !== id);
         const fetchDeleteAddress = async () => {
+            setLoading(true);
             try {
                 const response = await fetchWithAuth(
                     summaryApi.deleteShippingAddress.url + id,
@@ -150,6 +158,8 @@ const ShippingAddress = () => {
             } catch (error) {
                 console.error("Error deleting address:", error);
             }
+            setLoading(false);
+
         }
         fetchDeleteAddress();
     };

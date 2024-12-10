@@ -26,7 +26,7 @@ const Statistics = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+    <div className="bg-white rounded-xl shadow-md p-6 ">
       <div className="flex flex-wrap gap-4 mb-8">
         <button
           className={`${tabStyles.base} ${

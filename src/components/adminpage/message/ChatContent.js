@@ -57,7 +57,6 @@ const ChatContent = () => {
           const response = JSON.parse(data.body);
           if (response.respCode === "000") {
             const conv = response.data;
-            console.log(conv);
             setConversationList((prev) => {
               const index = prev.findIndex((c) => c.id === conv.id);
               if (index === -1) {

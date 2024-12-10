@@ -3,12 +3,21 @@ import { useLocation, useNavigate } from "react-router-dom";
 import fetchWithAuth from "../../helps/fetchWithAuth";
 import summaryApi from "../../common";
 import { toast } from "react-toastify";
-import Cookies from "js-cookie";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { removeFromCart } from "../../store/cartSlice";
+
+
 
 const OrderStatus = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
+
+  const cartItems = useSelector((store) => store.cart.items);
+  console.log("cartItems la:", cartItems);
+  const dispatch = useDispatch();
+
 
   const [status, setStatus] = useState(queryParams.get("status"));
   const txnRef = queryParams.get("txnRef");
@@ -21,10 +30,29 @@ const OrderStatus = () => {
     navigate("/");
   };
 
+  const handleDeleteCartItem = async (itemId) => {
+    try {
+      const response = await fetchWithAuth(
+        summaryApi.deleteCartItem.url + itemId,
+        {
+          method: summaryApi.deleteCartItem.method,
+        }
+      );
+      const result = await response.json();
+      if (result.respCode === "000") {
+        console.log("Delete cart item successfully");
+        dispatch(removeFromCart(itemId));
+      }
+    } catch (error) {
+      console.error("Error delete cart item:", error);
+    }
+  };
+
   const handleOrderProcessing = async () => {
+    const order = JSON.parse(localStorage.getItem("order"));
+    console.log("order la:", order);
     if (status === "success") {
       try {
-        const order = JSON.parse(localStorage.getItem("order"));
 
         const addOrderResponse = await fetchWithAuth(summaryApi.addOrder.url, {
           method: summaryApi.addOrder.method,
@@ -34,7 +62,15 @@ const OrderStatus = () => {
 
         if (responseOrder.respCode === "000") {
           toast.success("Đặt hàng thành công");
-
+          cartItems.forEach((item) => {
+            order.OrderItems.forEach((orderItem) => {
+              if (item.productItem.id === orderItem.ProductItemId) {
+                dispatch(removeFromCart(item.id));
+                handleDeleteCartItem(item.id);
+              }
+            });
+          });
+          
           if (txnRef) {
             const addTransactionResponse = await fetchWithAuth(
               summaryApi.addTransaction.url,
@@ -67,8 +103,8 @@ const OrderStatus = () => {
       }
     }
     localStorage.removeItem("order");
-    Cookies.remove("cart-item-list");
-
+    
+    
   };
 
   useEffect(() => {

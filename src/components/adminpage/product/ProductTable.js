@@ -37,8 +37,6 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
     );
     const [isProductItemsModalVisible, setIsProductItemsModalVisible] = useState(false);
 
-    console.log("products able", products);
-    console.log("selectedProduct at table", selectedProduct);
     const showProductItemsModal = (product) => {
         setSelectedProduct(product);
         setIsProductItemsModalVisible(true);
@@ -313,6 +311,9 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
                             Delete
                         </Button>
                     </Popconfirm>
+                    <Button className='ml-5' type="primary" >
+                        Xem review
+                    </Button>
                 </>
             ),
         },

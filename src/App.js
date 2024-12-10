@@ -12,8 +12,8 @@ import Cookies from "js-cookie";
 
 function App() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.user);
-
+  // Để tránh việc fetch user details nhiều lần
+  const user = useSelector((state) => state.user.user, (prev, next) => prev === next);
   const fetchUserDetails = useCallback(async () => {
     dispatch(setLoading(true));
     const token = Cookies.get("token");
@@ -21,7 +21,6 @@ function App() {
 
     if (!token) {
       dispatch(setLoading(false));
-      console.log("No token found, user might not be logged in.");
       return;
     }
 

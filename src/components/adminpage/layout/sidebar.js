@@ -1,11 +1,8 @@
 import React from "react";
 import {
-  MdLineStyle,
   MdTimeline,
-  // MdTrendingUp,
   MdPermIdentity,
   MdStore,
-  // MdAttachMoney,
   MdBarChart,
   MdMailOutline,
   MdDynamicFeed,
@@ -20,34 +17,10 @@ const Sidebar = () => {
   return (
     <div className="flex-1  bg-white shadow-md h-[calc(100vh-60px)] shadow-gray-400 sticky ">
       <div className="p-5 text-gray-600">
-        {/* Dashboard Menu */}
-        <div className="mb-3">
-          <h3 className="text-sm text-gray-400 ">Dashboard</h3>
-          <ul className="list-none p-1">
-            <Link to="" className="no-underline">
-              <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer text-indigo-600">
-                <MdLineStyle className="mr-2 text-lg" />
-                Home
-              </li>
-            </Link>
-            {/* <Link to="analytics" className="no-underline">
-              <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
-                <MdTimeline className="mr-2 text-lg" />
-                Analytics
-              </li>
-            </Link> */}
-            {/* <Link to="sales" className="no-underline">
-              <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
-                <MdTrendingUp className="mr-2 text-lg" />
-                Sales
-              </li>
-            </Link> */}
-          </ul>
-        </div>
 
         {/* Quick Menu */}
         <div className="mb-3">
-          <h3 className="text-sm text-gray-400 ">Quick Menu</h3>
+          <h3 className="text-sm text-gray-400 ">Dashboard</h3>
           <ul className="list-none p-1">
             <Link to="users" className="no-underline">
               <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
@@ -60,6 +33,20 @@ const Sidebar = () => {
               <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
                 <MdStore className="mr-2 text-lg" />
                 Products
+              </li>
+            </Link>
+
+            <Link to="brands" className="no-underline">
+              <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
+                <MdStore className="mr-2 text-lg" />
+                Nhãn hàng
+              </li>
+            </Link>
+
+            <Link to="categories" className="no-underline">
+              <li className="flex items-center p-2 rounded-lg hover:bg-indigo-100 cursor-pointer">
+                <MdStore className="mr-2 text-lg" />
+                Danh mục
               </li>
             </Link>
 
