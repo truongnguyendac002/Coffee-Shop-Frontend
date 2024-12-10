@@ -1,5 +1,16 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Card, List, Input, Button, Collapse, Rate, Tag, message, Spin } from "antd";
+import {
+  Card,
+  List,
+  Input,
+  Button,
+  Collapse,
+  Rate,
+  Tag,
+  message,
+  Pagination,
+  Spin
+} from "antd";
 import fetchWithAuth from "../../helps/fetchWithAuth";
 import summaryApi from "../../common";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +23,8 @@ const OrderHistory = React.memo(() => {
   const [orders, setOrders] = useState([]);
   const [reviews, setReviews] = useState({});
   const [reviewedItems, setReviewedItems] = useState(new Set());
+  const [currentPage, setCurrentPage] = useState(1); // Track current page
+  const [pageSize] = useState(5); // Number of orders per page
   const navigate = useNavigate();
 
   const fetchOrders = useCallback(async () => {
@@ -60,6 +73,11 @@ const OrderHistory = React.memo(() => {
     }
   }, [orders]);
 
+  const totalOrders = orders.length;
+
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   const handleReviewChange = (orderItemId, value) => {
     setReviews((prev) => ({
@@ -83,7 +101,8 @@ const OrderHistory = React.memo(() => {
       const data = await response.json();
       if (data.respCode === "000") {
         message.success("Review submitted successfully");
-        setReviewedItems((prev) => new Set(prev).add(orderItemId)); // Mark item as reviewed
+
+        setReviewedItems((prev) => new Set(prev).add(orderItemId));
       } else {
         message.error("Error submitting review");
       }
@@ -94,6 +113,7 @@ const OrderHistory = React.memo(() => {
     }
   };
 
+  
   if (loading) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -106,86 +126,99 @@ const OrderHistory = React.memo(() => {
     );
   }
 
-  const collapseItems = orders.map((order) => ({
-    key: order.orderId,
-    label: (
-      <>
-        <span className="text-lg font-semibold">Order #{order.orderId}</span>
-        <span className="ml-4 text-sm text-gray-500">
-          {new Date(order.orderDate).toLocaleDateString()}
-        </span>
-        <Tag
-          color={order.orderStatus === "COMPLETED" ? "green" : "red"}
-          className="ml-4"
-        >
-          {order.orderStatus}
-        </Tag>
-        <Tag color="blue">{order.paymentMethod}</Tag>
-      </>
-    ),
-    children: (
-      <List
-        className="mb-4"
-        dataSource={order.orderItems}
-        renderItem={(item) => (
-          <Card key={item.orderItemId} className="border border-gray-200 shadow-sm my-2">
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="text-lg font-semibold">{item.productName}</h3>
-                <p className="text-gray-500">
-                  {item.price.toFixed(2)}đ x {item.amount}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Discount: {item.discount.toFixed(2)}
-                </p>
-              </div>
-              <div className="flex flex-col items-end">
-                {reviewedItems.has(item.orderItemId) ? ( // Check if the item is reviewed
-                  <Button type="primary" onClick={() => {
-                    navigate(`/product/${item.productId}`);
-                  }}>
-                    Xem sản phẩm
-                  </Button>
-                ) : (
-                  <>
-                    <Rate
-                      onChange={(value) =>
-                        handleReviewChange(item.orderItemId, {
-                          ...reviews[item.orderItemId],
-                          rating: value,
-                        })
-                      }
-                      value={reviews[item.orderItemId]?.rating || 0}
-                      className="mb-2"
-                    />
-                    <Input.TextArea
-                      rows={2}
-                      placeholder="Write your review..."
-                      value={reviews[item.orderItemId]?.comment || ""}
-                      onChange={(e) =>
-                        handleReviewChange(item.orderItemId, {
-                          ...reviews[item.orderItemId],
-                          comment: e.target.value,
-                        })
-                      }
-                      className="mb-2 w-64"
-                    />
+  const collapseItems = orders
+    .slice((currentPage - 1) * pageSize, currentPage * pageSize)
+    .map((order) => ({
+      key: order.orderId,
+      label: (
+        <>
+          <span className="text-lg font-semibold">Order #{order.orderId}</span>
+          <span className="ml-4 text-sm text-gray-500">
+            {new Date(order.orderDate).toLocaleDateString()}
+          </span>
+          <Tag
+            color={order.orderStatus === "COMPLETED" ? "green" : "red"}
+            className="ml-4"
+          >
+            {order.orderStatus}
+          </Tag>
+          <Tag color="blue">{order.paymentMethod}</Tag>
+        </>
+      ),
+      children: (
+        <List
+          className="mb-4"
+          dataSource={order.orderItems}
+          renderItem={(item) => (
+            <Card
+              key={item.orderItemId}
+              className="border border-gray-200 shadow-sm my-2"
+            >
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-semibold">
+                    {item.productName}
+                  </h3>
+                  <p className="text-gray-500">
+                    {item.price.toFixed(2)}đ x {item.amount}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Discount: {item.discount.toFixed(2)}
+                  </p>
+                </div>
+                <div className="flex flex-col items-end">
+                  {reviewedItems.has(item.orderItemId) ? (
                     <Button
                       type="primary"
-                      onClick={() => handleSubmitReview(item.orderItemId)}
-                      disabled={!reviews[item.orderItemId]?.comment || !reviews[item.orderItemId]?.rating}
+                      onClick={() =>
+                        navigate(`/product/${item.productId}`)
+                      }
                     >
-                      Submit Review
+                      Xem sản phẩm
                     </Button>
-                  </>
-                )}
+                  ) : (
+                    <>
+                      <Rate
+                        onChange={(value) =>
+                          handleReviewChange(item.orderItemId, {
+                            ...reviews[item.orderItemId],
+                            rating: value,
+                          })
+                        }
+                        value={reviews[item.orderItemId]?.rating || 0}
+                        className="mb-2"
+                      />
+                      <Input.TextArea
+                        rows={2}
+                        placeholder="Write your review..."
+                        value={reviews[item.orderItemId]?.comment || ""}
+                        onChange={(e) =>
+                          handleReviewChange(item.orderItemId, {
+                            ...reviews[item.orderItemId],
+                            comment: e.target.value,
+                          })
+                        }
+                        className="mb-2 w-64"
+                      />
+                      <Button
+                        type="primary"
+                        onClick={() => handleSubmitReview(item.orderItemId)}
+                        disabled={
+                          !reviews[item.orderItemId]?.comment ||
+                          !reviews[item.orderItemId]?.rating
+                        }
+                      >
+                        Submit Review
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          </Card>
-        )}
-      />
-    ),
-  }));
+            </Card>
+          )}
+        />
+      ),
+    }));
 
   
 
@@ -197,6 +230,14 @@ const OrderHistory = React.memo(() => {
         expandIconPosition="end"
         accordion
         className="bg-white shadow-md rounded-md"
+      />
+
+      <Pagination
+        current={currentPage}
+        total={totalOrders}
+        pageSize={pageSize}
+        onChange={onPageChange}
+        className="mt-4"
       />
     </div>
   );

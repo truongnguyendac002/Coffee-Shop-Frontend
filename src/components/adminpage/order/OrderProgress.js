@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import fetchWithAuth from "../../../helps/fetchWithAuth";
 import summaryApi from "../../../common";
 import OrderTable from "./OrderTable";
@@ -45,29 +45,30 @@ const OrderProgress = ({ progress }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOrders, setFilteredOrders] = useState([]);
 
-  useEffect(() => {
-    const fetchOrderProgress = async () => {
-      try {
-        const response = await fetchWithAuth(
-          summaryApi.getOrderByStatus.url + `${progress}`,
-          {
-            method: summaryApi.getOrderByStatus.method,
-          }
-        );
-
-        const result = await response.json();
-        if (result.respCode === "000") {
-          setOrderList(result.data);
-        } else {
-          console.log("error get order Progress ");
+  const fetchOrderProgress = useCallback(async () => {
+    try {
+      const response = await fetchWithAuth(
+        summaryApi.getOrderByStatus.url + `${progress}`,
+        {
+          method: summaryApi.getOrderByStatus.method,
         }
-      } catch (error) {
-        console.log("error", error);
+      );
+  
+      const result = await response.json();
+      if (result.respCode === "000") {
+        setOrderList(result.data);
+      } else {
+        console.log("error get order Progress ");
       }
-    };
-
-    fetchOrderProgress();
+    } catch (error) {
+      console.log("error", error);
+    }
   }, [progress]);
+  
+
+  useEffect(() => {
+    fetchOrderProgress();
+  }, [fetchOrderProgress]);
 
   useEffect(() => {
     const search = () => {
@@ -98,6 +99,10 @@ const OrderProgress = ({ progress }) => {
     search();
   }, [searchTerm, orderList]);
 
+  const refreshOrderList = () => {
+    fetchOrderProgress();
+  };
+
   return (
     <>
       <div className="bg-white py-4">
@@ -119,6 +124,7 @@ const OrderProgress = ({ progress }) => {
           ),
          
         }))}
+        refreshOrderList={refreshOrderList}
       />
     </>
   );
