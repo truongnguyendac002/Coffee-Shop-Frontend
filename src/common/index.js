@@ -151,6 +151,10 @@ const summaryApi = {
         url: `${backendDomain}/review`,
         method: "POST",
     },
+    deleteReview: {
+        url: `${backendDomain}/review/`,
+        method: "DELETE",
+    },
     getUserOrders: {
         url: `${backendDomain}/order/user/all`,
         method: "GET",
@@ -209,7 +213,7 @@ const summaryApi = {
         method : "PUT"
     },
     getReviewByProductId : {
-        url : `${backendDomain}/review/`,
+        url : `${backendDomain}/review/product/`,
         method : "GET"
     },
     uploadProductImage: {

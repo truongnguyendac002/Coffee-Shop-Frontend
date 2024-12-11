@@ -11,10 +11,14 @@ import {
     Select,
     Image
 } from 'antd';
+import { AiOutlineBars } from "react-icons/ai";
+import { RiEditLine, RiDeleteBinLine  } from "react-icons/ri";
+import { PiListStarBold } from "react-icons/pi";
 import Highlighter from 'react-highlight-words';
 import fetchWithAuth from '../../../helps/fetchWithAuth';
 import summaryApi from '../../../common';
 import ProductItemModal from './ProductItemModal';
+import ReviewModal from './ReviewManagement';
 
 const { Option } = Select;
 
@@ -33,7 +37,6 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
     const [form] = Form.useForm();
 
     const [selectedProduct, setSelectedProduct] = useState(
-        
     );
     const [isProductItemsModalVisible, setIsProductItemsModalVisible] = useState(false);
 
@@ -241,6 +244,19 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
         fetchAddBrand();
     };
 
+    const [isReviewModalVisible, setIsReviewModalVisible] = useState(false);
+
+    const showReviewModal = (product) => {
+        setSelectedProduct(product);
+        setIsReviewModalVisible(true);
+    };
+
+    const closeReviewModal = () => {
+        setSelectedProduct(null);
+        setIsReviewModalVisible(false);
+    };
+
+
     const columns = [
         {
             title: 'Id',
@@ -254,7 +270,7 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
             render: (_, record) => (
                 record.images && record.images.length > 0 ? (
                     <Image
-                        src={record.images[0].url}  
+                        src={record.images[0].url}
                         alt="Product"
                         style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                     />
@@ -292,29 +308,48 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
             title: 'Action',
             key: 'action',
             render: (_, record) => (
-                <>
-                {console.log("record", record)}
-                    <Button onClick={() => showProductItemsModal(record)}
-                        className='mr-5 bg-green-500 hover:bg-green-300' type="primary">
-                        View
-                    </Button>
-                    <Button className='mr-5' type="primary" onClick={() => showModal(record)}>
-                        Edit
-                    </Button>
+                <div className="grid grid-cols-2 gap-4">
+                    {/* Hàng 1 */}
+                    <button
+                        type="link"
+                        onClick={() => showProductItemsModal(record)}
+                        className="text-green-500 hover:text-green-400 flex items-center"
+                    >
+                        <AiOutlineBars className="mr-1 text-xl" /> Thông tin
+                    </button>
+
+                    <button
+                        type="link"
+                        className="text-blue-500 hover:text-blue-400 flex items-center"
+                        onClick={() => showModal(record)}
+                    >
+                        <RiEditLine className="mr-1 text-xl" /> Chỉnh sửa
+                    </button>
+
+                    {/* Hàng 2 */}
+                    <button
+                        type="link"
+                        className="text-yellow-500 hover:text-yellow-400 flex items-center"
+                        onClick={() => showReviewModal(record)}
+                    >
+                        <PiListStarBold className="mr-1 text-xl" /> Xem đánh giá
+                    </button>
+
                     <Popconfirm
-                        title="Are you sure to delete this product?"
+                        title="Sure to delete this product ?"
                         onConfirm={() => handleDelete(record.id)}
                         okText="Yes"
                         cancelText="No"
                     >
-                        <Button type="primary" danger>
-                            Delete
-                        </Button>
+                        <button
+                            type="link"
+                            className="text-red-500 hover:text-red-400 flex items-center"
+                        >
+                            <RiDeleteBinLine  className="mr-1 text-xl" /> Xoá
+                        </button>
                     </Popconfirm>
-                    <Button className='ml-5' type="primary" >
-                        Xem review
-                    </Button>
-                </>
+                </div>
+
             ),
         },
     ];
@@ -331,16 +366,19 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
             </Button>
             <Table rowKey="id" columns={columns} dataSource={products} />
 
-            {selectedProduct && (
-                <ProductItemModal
-                    product={selectedProduct}
-                    setProduct={setSelectedProduct}
-                    visible={isProductItemsModalVisible}
-                    onClose={closeProductItemsModal}
-                    setProductList={setProducts}
-                    productList={products}
-                />
-            )}
+            <ReviewModal visible={isReviewModalVisible}
+                onClose={closeReviewModal}
+                product={selectedProduct}
+            />
+
+            <ProductItemModal
+                product={selectedProduct}
+                setProduct={setSelectedProduct}
+                visible={isProductItemsModalVisible}
+                onClose={closeProductItemsModal}
+                setProductList={setProducts}
+                productList={products}
+            />
 
             <Modal
                 title={currentProduct ? "Update Product" : "Add New Product"}
@@ -471,6 +509,8 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
                     Add Brand
                 </Button>
             </Modal>
+
+
         </div>
     );
 };
