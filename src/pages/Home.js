@@ -36,6 +36,7 @@ const Home = () => {
     const fetchCartItems = async () => {
       setIsCartLoading(true);
       try {
+        console.log(summaryApi.getAllCartItems.url + user.id)
         const response = await fetchWithAuth(
           summaryApi.getAllCartItems.url + user.id,
           { method: summaryApi.getAllCartItems.method }
@@ -43,7 +44,7 @@ const Home = () => {
         const dataResponse = await response.json();
 
         if (dataResponse.data) {
-          console.log("cart", dataResponse.data)
+          console.log("cart", dataResponse)
           dispatch(setCartItems(dataResponse.data));
         }
       } catch (error) {
@@ -73,7 +74,7 @@ const Home = () => {
         const dataResponse = await response.json();
 
         if (dataResponse.data) {
-
+          console.log("favorites", dataResponse.data)
           dispatch(setFavorites(dataResponse.data));
           console.log("setFavorites(dataResponse.data)", dataResponse.data);
         }

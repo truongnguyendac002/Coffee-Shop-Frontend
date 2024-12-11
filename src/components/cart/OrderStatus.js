@@ -64,7 +64,7 @@ const OrderStatus = () => {
           toast.success("Đặt hàng thành công");
           cartItems.forEach((item) => {
             order.OrderItems.forEach((orderItem) => {
-              if (item.productItem.id === orderItem.ProductItemId) {
+              if (item.productItemResponse.id === orderItem.ProductItemId) {
                 dispatch(removeFromCart(item.id));
                 handleDeleteCartItem(item.id);
               }

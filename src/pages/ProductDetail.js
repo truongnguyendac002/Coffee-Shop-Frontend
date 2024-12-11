@@ -162,6 +162,7 @@ const ProductDetail = () => {
 
       const data = await response.json();
       if (data.respCode === "000") {
+        console.log("abc" , data.data);
         dispatch(addToCart(data.data));
         message.success("Đã thêm sản phẩm vào giỏ hàng");
 
@@ -202,7 +203,6 @@ const ProductDetail = () => {
         const data = await response.json();
         if (data.respCode === "000") {
           dispatch(removeFromFavorites(product));
-
           dispatch(
             setFavorites(
               favorites.filter((item) => item.product.id !== product.id)
@@ -228,6 +228,7 @@ const ProductDetail = () => {
 
         const data = await response.json();
         if (data.respCode === "000") {
+          console.log("favorites" , data);
           dispatch(addToFavorites(product));
           dispatch(setFavorites([...favorites, { product }]));
 

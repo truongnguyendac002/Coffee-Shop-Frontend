@@ -22,7 +22,7 @@ const CheckoutSummary = ({selectedAddress}) => {
   const shipping = 10.0;
   const subtotal = selectedItems
     ? selectedItems.reduce(
-      (sum, item) => sum + item.productItem.price * item.quantity,
+      (sum, item) => sum + item.productItemResponse.price * item.quantity,
       0
     )
     : 0;
@@ -34,10 +34,10 @@ const CheckoutSummary = ({selectedAddress}) => {
     console.log("selectedAddressId at checkout ", selectedAddress);
     const order = {
       OrderItems: selectedItems.map(item => ({
-        ProductItemId: item.productItem.id,
+        ProductItemId: item.productItemResponse.id,
         Amount: item.quantity,
-        Price: item.productItem.price,
-        Discount: item.productItem.discount,
+        Price: item.productItemResponse.price,
+        Discount: item.productItemResponse.discount,
       })),
       ShippingAddressId: selectedAddress,
       PaymentMethod: paymentMethod,

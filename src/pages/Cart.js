@@ -7,7 +7,7 @@ import cartEmpty from "../assets/img/cart-empty.jpg";
 function Cart() {
  
   const cartItems = useSelector((store) => store.cart.items);
-  console.log("cart", cartItems)
+  console.log(cartItems)
 
   return (
     <>

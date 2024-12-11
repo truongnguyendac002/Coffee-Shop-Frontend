@@ -1,5 +1,5 @@
 import React from "react";
-import image1 from "../../assets/img/img1.jpg";
+import image1 from "../../assets/img/empty.jpg";
 import { useNavigate } from "react-router-dom";
 
 const CategoryCard = ({category}) => {
@@ -15,9 +15,10 @@ const CategoryCard = ({category}) => {
     <div 
     onClick={handleCategoryClick}
     className="flex items-center overflow-hidden p-2 hover:bg-gray-200 rounded ">
-      
+      {console.log(category)}
       {/* <img className="w-28 h-28 bg-white rounded-2xl object-cover" src={category.image} alt={"img category "} /> */}
-      <img className="w-7 h-7 bg-white rounded-sm object-cover" src={image1} alt={"img category "} />
+      <img className="w-7 h-7 bg-white rounded-sm object-cover" src={category?.defaultImage ? category.defaultImage : image1} 
+      alt={"img category "} />
 
       <div className=" lg:px-4 md:px-2 px-4 py-2">
         <div className=" font-medium lg:text-base  text-sm ">{category.name}</div>
