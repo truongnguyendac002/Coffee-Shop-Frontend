@@ -13,7 +13,7 @@ const CartSummary = () => {
 
   const subtotal = selectedItems
     ? selectedItems.reduce(
-      (sum, item) => sum + item.productItem.price * item.quantity,
+      (sum, item) => sum + item.productItemResponse.price * item.quantity,
       0
     )
     : 0;

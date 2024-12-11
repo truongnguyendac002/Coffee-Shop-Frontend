@@ -1,12 +1,12 @@
 import React from "react";
-import image1 from "../../assets/img/img1.jpg";
+import image1 from "../../assets/img/empty.jpg";
 import { Link, useLocation } from "react-router-dom";
 import cartEmpty from "../../assets/img/cart-empty.jpg";
 
 const CartTab = ({ items }) => {
   const location = useLocation();
   const isInCartPage = location.pathname === "/cart";
-  const validItems = items.filter((item) => item.productItem);
+  const validItems = items.filter((item) => item.productItemResponse);
   const isInProductDetailPage = location.pathname.startsWith("/product/");
   const shouldHideCartTab = isInCartPage || isInProductDetailPage;
 
@@ -30,19 +30,20 @@ const CartTab = ({ items }) => {
           <ul className="mb-4">
             {displayedItems.map((item, index) => (
               <li key={index} className=" border-b py-2">
-                <Link to={`/product/${item.productItem.product.id}`}>
+                <Link to={`/product/${item.productItemResponse.productResponse.id}`}>
                   <div className="grid grid-cols-4 items-start justify-start gap-x-5">
-                    <div className="w-12 h-auto col-span-1">
-                      <img src={image1} alt="img cartTab item" className="" />
+                    <div className="w-12 h-12 object-cover border-2 col-span-1 ">
+                      <img src={item.productItemResponse.productResponse.images[0]?  item.productItemResponse.productResponse.images[0].url : image1} 
+                      alt="img cartTab item" className="" />
                     </div>
 
                     <span className="-ml-8 col-span-2 text-gray-700 text-base md:text-sm font-medium overflow-hidden line-clamp-1">
-                      {item.productItem.product.name}
+                      {item.productItemResponse.productResponse.name}
                     </span>
 
                     <span className="col-span-1 font-semibold text-base md:text-sm text-orange-500">
-                      {item.price}
-                      {item.productItem.price} đ
+                      {/* {item.price} */}
+                      {item.productItemResponse.price} đ
                     </span>
                   </div>
                 </Link>

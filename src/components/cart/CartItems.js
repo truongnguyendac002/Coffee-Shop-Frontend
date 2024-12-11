@@ -12,14 +12,16 @@ import {
 } from "../../store/cartSlice";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { message } from "antd";
+import image1 from "../../assets/img/empty.jpg";
 
 const CartItems = ({ cartItems }) => {
+  console.log("cart Item ", cartItems);
   const dispatch = useDispatch();
 
   const [errorItemId, setErrorItemId] = useState(null);
 
   const handleQuantityChange = (value, item) => {
-    if (value < 1 || value > item.productItem.stock) {
+    if (value < 1 || value > item.productItemResponse.stock) {
       triggerError(item);
     } else {
       const updatedItem = { ...item, quantity: value };
@@ -97,31 +99,29 @@ const CartItems = ({ cartItems }) => {
               onClick={() => handleSelectItem(item)}
               className="sm:mr-6 "
             />
-            {console.log("item", item)}
-            {/* Image */}
+
             <img
               src={
-              //   item.productItem.product.images[0]?
-              //   item.productItem.product.images[0].url:
-                "https://media.licdn.com/dms/image/v2/C5112AQEw1fXuabCTyQ/article-inline_image-shrink_1500_2232/article-inline_image-shrink_1500_2232/0/1581099611064?e=1736380800&v=beta&t=_b3qxld3t1gqDcKHKKtPDxuhIFU94zB31rb2nuc5Ygw"
+                  item.productItemResponse.productResponse.images[0]?  item.productItemResponse.productResponse.images[0].url : image1
               }
-              alt={item.productItem.product.name}
+              alt={item.productItemResponse.productResponse.name}
               className="w-20 h-20 sm:w-16 sm:h-16 object-cover "
             />
 
             <div className="flex-1 flex flex-col sm:flex-row justify-between items-start sm:items-center">
               <div onClick={() => handleSelectItem(item)}>
                 <h2 className="text-base sm:text-lg font-semibold text-gray-800">
-                  {item.productItem.product.name}
+                  {item.productItemResponse.productResponse.name}
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-600">
-                  Type: {item.productItem.type.name}
+                  Type: {item.productItemResponse.type.name}
                 </p>
                 <p className="text-xs sm:text-sm text-gray-600 hidden sm:block  ">
-                  Category: {item.productItem.product.category.name}
+                  Category:{" "}
+                  {item.productItemResponse.productResponse.category.name}
                 </p>
                 <p className="text-xs sm:text-sm text-gray-600 hidden sm:block ">
-                  Brand: {item.productItem.product.brand.name}
+                  Brand: {item.productItemResponse.productResponse.brand.name}
                 </p>
               </div>
 
@@ -135,7 +135,7 @@ const CartItems = ({ cartItems }) => {
                 />
                 <InputNumber
                   min={1}
-                  max={item.productItem.stock}
+                  max={item.productItemResponse.stock}
                   value={item.quantity}
                   onChange={(value) => handleQuantityChange(value, item)}
                   controls={false}
@@ -155,7 +155,7 @@ const CartItems = ({ cartItems }) => {
             </div>
 
             <div className="text-sm sm:text-base font-semibold text-red-500">
-              ${(item.productItem.price * item.quantity).toFixed(2)}
+              ${(item.productItemResponse.price * item.quantity).toFixed(2)}
             </div>
 
             {/* Delete */}
