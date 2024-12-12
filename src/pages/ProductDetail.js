@@ -290,13 +290,14 @@ const ProductDetail = () => {
     }
   };
 
+  console.log("product" , product)
   return (
-    <div className="container mx-auto mt-10">
+    <div className="container mx-auto mt-3">
       <div className="shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row ">
         {!isLoading && (
-          <div className="p-8 md:w-2/5 w-full  bg-white flex flex-col items-center">
+          <div className="p-6 md:w-2/5 w-full  bg-white flex flex-col items-center">
             <img
-              className=" md:w-[300px] md:h-[300px] lg:w-[400px] lg:h-[400px] w-60 h-60 rounded-md object-cover"
+              className=" md:w-[300px] md:h-[300px] lg:w-[400px] lg:h-[380px] w-60 h-60 rounded-md object-cover"
               src={images.length > 0 ? images[currentImage].url : image1}
               alt="Main product"
             />
@@ -340,11 +341,12 @@ const ProductDetail = () => {
           <div>
             <h2 className="lg:text-2xl md:text-xl text-lg font-bold">{product.name}</h2>
             <div className="flex items-center lg:mt-8 mt-5">
+            <span className="mr-2 text-gray-700">{product.rating} </span>
               <div className="flex text-yellow-500">
                 <FaStar />
               </div>
-              <span className="ml-2 text-gray-700">4.6</span>
-              <span className="ml-2 text-gray-700">(1100 reviews)</span>
+             
+              <span className="ml-2 text-gray-700">( {product.totalReview} reviews )</span>
             </div>
 
             {/* discount */}

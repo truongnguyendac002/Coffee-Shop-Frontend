@@ -13,7 +13,6 @@ const Wishlist = ({ setLoading }) => {
   const navigate = useNavigate();
 
   const favorites = useSelector((state) => state.favorites.items);
-  console.log("favorites", favorites);
 
   const user = useSelector((store) => store?.user?.user);
   const handleRemoveFavorite = async (product) => {

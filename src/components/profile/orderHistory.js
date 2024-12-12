@@ -1,44 +1,28 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  Card,
-  List,
-  Input,
-  Button,
-  Collapse,
-  Rate,
-  Tag,
-  message,
-  Pagination,
-  Spin
-} from "antd";
+import { Button, Table, Tag, Spin } from "antd";
 import fetchWithAuth from "../../helps/fetchWithAuth";
 import summaryApi from "../../common";
-import { useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
-
-
+import OrderDetails from "./OrderDetails";
 
 const OrderHistory = React.memo(() => {
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState([]);
-  const [reviews, setReviews] = useState({});
-  const [reviewedItems, setReviewedItems] = useState(new Set());
-  const [currentPage, setCurrentPage] = useState(1); // Track current page
-  const [pageSize] = useState(5); // Number of orders per page
-  const navigate = useNavigate();
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+
+  const handleViewDetails = (orderId) => {
+    setSelectedOrderId(orderId);
+  };
 
   const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
-      console.log("set lodaing TRUE: orderHistory.fetchOrders")
       const resp = await fetchWithAuth(summaryApi.getUserOrders.url, {
         method: summaryApi.getUserOrders.method,
       });
       const response = await resp.json();
       if (response.respCode === "000") {
-        if (JSON.stringify(orders) !== JSON.stringify(response.data)) {
-          setOrders(response.data);
-        }
+        setOrders(response.data);
       } else {
         console.error("Error fetching orders:", response);
       }
@@ -47,200 +31,80 @@ const OrderHistory = React.memo(() => {
     } finally {
       setLoading(false);
     }
-   
   }, []);
-
 
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
 
-  useEffect(() => {
-    const initializeReviewedItems = () => {
-      const reviewedSet = new Set();
-      orders.forEach((order) => {
-        if (order.listReview) {
-          order.listReview.forEach((review) => {
-            reviewedSet.add(review.orderItem.id);
-          });
-        }
-      });
-      setReviewedItems(reviewedSet);
-    };
-
-    if (orders.length > 0) {
-      initializeReviewedItems();
-    }
-  }, [orders]);
-
-  const totalOrders = orders.length;
-
-  const onPageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const handleReviewChange = (orderItemId, value) => {
-    setReviews((prev) => ({
-      ...prev,
-      [orderItemId]: value,
-    }));
-  };
-
-  const handleSubmitReview = async (orderItemId) => {
-    const reviewData = reviews[orderItemId];
-    try {
-      setLoading(true);
-      const response = await fetchWithAuth(summaryApi.addReview.url, {
-        method: summaryApi.addReview.method,
-        body: JSON.stringify({
-          OrderItemId: orderItemId,
-          Rating: reviewData.rating,
-          Comment: reviewData.comment,
-        }),
-      });
-      const data = await response.json();
-      if (data.respCode === "000") {
-        message.success("Review submitted successfully");
-
-        setReviewedItems((prev) => new Set(prev).add(orderItemId));
-      } else {
-        message.error("Error submitting review");
-      }
-    } catch (error) {
-      console.error("Error submitting review:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  
   if (loading) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-
     return (
-      <>
-        <div className="flex justify-center h-screen mt-3">
-          <Spin indicator={antIcon} />
-        </div>
-      </>
+      <div className="flex justify-center h-screen mt-3">
+        <Spin indicator={antIcon} />
+      </div>
     );
   }
 
-  const collapseItems = orders
-    .slice((currentPage - 1) * pageSize, currentPage * pageSize)
-    .map((order) => ({
-      key: order.orderId,
-      label: (
-        <>
-          <span className="text-lg font-semibold">Order #{order.orderId}</span>
-          <span className="ml-4 text-sm text-gray-500">
-            {new Date(order.orderDate).toLocaleDateString()}
-          </span>
-          <Tag
-            color={order.orderStatus === "COMPLETED" ? "green" : "red"}
-            className="ml-4"
+  const columns = [
+    {
+      title: "STT",
+      key: "id",
+      render: (_, __, index) => index + 1,
+    },
+    {
+      title: "Order Date",
+      dataIndex: "orderDate",
+      key: "orderDate",
+      render: (date) => new Date(date).toLocaleDateString(),
+    },
+    {
+      title: "Status",
+      dataIndex: "orderStatus",
+      key: "orderStatus",
+      render: (status) => (
+        <Tag color={status === "Completed" ? "green" : "red"}>{status}</Tag>
+      ),
+    },
+    {
+      title: "Payment Method",
+      dataIndex: "paymentMethod",
+      key: "paymentMethod",
+      render: (method) => <Tag color="blue">{method}</Tag>,
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="primary"
+            onClick={() => handleViewDetails(record.orderId)}
           >
-            {order.orderStatus}
-          </Tag>
-          <Tag color="blue">{order.paymentMethod}</Tag>
-        </>
+            View Order Details
+          </Button>
+        </div>
       ),
-      children: (
-        <List
-          className="mb-4"
-          dataSource={order.orderItems}
-          renderItem={(item) => (
-            
-            <Card
-              key={item.orderItemId}
-              className="border border-gray-200 shadow-sm my-2"
-            >
-              {console.log(item)}
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-lg font-semibold">
-                    {item.productName}
-                  </h3>
-                  <p className="text-gray-500">
-                    {item.price.toFixed(2)}đ x {item.amount}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Discount: {item.discount.toFixed(2)}
-                  </p>
-                </div>
-                <div className="flex flex-col items-end">
-                  {reviewedItems.has(item.orderItemId) ? (
-                    <Button
-                      type="primary"
-                      onClick={() =>
-                        navigate(`/product/${item.productId}`)
-                      }
-                    >
-                      Xem sản phẩm
-                    </Button>
-                  ) : (
-                    <>
-                      <Rate
-                        onChange={(value) =>
-                          handleReviewChange(item.orderItemId, {
-                            ...reviews[item.orderItemId],
-                            rating: value,
-                          })
-                        }
-                        value={reviews[item.orderItemId]?.rating || 0}
-                        className="mb-2"
-                      />
-                      <Input.TextArea
-                        rows={2}
-                        placeholder="Write your review..."
-                        value={reviews[item.orderItemId]?.comment || ""}
-                        onChange={(e) =>
-                          handleReviewChange(item.orderItemId, {
-                            ...reviews[item.orderItemId],
-                            comment: e.target.value,
-                          })
-                        }
-                        className="mb-2 w-64"
-                      />
-                      <Button
-                        type="primary"
-                        onClick={() => handleSubmitReview(item.orderItemId)}
-                        disabled={
-                          !reviews[item.orderItemId]?.comment ||
-                          !reviews[item.orderItemId]?.rating
-                        }
-                      >
-                        Submit Review
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </Card>
-          )}
-        />
-      ),
-    }));
-
-  
+    },
+  ];
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
+    <div className="max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Order History</h1>
-      <Collapse
-        items={collapseItems}
-        expandIconPosition="end"
-        accordion
-        className="bg-white shadow-md rounded-md"
+      {console.log("order", orders)}
+      <Table
+        columns={columns}
+        dataSource={orders
+          .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))}
+        rowKey="orderId"
+        pagination={{ pageSize: 5 }}
       />
-
-      <Pagination
-        current={currentPage}
-        total={totalOrders}
-        pageSize={pageSize}
-        onChange={onPageChange}
-        className="mt-4"
-      />
+      {selectedOrderId && (
+        <OrderDetails
+          orderId={selectedOrderId}
+          onClose={() => setSelectedOrderId(null)}
+        />
+      )}
     </div>
   );
 });

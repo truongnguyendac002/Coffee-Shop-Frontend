@@ -15,8 +15,6 @@ const CategoryCard = ({category}) => {
     <div 
     onClick={handleCategoryClick}
     className="flex items-center overflow-hidden p-2 hover:bg-gray-200 rounded ">
-      {console.log(category)}
-      {/* <img className="w-28 h-28 bg-white rounded-2xl object-cover" src={category.image} alt={"img category "} /> */}
       <img className="w-7 h-7 bg-white rounded-sm object-cover" src={category?.defaultImage ? category.defaultImage : image1} 
       alt={"img category "} />
 

@@ -30,7 +30,6 @@ const Profile = () => {
   const user = useSelector((state) => state.user.user, (prev, next) => prev === next);
 
   const dispatch = useDispatch();
-  console.log("loading at profile", loading);
 
   if (loading || !user) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;

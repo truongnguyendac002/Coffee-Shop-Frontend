@@ -247,6 +247,10 @@ const summaryApi = {
     getUsersStatistic : {
         url : `${backendDomain}/statistic/user`,
         method : "GET"
+    },
+    getOrderDetails : {
+        url : `${backendDomain}/order`,
+        method : "GET"
     }
 }
 

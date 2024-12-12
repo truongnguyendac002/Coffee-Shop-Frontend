@@ -21,6 +21,7 @@ import CategoryPage from "../pages/CategoryPage";
 import OrdersContent from "../components/adminpage/order/OrdersContent";
 import ChatContent from "../components/adminpage/message/ChatContent";
 import Statistics from "../components/adminpage/statistic/Statistics";
+import OrderDetails from "../components/profile/OrderDetails";
 
 
 const router = createBrowserRouter([
@@ -87,6 +88,14 @@ const router = createBrowserRouter([
                     {
                         path: "/:categoryName/:categoryId",
                         element: <CategoryPage />
+                    },
+                    {
+                        path: "/order-detail",
+                        element: (
+                            <PrivateRoute>
+                                <OrderDetails  />
+                            </PrivateRoute>
+                        ),
                     },
                 ]
             },
