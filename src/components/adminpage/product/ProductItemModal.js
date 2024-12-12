@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Table, Button, Form, Input, InputNumber, Select, Upload, message } from 'antd';
+import { Modal, Table, Button, Form, Input, InputNumber, Select, Upload, message, Popconfirm } from 'antd';
 import fetchWithAuth from '../../../helps/fetchWithAuth';
 import summaryApi from '../../../common';
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
+
 
 const AddItemModal = ({ visible, onClose, onSave, types, onAddType, editingItem }) => {
     const [form] = Form.useForm();
@@ -373,7 +374,8 @@ const ProductItemsModal = ({ product, setProduct, visible, onClose, setProductLi
             render: (text, record) => (
                 <>
                     <Button
-                        type="primary"
+                        type="primary" ghost
+
                         onClick={() => {
                             setEditingItem(record);
                             setIsAdding(true);
@@ -383,9 +385,17 @@ const ProductItemsModal = ({ product, setProduct, visible, onClose, setProductLi
                         Update
                     </Button>
 
-                    <Button onClick={() => handleDeleteItem(record)} type="primary" danger>
-                        Delete
-                    </Button>
+
+                    <Popconfirm
+                        title="Sure to delete this item ?"
+                        onConfirm={() => handleDeleteItem(record)}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <Button  danger>
+                            Delete
+                        </Button>
+                    </Popconfirm>
                 </>
             ),
         }
@@ -398,7 +408,7 @@ const ProductItemsModal = ({ product, setProduct, visible, onClose, setProductLi
                 open={visible}
                 onCancel={onClose}
                 footer={[
-                    <Button key="add" type="primary" onClick={() => setIsAdding(true)}>
+                    <Button icon={<PlusOutlined />} key="add" type="primary" onClick={() => setIsAdding(true)}>
                         Thêm mới item
                     </Button>,
 
