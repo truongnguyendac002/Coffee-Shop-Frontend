@@ -252,6 +252,26 @@ const summaryApi = {
         url : `${backendDomain}/statistic/user`,
         method : "GET"
     },
+    getAllBrand : {
+        url : `${backendDomain}/brand/all`,
+        method : "GET"
+    },
+    deleteBrand : {
+        url : `${backendDomain}/brand`,
+        method : "DELETE"
+    },
+    updateBrand : {
+        url : `${backendDomain}/brand`,
+        method : "PUT"
+    },
+    updateCategory : {
+        url : `${backendDomain}/category`,
+        method : "PUT"
+    },
+    deleteCategory : {
+        url : `${backendDomain}/category`,
+        method : "DELETE"
+    },
     getOrderDetails : {
         url : `${backendDomain}/order`,
         method : "GET"

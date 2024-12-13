@@ -111,7 +111,11 @@ const ProductChart = () => {
   return (
     <div className="flex flex-col items-center space-y-6">
       <div className="flex space-x-4">
-        <Select defaultValue="overview" onChange={handleViewChange} className="w-32">
+        <Select
+          defaultValue="overview"
+          onChange={handleViewChange}
+          className="w-32 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-300"
+        >
           <Option value="overview">Tổng quan</Option>
           <Option value="monthly">Theo tháng</Option>
         </Select>
@@ -120,7 +124,7 @@ const ProductChart = () => {
             <Select
               defaultValue={selectedMonth}
               onChange={handleMonthChange}
-              className="w-24"
+              className="w-24 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-300"
             >
               {moment.months().map((month, index) => (
                 <Option key={index} value={index}>
@@ -131,7 +135,7 @@ const ProductChart = () => {
             <Select
               defaultValue={selectedYear}
               onChange={handleYearChange}
-              className="w-24"
+              className="w-24 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-300"
             >
               {Array.from({ length: 10 }, (_, i) => moment().year() - 5 + i).map((year) => (
                 <Option key={year} value={year}>
@@ -169,7 +173,7 @@ const ProductChart = () => {
         columns={detailedColumns}
         pagination={{ pageSize: 5 }}
         rowKey="productId"
-        className="w-full max-w-4xl mt-4 bg-white shadow-md rounded-lg"
+        className="w-full shadow-md rounded-lg"
       />
     </div>
   );

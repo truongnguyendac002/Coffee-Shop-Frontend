@@ -23,6 +23,8 @@ import ChatContent from "../components/adminpage/message/ChatContent";
 import Statistics from "../components/adminpage/statistic/Statistics";
 import OrderDetails from "../components/profile/OrderDetails";
 
+import BrandsContent from "../components/adminpage/brand/BrandsContent";
+import CategoryContent from "../components/adminpage/category/CategoryContent";
 
 const router = createBrowserRouter([
     {
@@ -154,6 +156,14 @@ const router = createBrowserRouter([
                     {
                         path: "statistics",
                         element: <Statistics />,
+                    },
+                    {
+                        path: "brands",
+                        element: <BrandsContent />,
+                    },
+                    {
+                        path: "categories",
+                        element: <CategoryContent />,
                     },
                     {
                         path: "*",

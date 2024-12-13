@@ -23,7 +23,6 @@ const UserChart = () => {
     }
   }, [timeFrame, selectedMonth, selectedYear]);
 
-  // Gọi API lấy dữ liệu Tổng quan
   const fetchOverviewData = async () => {
     try {
       const response = await fetchWithAuth(summaryApi.getUsersStatistic.url);
@@ -31,7 +30,7 @@ const UserChart = () => {
       if (result.respCode === "000") {
         const processedData = result.data.map(user => ({
           userId: user.userId || "Chưa cập nhật",
-          userName: user.userName || "Chưa cập nhật", // Nếu null thì hiển thị "Chưa cập nhật"
+          userName: user.userName || "Chưa cập nhật",
           email: user.email || "Chưa cập nhật",
           creatAt: user.creatAt || "Chưa cập nhật",
           totalSold: user.totalSold || 0,
@@ -46,7 +45,6 @@ const UserChart = () => {
     }
   };
 
-  // Gọi API lấy dữ liệu Theo tháng với các tham số month và year
   const fetchMonthlyData = async (month, year) => {
     try {
       const response = await fetchWithAuth(`${summaryApi.getTop5MonthlyUsers.url}?month=${month}&year=${year}`);
@@ -74,6 +72,10 @@ const UserChart = () => {
       const clickedData = data.activePayload[0].payload;
       setDetailedData([clickedData]);
     }
+  };
+
+  const handleTimeFrameChange = (value) => {
+    setTimeFrame(value);
   };
 
   const handleMonthChange = (value) => {
@@ -118,59 +120,47 @@ const UserChart = () => {
   ];
 
   return (
-    <div className="flex flex-col items-center space-y-4 p-6">
-      {/* Tùy chọn Tổng quan và Theo tháng */}
-      <div className="flex space-x-2">
-        <button
-          className={`px-4 py-2 rounded-full transition-colors duration-300 ${
-            timeFrame === "overview" ? "bg-blue-600 text-white" : "bg-gray-200 hover:bg-gray-300"
-          }`}
-          onClick={() => setTimeFrame("overview")}
+    <div className="flex flex-col items-center space-y-6">
+      <div className="flex space-x-2 items-center">
+        <Select
+          defaultValue={timeFrame}
+          style={{ width: 150 }}
+          onChange={handleTimeFrameChange}
         >
-          Tổng quan
-        </button>
-        <button
-          className={`px-4 py-2 rounded-full transition-colors duration-300 ${
-            timeFrame === "monthly" ? "bg-blue-600 text-white" : "bg-gray-200 hover:bg-gray-300"
-          }`}
-          onClick={() => setTimeFrame("monthly")}
-        >
-          Theo Tháng
-        </button>
+          <Option value="overview">Tổng quan</Option>
+          <Option value="monthly">Theo Tháng</Option>
+        </Select>
+        {timeFrame === "monthly" && (
+          <>
+            <Select
+              defaultValue={selectedMonth}
+              style={{ width: 120 }}
+              onChange={handleMonthChange}
+            >
+              {Array.from({ length: 12 }, (_, index) => (
+                <Option key={index + 1} value={index + 1}>
+                  Tháng {index + 1}
+                </Option>
+              ))}
+            </Select>
+            <Select
+              defaultValue={selectedYear}
+              style={{ width: 120 }}
+              onChange={handleYearChange}
+            >
+              {Array.from({ length: 5 }, (_, index) => {
+                const year = moment().year() - index;
+                return (
+                  <Option key={year} value={year}>
+                    {year}
+                  </Option>
+                );
+              })}
+            </Select>
+          </>
+        )}
       </div>
 
-      {/* Chọn tháng và năm khi chọn "Theo tháng" */}
-      {timeFrame === "monthly" && (
-        <div className="flex space-x-2 items-center">
-          <Select
-            defaultValue={selectedMonth}
-            style={{ width: 120 }}
-            onChange={handleMonthChange}
-          >
-            {Array.from({ length: 12 }, (_, index) => (
-              <Option key={index + 1} value={index + 1}>
-                Tháng {index + 1}
-              </Option>
-            ))}
-          </Select>
-          <Select
-            defaultValue={selectedYear}
-            style={{ width: 120 }}
-            onChange={handleYearChange}
-          >
-            {Array.from({ length: 5 }, (_, index) => {
-              const year = moment().year() - index;
-              return (
-                <Option key={year} value={year}>
-                  {year}
-                </Option>
-              );
-            })}
-          </Select>
-        </div>
-      )}
-
-      {/* Biểu đồ tròn */}
       <div className="flex flex-col items-center mt-4 w-full">
         <PieChart width={600} height={400} onClick={handleChartClick} className="w-full mb-6">
           <Pie
@@ -190,7 +180,6 @@ const UserChart = () => {
           <Legend />
         </PieChart>
 
-        {/* Bảng chi tiết dữ liệu */}
         <Table
           dataSource={detailedData}
           columns={detailedColumns}
