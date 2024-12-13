@@ -1,90 +1,140 @@
 import React, { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import { Select, Table } from "antd";
+import moment from "moment";
 import fetchWithAuth from "../../../helps/fetchWithAuth";
 import summaryApi from "../../../common";
-import { Table } from "antd";
+
+const { Option } = Select;
 
 const RevenueChart = () => {
+  const [view, setView] = useState("overview");
   const [data, setData] = useState([]);
-  const [aggregatedData, setAggregatedData] = useState([]);
   const [detailedData, setDetailedData] = useState([]);
-  const [timeFrame, setTimeFrame] = useState("day");
+  const [allOrders, setAllOrders] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(moment().month());
+  const [selectedYear, setSelectedYear] = useState(moment().year());
 
   useEffect(() => {
-    const fetchRevenueData = async () => {
+    const fetchData = async () => {
       try {
         const response = await fetchWithAuth(summaryApi.getAllOrder.url, {
           method: summaryApi.getAllOrder.method,
         });
         const result = await response.json();
         if (result.respCode === "000") {
-          const processedData = result.data.map(order => ({
-            orderId: order.orderId,
-            orderDate: new Date(order.orderDate),
-            revenue: order.total,
-            orderStatus: order.orderStatus,
-            paymentMethod: order.paymentMethod,
-            shippingInfo: `Tên người nhận: ${order.shippingAddress.receiverName}\nSố điện thoại: ${order.shippingAddress.receiverPhone}\nĐịa chỉ: ${order.shippingAddress.location}`,
-          }));
-          setData(processedData);
-          setDetailedData(processedData);
-          aggregateData(processedData, timeFrame);
+          const orders = result.data;
+          setAllOrders(orders);
+          updateData(view, orders, selectedMonth, selectedYear);
         } else {
-          console.error("Failed to fetch revenue data");
+          setData([]);
+          setDetailedData([]);
+          console.warn("No data available for the selected period.");
         }
       } catch (error) {
         console.error("Error fetching revenue data:", error);
+        setData([]);
+        setDetailedData([]);
       }
     };
 
-    fetchRevenueData();
-  }, [timeFrame]);
+    fetchData();
+  }, [view, selectedMonth, selectedYear]);
 
-  const aggregateData = (data, timeFrame) => {
-    const aggregated = data.reduce((acc, order) => {
-      const key = order.orderDate.toLocaleDateString("vi-VN", {
-        day: timeFrame === "day" ? "2-digit" : undefined,
-        month: "2-digit",
-        year: "numeric",
-      });
-      if (!acc[key]) {
-        acc[key] = { name: key, doanhThu: 0, details: [] };
-      }
-      acc[key].doanhThu += order.revenue;
-      acc[key].details.push(order);
-      return acc;
-    }, {});
-
-    const aggregatedArray = Object.values(aggregated);
-    setAggregatedData(aggregatedArray);
+  const updateData = (view, orders, month, year) => {
+    if (view === "overview") {
+      setData(aggregateMonthlyData(orders));
+      setDetailedData(orders);
+    } else {
+      setData(aggregateDailyData(orders, month, year));
+      setDetailedData(filterOrdersByMonth(orders, month, year));
+    }
   };
 
-  const handleChartClick = (data) => {
-    if (data && data.activePayload) {
-      const clickedData = data.activePayload[0].payload.details;
-      setDetailedData(clickedData);
+  const aggregateMonthlyData = (orders) => {
+    const monthlyData = {};
+    orders.forEach(order => {
+      const month = moment(order.orderDate).format('YYYY-MM');
+      if (!monthlyData[month]) {
+        monthlyData[month] = { month, totalRevenue: 0 };
+      }
+      monthlyData[month].totalRevenue += order.total;
+    });
+    return Object.values(monthlyData);
+  };
+
+  const aggregateDailyData = (orders, month, year) => {
+    const dailyData = {};
+    orders.forEach(order => {
+      const orderDate = moment(order.orderDate);
+      if (orderDate.month() === month && orderDate.year() === year) {
+        const day = orderDate.format('YYYY-MM-DD');
+        if (!dailyData[day]) {
+          dailyData[day] = { day, totalRevenue: 0 };
+        }
+        dailyData[day].totalRevenue += order.total;
+      }
+    });
+    return Object.values(dailyData);
+  };
+
+  const aggregateMonthlyTotal = (orders, month, year) => {
+    const totalRevenue = orders.reduce((acc, order) => {
+      const orderDate = moment(order.orderDate);
+      if (orderDate.month() === month && orderDate.year() === year) {
+        return acc + order.total;
+      }
+      return acc;
+    }, 0);
+    return [{ month: moment().year(year).month(month).format('YYYY-MM'), totalRevenue }];
+  };
+
+  const filterOrdersByMonth = (orders, month, year) => {
+    return orders.filter(order => {
+      const orderDate = moment(order.orderDate);
+      return orderDate.month() === month && orderDate.year() === year;
+    });
+  };
+
+  const handleViewChange = (value) => {
+    setView(value);
+    updateData(value, allOrders, selectedMonth, selectedYear);
+  };
+
+  const handleMonthChange = (value) => {
+    setSelectedMonth(value);
+    if (view === "monthly") {
+      setData(aggregateDailyData(allOrders, value, selectedYear));
+      setDetailedData(filterOrdersByMonth(allOrders, value, selectedYear));
+    }
+  };
+
+  const handleYearChange = (value) => {
+    setSelectedYear(value);
+    if (view === "monthly") {
+      setData(aggregateDailyData(allOrders, selectedMonth, value));
+      setDetailedData(filterOrdersByMonth(allOrders, selectedMonth, value));
     }
   };
 
   const handleRowClick = (record) => {
-    setDetailedData(record.details);
-  };
-
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+    if (view === "overview") {
+      const selectedMonthOrders = filterOrdersByMonth(allOrders, moment(record.month).month(), moment(record.month).year());
+      setDetailedData(selectedMonthOrders);
+    }
   };
 
   const aggregatedColumns = [
     {
       title: "Thời gian",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: view === "overview" ? "month" : "day",
+      key: "time",
     },
     {
       title: "Doanh thu",
-      dataIndex: "doanhThu",
-      key: "doanhThu",
-      render: (value) => formatCurrency(value),
+      dataIndex: "totalRevenue",
+      key: "totalRevenue",
+      render: (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value),
     },
   ];
 
@@ -98,17 +148,22 @@ const RevenueChart = () => {
       title: "Ngày đặt hàng",
       dataIndex: "orderDate",
       key: "orderDate",
-      render: (date) => date.toLocaleString("vi-VN"),
+      render: (date) => moment(date).format("DD/MM/YYYY"),
     },
     {
       title: "Thông tin đặt hàng",
-      dataIndex: "shippingInfo",
-      key: "shippingInfo",
-      render: (text) => (
-        <div style={{ whiteSpace: 'pre-line' }}>
-          {text}
-        </div>
-      ),
+      dataIndex: "shippingAddress",
+      key: "shippingAddress",
+      render: (address) => {
+        const { receiverName, receiverPhone, location } = address || {};
+        return (
+          <div style={{ whiteSpace: 'pre-line' }}>
+            {receiverName && `Tên: ${receiverName}\n`}
+            {receiverPhone && `SĐT: ${receiverPhone}\n`}
+            {location && `Địa chỉ: ${location}`}
+          </div>
+        );
+      },
     },
     {
       title: "Loại thanh toán",
@@ -117,75 +172,81 @@ const RevenueChart = () => {
     },
     {
       title: "Tổng tiền",
-      dataIndex: "revenue",
-      key: "revenue",
-      render: (value) => formatCurrency(value),
+      dataIndex: "total",
+      key: "total",
+      render: (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value),
     },
   ];
 
   return (
-    <div className="flex flex-col items-center space-y-4">
-      <div className="flex space-x-2">
-        <button
-          className={`px-4 py-2 rounded-full transition-colors duration-300 ${
-            timeFrame === "day" ? "bg-blue-600 text-white" : "bg-gray-200 hover:bg-gray-300"
-          }`}
-          onClick={() => setTimeFrame("day")}
+    <div className="flex flex-col items-center space-y-6">
+      <div className="flex space-x-4">
+        <Select
+          defaultValue="overview"
+          onChange={handleViewChange}
+          className="w-32 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-300"
         >
-          Theo Ngày
-        </button>
-        <button
-          className={`px-4 py-2 rounded-full transition-colors duration-300 ${
-            timeFrame === "month" ? "bg-blue-600 text-white" : "bg-gray-200 hover:bg-gray-300"
-          }`}
-          onClick={() => setTimeFrame("month")}
-        >
-          Theo Tháng
-        </button>
-        <button
-          className={`px-4 py-2 rounded-full transition-colors duration-300 ${
-            timeFrame === "year" ? "bg-blue-600 text-white" : "bg-gray-200 hover:bg-gray-300"
-          }`}
-          onClick={() => setTimeFrame("year")}
-        >
-          Theo Năm
-        </button>
+          <Option value="overview">Tổng quan</Option>
+          <Option value="monthly">Theo tháng</Option>
+        </Select>
+        {view === "monthly" && (
+          <>
+            <Select
+              defaultValue={selectedMonth}
+              onChange={handleMonthChange}
+              className="w-24 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-300"
+            >
+              {moment.months().map((month, index) => (
+                <Option key={index} value={index}>
+                  {month}
+                </Option>
+              ))}
+            </Select>
+            <Select
+              defaultValue={selectedYear}
+              onChange={handleYearChange}
+              className="w-24 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-300"
+            >
+              {Array.from({ length: 10 }, (_, i) => moment().year() - 5 + i).map((year) => (
+                <Option key={year} value={year}>
+                  {year}
+                </Option>
+              ))}
+            </Select>
+          </>
+        )}
       </div>
       <div className="flex space-x-8 mt-4">
-        <LineChart
-          width={800}
-          height={350}
-          data={aggregatedData}
-          className="mx-auto"
-          onClick={handleChartClick}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip
-            contentStyle={{ backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '4px' }}
-            formatter={(value) => formatCurrency(value)}
+          <LineChart
+            width={800}
+            height={350}
+            data={data}
+            className="mx-auto"
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey={view === "overview" ? "month" : "day"} />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="totalRevenue" name="Doanh thu" stroke="#82ca9d" />
+          </LineChart>
+          <Table
+            dataSource={view === "overview" ? data : aggregateMonthlyTotal(allOrders, selectedMonth, selectedYear)}
+            columns={aggregatedColumns}
+            pagination={false}
+            rowKey={view === "overview" ? "month" : "day"}
+            className="w-1/2"
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record),
+            })}
           />
-          <Legend />
-          <Line type="monotone" dataKey="doanhThu" name="Doanh thu" stroke="#8884d8" />
-        </LineChart>
-        <Table
-          dataSource={aggregatedData}
-          columns={aggregatedColumns}
-          pagination={false}
-          rowKey="name"
-          className="w-1/3"
-          onRow={(record) => ({
-            onClick: () => handleRowClick(record),
-          })}
-        />
       </div>
       <Table
         dataSource={detailedData}
         columns={detailedColumns}
         pagination={{ pageSize: 5 }}
         rowKey="orderId"
-        className="w-full"
+        className="w-full shadow-md rounded-lg"
       />
     </div>
   );
