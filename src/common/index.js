@@ -271,6 +271,10 @@ const summaryApi = {
     deleteCategory : {
         url : `${backendDomain}/category`,
         method : "DELETE"
+    },
+    getOrderDetails : {
+        url : `${backendDomain}/order`,
+        method : "GET"
     }
 }
 
