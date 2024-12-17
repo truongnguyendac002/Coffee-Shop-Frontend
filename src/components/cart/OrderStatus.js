@@ -15,7 +15,6 @@ const OrderStatus = () => {
   const queryParams = new URLSearchParams(location.search);
 
   const cartItems = useSelector((store) => store.cart.items);
-  console.log("cartItems la:", cartItems);
   const dispatch = useDispatch();
 
 
@@ -40,7 +39,6 @@ const OrderStatus = () => {
       );
       const result = await response.json();
       if (result.respCode === "000") {
-        console.log("Delete cart item successfully");
         dispatch(removeFromCart(itemId));
       }
     } catch (error) {
@@ -50,7 +48,6 @@ const OrderStatus = () => {
 
   const handleOrderProcessing = async () => {
     const order = JSON.parse(localStorage.getItem("order"));
-    console.log("order la:", order);
     if (status === "success") {
       try {
 

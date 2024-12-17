@@ -176,7 +176,6 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
 
     const handleAddProduct = (values) => {
         const fetchAddProduct = async () => {
-            console.log(values);
             const response = await fetchWithAuth(summaryApi.addProduct.url, {
                 method: summaryApi.addProduct.method,
                 headers: {

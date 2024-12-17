@@ -17,7 +17,6 @@ function Checkout() {
 
   useEffect(() => {
     const storedAddress = localStorage.getItem("selected-address-id");
-    console.log("selectedAddress at checkout ", storedAddress);
 
     if (storedAddress) {
       setSelectedAddress(JSON.parse(storedAddress));

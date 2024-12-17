@@ -67,11 +67,9 @@ const ChatWidget = () => {
         () => {
           console.log("Connected to WebSocket");
           stompClient.current.subscribe(`/topic/conversation/${conversation.id}`, (data) => {
-            console.log("Received data:", data.body);
             const response = JSON.parse(data.body);
             if (response.respCode === "000") {
               const conv = response.data;
-              console.log("Received conversation:", conv);
               setConversation(conv);
             }
           });
@@ -100,7 +98,6 @@ const ChatWidget = () => {
         content: message,
         conversationId: conversation.id,
       };
-      console.log("Sending message:", chatMessage);
       stompClient.current.send(`/app/chat/${conversation.id}`, {}, JSON.stringify(chatMessage));
 
       setMessage("");

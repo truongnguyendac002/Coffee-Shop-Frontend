@@ -48,7 +48,6 @@ const Filter = ({ onFilter, products ,onClickFilter }) => {
         : true  ;
       return inPriceRange && matchesBrand;
     });
-    console.log(" setFilteredProducts(filtered);" , filtered )
     onClickFilter();
     onFilter(filtered);
   };

@@ -20,7 +20,6 @@ const OrderDetails = ({ orderId, onClose }) => {
   const [currentProduct, setCurrentProduct] = useState(null); 
   const [rating, setRating] = useState(0); 
   const [comment, setComment] = useState(""); 
-  console.log(orderDetail);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -168,7 +167,6 @@ const OrderDetails = ({ orderId, onClose }) => {
     },
   ];
 
-  console.log(orderDetail)
   return (
     <Modal
       title="Order Detail"

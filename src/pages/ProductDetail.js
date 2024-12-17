@@ -165,7 +165,6 @@ const ProductDetail = () => {
 
       const data = await response.json();
       if (data.respCode === "000") {
-        console.log("abc", data.data);
         dispatch(addToCart(data.data));
         message.success("Đã thêm sản phẩm vào giỏ hàng");
 
@@ -242,7 +241,6 @@ const ProductDetail = () => {
 
         const data = await response.json();
         if (data.respCode === "000") {
-          console.log("favorites", data);
           dispatch(addToFavorites(product));
           dispatch(setFavorites([...favorites, { product }]));
 
@@ -312,7 +310,6 @@ const ProductDetail = () => {
     }
   };
 
-  console.log("product", product);
   return (
     <div className="container mx-auto mt-3">
       <div className="shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row ">

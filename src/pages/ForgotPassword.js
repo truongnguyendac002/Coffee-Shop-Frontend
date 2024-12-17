@@ -21,7 +21,6 @@ function ForgotPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(`Email gửi yêu cầu reset: ${email}`);
     
     try { 
       const forgotPassResponse = await fetch(

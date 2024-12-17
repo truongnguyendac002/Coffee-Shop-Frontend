@@ -64,7 +64,6 @@ const ListProduct = ({ products: initialProducts, title }) => {
     }
   }, [initialProducts]);
 
-  // console.log(products[0]);
   return (
     <div className="container bg-white shadow-md p-3 mx-auto mt-10 ">
       {title && (
