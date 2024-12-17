@@ -20,6 +20,7 @@ const OrderDetails = ({ orderId, onClose }) => {
   const [currentProduct, setCurrentProduct] = useState(null); 
   const [rating, setRating] = useState(0); 
   const [comment, setComment] = useState(""); 
+  console.log(orderDetail);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -80,6 +81,16 @@ const OrderDetails = ({ orderId, onClose }) => {
       const data = await response.json();
       if (data.respCode === "000") {
         message.success("Review submitted successfully");
+        
+        setOrderDetail((prevOrderDetail) => {
+          const updatedOrderItems = prevOrderDetail.orderItems.map((item) =>
+            item.orderItemId === currentProduct.orderItemId
+              ? { ...item, isReviewed: true } // Cập nhật isReviewed thành true
+              : item
+          );
+          return { ...prevOrderDetail, orderItems: updatedOrderItems };
+        });
+  
         setIsReviewModalVisible(false);
       } else {
         message.error("Error submitting review");
@@ -146,7 +157,7 @@ const OrderDetails = ({ orderId, onClose }) => {
             </Tag>
           ) : (
             <Button type="primary" onClick={() => handleRateProduct(record)}>
-              Rate Product
+              Review Product
             </Button>
           )
         ) : (

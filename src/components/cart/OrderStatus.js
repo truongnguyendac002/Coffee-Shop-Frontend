@@ -160,12 +160,12 @@ const OrderStatus = () => {
             >
               Tiếp tục mua hàng
             </button>
-            <button
+            {/* <button
               onClick={() => navigate("/order-detail")}
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
             >
               Xem chi tiết đơn hàng
-            </button>
+            </button> */}
           </div>
         </div>
       ) : (
