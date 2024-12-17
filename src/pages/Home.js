@@ -26,11 +26,6 @@ const Home = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const favorites = useSelector(selectFavorites);
 
-  useEffect(() => {
-    if (user && user.roleName === "ROLE_ADMIN") {
-      navigate("/admin");
-    }
-  }, [user, navigate]);
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -87,7 +82,10 @@ const Home = () => {
     }
   }, [user, dispatch, favorites.length]);
 
-  if (isCartLoading) {
+  if ( user?.roleName === "ROLE_ADMIN") {
+    navigate("/admin");
+  }
+  else if (isCartLoading) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     return (

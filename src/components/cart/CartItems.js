@@ -15,7 +15,6 @@ import { message } from "antd";
 import image1 from "../../assets/img/empty.jpg";
 
 const CartItems = ({ cartItems }) => {
-  console.log("cart Item ", cartItems);
   const dispatch = useDispatch();
 
   const [errorItemId, setErrorItemId] = useState(null);
@@ -27,7 +26,6 @@ const CartItems = ({ cartItems }) => {
       const updatedItem = { ...item, quantity: value };
       setErrorItemId(null);
       try {
-        console.log("da chay den day");
         if (updatedCartItems(updatedItem)) {
           dispatch(addToCart(updatedItem));
         } else console.log("update false");
@@ -37,7 +35,6 @@ const CartItems = ({ cartItems }) => {
     }
   };
   const updatedCartItems = async (item) => {
-    console.log("da chay den day 2");
     try {
       const response = await fetchWithAuth(summaryApi.updateCartItem.url, {
         method: summaryApi.updateCartItem.method,
@@ -48,7 +45,6 @@ const CartItems = ({ cartItems }) => {
         }),
       });
       const result = await response.json();
-      console.log("result", result);
       if (result.respCode === "000") {
         return true;
       }
@@ -78,7 +74,6 @@ const CartItems = ({ cartItems }) => {
       );
       const result = await response.json();
       if (result.respCode === "000") {
-        console.log("Delete cart item successfully");
         message.success("Delete cart item successfully");
         dispatch(removeFromCart(itemId));
       }

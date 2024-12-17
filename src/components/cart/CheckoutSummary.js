@@ -8,7 +8,6 @@ import fetchWithAuth from "../../helps/fetchWithAuth";
 import { Radio } from 'antd';
 
 const CheckoutSummary = ({selectedAddress}) => {
-  console.log("selectedAddress at checkout ", selectedAddress);
   // Lay Cac Item Trong Cart
   const cartItems = useSelector((store) => store.cart.items)
   const [paymentMethod, setPaymentMethod] = useState("COD");
@@ -31,7 +30,6 @@ const CheckoutSummary = ({selectedAddress}) => {
 
   // Thuc lam tu day
   const handleCheckout = async () => {
-    console.log("selectedAddressId at checkout ", selectedAddress);
     const order = {
       OrderItems: selectedItems.map(item => ({
         ProductItemId: item.productItemResponse.id,
@@ -55,7 +53,6 @@ const CheckoutSummary = ({selectedAddress}) => {
         })
 
         const response = await createOnlinePayment.json();
-        console.log(response)
         if (response.respCode === "000") {
           window.location.href = response.data.URL
         } else {
@@ -66,8 +63,6 @@ const CheckoutSummary = ({selectedAddress}) => {
     } catch (error) {
 
     }
-
-    console.log("selectedItems at checkout ", selectedItems);
 
   }
 
@@ -107,9 +102,6 @@ const CheckoutSummary = ({selectedAddress}) => {
           <Radio value="VNPay">Online Payment (VNPay)</Radio>
         </Radio.Group>
       </div>
-      {console.log("Disabled condition:", (subtotal <= 0 || !selectedAddress))}
-      {console.log("subtotal condition:", (subtotal <= 0 ))}
-      {console.log("selectedAddress condition:", ( !selectedAddress))}
 
       <button
         className={`w-full py-2 text-lg font-semibold rounded-md mt-2  text-black 

@@ -28,7 +28,6 @@ const BrandTable = ({ brands, setBrands }) => {
     const handleAddOrUpdateBrand = (values) => {
         const url = currentBrand ? `${summaryApi.updateBrand.url}/${currentBrand.id}` : summaryApi.addBrand.url;
         const method = currentBrand ? summaryApi.updateBrand.method : summaryApi.addBrand.method;
-        console.log(url, method);
 
         const fetchAddOrUpdateBrand = async () => {
             const response = await fetchWithAuth(url, {

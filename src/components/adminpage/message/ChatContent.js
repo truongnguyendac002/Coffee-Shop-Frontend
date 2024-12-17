@@ -132,7 +132,6 @@ const ChatContent = () => {
                 }`}
               onClick={() => setselectedConversationId(conversation.id)}
             >
-              {console.log(conversation)}
               <List.Item.Meta
                 avatar={
                   <Avatar

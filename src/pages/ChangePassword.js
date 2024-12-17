@@ -60,7 +60,6 @@ function ChangePassword() {
           toast.success(changePassResult.respDesc);
           dispatch(clearEmail());
           navigate("/login");
-          console.log("oke change Password ");
         }
       } catch (error) {
         toast.error(error);

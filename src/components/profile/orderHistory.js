@@ -91,7 +91,6 @@ const OrderHistory = React.memo(() => {
   return (
     <div className="max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Order History</h1>
-      {console.log("order", orders)}
       <Table
         columns={columns}
         dataSource={orders
