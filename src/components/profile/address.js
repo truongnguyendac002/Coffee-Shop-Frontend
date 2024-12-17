@@ -188,9 +188,9 @@ const ShippingAddress = ({ setLoading }) => {
                     `}>
 
                         <div className="flex-1" >
-                            <h3 className="font-semibold">{address.receiverName}</h3>
-                            <p className="text-gray-700">Location: {address.location}</p>
-                            <p className="text-gray-500">Phone: {address.receiverPhone}</p>
+                            <h3 > <span className='font-semibold'>Name: </span> {address.receiverName}</h3>
+                            <p ><span className='font-semibold'>Location: </span> {address.location}</p>
+                            <p><span className='font-semibold'>Phone: </span> {address.receiverPhone}</p>
                         </div>
                         <div className="flex space-x-2">
                             <Button type="link" icon={<EditOutlined />} className="text-gray-500" onClick={() => showModal(address)}>
