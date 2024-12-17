@@ -109,7 +109,7 @@ const OrderStatus = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+    <div className="flex flex-col items-center justify-center bg-gray-50">
       {status === "success" ? (
         <div className="p-6 bg-white border border-gray-200 shadow-lg rounded-md text-center">
           <div className="text-green-500">

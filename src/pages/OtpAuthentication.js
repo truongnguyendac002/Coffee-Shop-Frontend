@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 
 function OtpAuthentication() {
   const [otp, setOtp] = useState(["", "", "", ""]);
+  const [error ,setError] = useState("");
 
   const email = useSelector((state) => state.forgotPassword.email);
 
@@ -45,10 +46,11 @@ function OtpAuthentication() {
       );
 
       const otpResult = await otpResponse.json();
-      if (otpResult.respCode === "000") {
+      if (otpResult.respCode === "000" || otpResult.respCode === "404" ) {
         toast.success(otpResult.respDesc);
         navigate("/change-password");
-      } else {
+      } else  {
+        setError(otpResult.respDesc);
         toast.error(otpResult.respDesc);
       }
     } catch (error) {
@@ -83,6 +85,8 @@ function OtpAuthentication() {
               />
             ))}
           </div>
+
+          {error && <p className="text-sm text-red-500 my-2">{error}</p>}
 
           <button
             type="submit"

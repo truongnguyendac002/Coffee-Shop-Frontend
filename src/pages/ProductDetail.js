@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import summaryApi from "../common";
-import { FaStar } from "react-icons/fa6";
 import { FaHeart } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa6";
@@ -20,6 +19,7 @@ import {
 } from "../store/favoritesSlice ";
 import ListReview from "../components/layout/ListReview";
 import ProductRating from "../components/layout/ProductRating";
+import DescriptionProduct from "../components/layout/DescriptionProduct";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -63,6 +63,7 @@ const ProductDetail = () => {
 
   useEffect(() => {
     const fetchProductItems = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(summaryApi.productItem.url + `${id}`, {
           method: summaryApi.productItem.method,
@@ -74,6 +75,11 @@ const ProductDetail = () => {
         if (result.respCode === "000") {
           setProductItems(result.data);
           console.log("ProductItem ", result.data);
+
+          setProduct(result.data[0].productResponse);
+          setImages(result.data[0].productResponse.images);
+          setCurrentImage(0);
+
           if (result.data.length > 0) {
             setProductItemPrice(result.data[0].price);
           }
@@ -82,38 +88,12 @@ const ProductDetail = () => {
         }
       } catch (error) {
         console.log("Error:", error);
-      }
-    };
-
-    fetchProductItems();
-  }, [id]);
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(summaryApi.productDetails.url + `${id}`, {
-          method: summaryApi.productDetails.method,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const result = await response.json();
-        if (result.respCode === "000") {
-          setProduct(result.data);
-          setImages(result.data.images);
-          setCurrentImage(0);
-        } else {
-          console.log("Error:", result.respDesc);
-        }
-      } catch (error) {
-        console.log("Error:", error);
-      } finally {
+      }finally {
         setIsLoading(false);
       }
     };
 
-    fetchProduct();
+    fetchProductItems();
   }, [id]);
 
   const handlePrevClick = () => {
@@ -154,8 +134,8 @@ const ProductDetail = () => {
       return;
     }
     try {
-      const response = await fetchWithAuth(summaryApi.addCartitem.url, {
-        method: summaryApi.addCartitem.method,
+      const response = await fetchWithAuth(summaryApi.addCartItem.url, {
+        method: summaryApi.addCartItem.method,
         body: JSON.stringify({
           ProductItemId: productItem.id,
           Quantity: quantity,
@@ -173,7 +153,7 @@ const ProductDetail = () => {
         throw new Error("Lỗi khi thêm vào giỏ hàng");
       }
     } catch (error) {
-      console.log("Lỗi khi thêm vào giỏ hàng:", error);
+      console.log("Lỗi khi thêm vào giỏ hàng:  d", error);
     }
   };
 
@@ -260,49 +240,7 @@ const ProductDetail = () => {
     }
     switch (activeTab) {
       case "Description":
-        return (
-          <>
-            <h2 className="text-xl font-bold lg:mt-10 mt-6 ">
-              Chi tiết sản phẩm
-            </h2>
-            <div className="container mx-auto lg:mt-8 mt-4">
-              <div className="bg-white shadow-lg rounded-lg p-6">
-                <ul>
-                  <li className="flex justify-start border-b py-2">
-                    <span className="font-semibold md:w-1/4 w-1/3">
-                      Thương hiệu:
-                    </span>
-                    <span>{product.brand.name}</span>
-                  </li>
-                  <li className="flex justify-start border-b py-2">
-                    <span className="font-semibold md:w-1/4 w-1/3">
-                      Xuất xứ:
-                    </span>
-                    <span>Việt Nam </span>
-                  </li>
-                  <li className="flex justify-start border-b py-2">
-                    <span className="font-semibold md:w-1/4 w-1/3">
-                      Loại thực phẩm:
-                    </span>
-                    <span>Đồ uống </span>
-                  </li>
-                  <li className="flex justify-start border-b py-2">
-                    <span className="font-semibold md:w-1/4 w-1/3">
-                      Loại Cafe:
-                    </span>
-                    <span>{product.category.name}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <h2 className="text-xl font-bold mt-4">Mô tả sản phẩm</h2>
-            <p className="mt-2">
-              {product?.description
-                ? product.description
-                : "Không có mô tả sản phẩm"}
-            </p>
-          </>
-        );
+        return <DescriptionProduct product={product} />
       case "Review":
         return <ListReview productId={product.id} />;
       default:
