@@ -8,7 +8,6 @@ import summaryApi from '../../../common';
 const UserTable = ({ userList, setUserList }) => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
-    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const searchInput = useRef(null);
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -195,40 +194,17 @@ const UserTable = ({ userList, setUserList }) => {
         },
 
     ];
-    const onSelectChange = (newSelectedRowKeys) => {
-        setSelectedRowKeys(newSelectedRowKeys);
-    };
+   
 
-    const rowSelection = {
-        selectedRowKeys,
-        onChange: onSelectChange,
-    };
 
     return (
         <div>
             <Table
                 className='rounded-lg'
-                rowSelection={{
-                    type: 'checkbox',
-                    ...rowSelection,
-                }}
+               
                 columns={columns}
                 dataSource={userList}
                 rowKey="id"
-                onRow={(record) => ({
-                    onClick: () => {
-                        const selectedKeys = [...selectedRowKeys];
-                        const selectedIndex = selectedKeys.indexOf(record.id);
-
-                        if (selectedIndex >= 0) {
-                            selectedKeys.splice(selectedIndex, 1);
-                        } else {
-                            selectedKeys.push(record.id);
-                        }
-
-                        setSelectedRowKeys(selectedKeys);
-                    },
-                })}
             />
 
         </div>

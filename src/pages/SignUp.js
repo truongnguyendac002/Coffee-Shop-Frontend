@@ -138,7 +138,7 @@ const SignUp = () => {
 
             <button
               type="submit"
-              className="w-full py-2 px-4 bg-yellow-500 text-black font-semibold rounded-md shadow hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+              className="w-full py-2 px-4 bg-yellow-400 text-black font-semibold rounded-md shadow hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
             >
               Sign Up
             </button>
