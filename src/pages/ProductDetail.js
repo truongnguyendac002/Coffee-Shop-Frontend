@@ -39,13 +39,17 @@ const ProductDetail = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const user = useSelector((store) => store?.user?.user);
+  const cartItems = useSelector((store) => store.cart.items);
   const favorites = useSelector(selectFavorites);
+  const selectedItems = cartItems
+  ? cartItems.filter((item) => item.isSelected)
+  : [];
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const maxQuantity = itemStock;
-  const tabs = ["Description", "Review", "Similar"];
+  const tabs = ["Description", "Review"];
 
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -70,6 +74,7 @@ const ProductDetail = () => {
         const result = await response.json();
         if (result.respCode === "000") {
           setProductItems(result.data);
+          console.log("ProductItem " ,result.data )
           if (result.data.length > 0) {
             setProductItemPrice(result.data[0].price);
           }
@@ -146,11 +151,11 @@ const ProductDetail = () => {
 
   const handleAddProductToCart = async () => {
     if (!productItem) {
-      setError("Bạn cần chọn kích thước sản phẩm trước khi thêm vào giỏ hàng!");
+      setError("Bạn cần chọn loại sản phẩm trước khi thêm vào giỏ hàng!");
       return;
     }
-
     try {
+
       const response = await fetchWithAuth(summaryApi.addCartitem.url, {
         method: summaryApi.addCartitem.method,
         body: JSON.stringify({
@@ -179,12 +184,23 @@ const ProductDetail = () => {
   };
 
   const handleBuyNow = async () => {
-    const addedProduct = await handleAddProductToCart();
-    if (addedProduct) {
-      dispatch(toggleSelected(addedProduct.id));
-      navigate("/checkout");
+    try {
+      const addedProduct = await handleAddProductToCart();
+      if (addedProduct) {
+        const isSelected = selectedItems.some(item => item.id === addedProduct.id);
+  
+        if (!isSelected) {
+          dispatch(toggleSelected(addedProduct.id));
+        }
+        navigate("/checkout");
+      }
+    } catch (error) {
+      console.error("Lỗi khi thực hiện mua ngay:", error);
+      message.error("Không thể thực hiện mua ngay. Vui lòng thử lại sau.");
     }
   };
+  
+  
 
   const handleClickFavorites = async () => {
     const isAlreadyFavorite = isFavorite;
@@ -281,8 +297,6 @@ const ProductDetail = () => {
         );
       case "Review":
         return <ListReview productId={product.id} />;
-      case "Similar":
-        return <p>Similar products content goes here.</p>;
       default:
         return null;
     }
