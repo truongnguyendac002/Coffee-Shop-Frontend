@@ -1,5 +1,5 @@
 
-const backendDomain = "http://localhost:8080/api";
+const backendDomain = "https://coffee-shop-backend.azurewebsites.net/api";
 
 const summaryApi = {
     getConversationOfUser: {

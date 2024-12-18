@@ -46,7 +46,7 @@ const ChatContent = () => {
 
   useEffect(() => {
     setLoading(true);
-    const socketFactory = () => new SockJS("http://localhost:8080/ws");
+    const socketFactory = () => new SockJS("https://coffee-shop-backend.azurewebsites.net/ws");
     stompClient.current = Stomp.over(socketFactory);
     stompClient.current.connect(
       {},
