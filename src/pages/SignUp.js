@@ -16,6 +16,8 @@ import EmailInput from "../components/validateInputForm/EmailInput";
 const SignUp = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState(""); 
 
   const { fetchUserDetails } = useContext(Context);
 
@@ -120,12 +122,13 @@ const SignUp = () => {
           </div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
-            <EmailInput onEmailChange={handleOnchange} />
+            <EmailInput onEmailChange={handleOnchange} setErrors={setEmailError}/>
             <PasswordInput
               label={"Password"}
               placeholder={"Enter password"}
               name={"password"}
               onChange={handleOnchange}
+              setErrors={setPasswordError}
             />
 
             <PasswordInput
@@ -133,12 +136,19 @@ const SignUp = () => {
               placeholder={"Enter confirmPassword"}
               name={"confirmPassword"}
               onChange={handleOnchange}
+              setErrors={setPasswordError}
+
             />
             {error && <p className="text-sm text-red-500 my-2">{error}</p>}
 
             <button
               type="submit"
-              className="w-full py-2 px-4 bg-yellow-400 text-black font-semibold rounded-md shadow hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+              className={`w-full py-2 px-4 text-black font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                (passwordError  || emailError)
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-yellow-300 hover:bg-yellow-400 focus:ring-yellow-500"
+              }`}
+              disabled={passwordError || emailError}
             >
               Sign Up
             </button>
