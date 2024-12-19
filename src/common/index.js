@@ -87,7 +87,7 @@ const summaryApi = {
         url: `${backendDomain}/cart/user/`,
         method: "GET"
     },
-    addCartitem: {
+    addCartItem: {
         url: `${backendDomain}/cart/item`,
         method: "POST"
     },

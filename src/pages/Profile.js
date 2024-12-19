@@ -186,7 +186,7 @@ const Profile = () => {
           dataSource={[
             { key: "personalInfo", title: "Personal info", icon: <UserOutlined className="text-2xl " /> },
             { key: "addresses", title: "Addresses", icon: <FiHome className="text-2xl " /> },
-            { key: "communications", title: "Communications & privacy", icon: <FiMail className="text-2xl " /> },
+            
           ]}
           renderItem={(item) => (
             <List.Item

@@ -40,7 +40,7 @@ const CartItems = ({ cartItems }) => {
         method: summaryApi.updateCartItem.method,
         body: JSON.stringify({
           Quantity: item.quantity,
-          ProductItemId: item.productItem.id,
+          ProductItemId: item.productItemResponse.id,
           UserId: item.userId,
         }),
       });

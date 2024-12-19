@@ -14,16 +14,26 @@ import EmailInput from "../components/validateInputForm/EmailInput";
 import PasswordInput from "../components/validateInputForm/PasswordInput";
 
 const SignIn = () => {
+  const [emailError, setEmailError] = useState(""); 
+  const [passwordError, setPasswordError] = useState(""); 
+  const [errors , setErrors] = useState("")
+
   const [data, setData] = useState({
     email: "",
     password: "",
   });
+
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.{8,})/; 
+    return regex.test(password);
+  };
 
   const { fetchUserDetails } = useContext(Context);
   const navigate = useNavigate();
 
   const handleOnchange = (e) => {
     const { name, value } = e.target;
+    setErrors(false);
 
     setData((pre) => {
       return {
@@ -33,12 +43,14 @@ const SignIn = () => {
     });
   };
 
-  const googleLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/google"
-  }
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!validatePassword(data.password)) {
+      setErrors("Thông tin email hoặc mật khẩu không chính xác!");
+      return;
+    }
     try {
       const loginResponse = await fetch(summaryApi.signIn.url, {
         method: summaryApi.signIn.method,
@@ -52,12 +64,12 @@ const SignIn = () => {
       if (loginResult.respCode === "000") {
         navigate("/");
         message.success("Login Successfully !");
-
         const { accessToken, refreshToken } = loginResult.data;
         Cookies.set("token", accessToken);
         Cookies.set("refreshToken", refreshToken);
         fetchUserDetails();
       } else {
+        setErrors("Thông tin email hoặc mật khẩu không chính xác!")
         toast.error(loginResult.data);
       }
     } catch (error) {
@@ -95,13 +107,15 @@ const SignIn = () => {
           </p>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <EmailInput onEmailChange={handleOnchange} />
+            {errors && (<p className="text-sm text-red-500 my-2 ">{errors}</p>)}
+            <EmailInput onEmailChange={handleOnchange} setErrors={setEmailError} />
 
             <PasswordInput
               label={"Password"}
               placeholder={"Enter password"}
               name={"password"}
               onChange={handleOnchange}
+              setErrors={setPasswordError}
             />
 
             <div className="text-right">
@@ -116,18 +130,16 @@ const SignIn = () => {
 
             <button
               type="submit"
-              className="w-full py-2 px-4 bg-yellow-300 text-black font-semibold rounded-md shadow hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+              className={`w-full py-2 px-4 text-black font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                (passwordError || emailError || errors )
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-yellow-300 hover:bg-yellow-400 focus:ring-yellow-500"
+              }`}
+              disabled={passwordError}
             >
               Sign in
             </button>
 
-            <button
-              type="button"
-              onClick= {googleLogin}
-              className="mt-2 w-full py-2 px-4 bg-gray-200 text-black font-semibold rounded-md shadow hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            >
-              Sign in with Gmail
-            </button>
           </form>
 
           <div className="flex items-center mt-6 space-x-3 justify-center">

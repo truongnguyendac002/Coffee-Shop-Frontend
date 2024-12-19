@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import InPutForm from "./InPutForm";
 
-function EmailInput({ onEmailChange }) {
+function EmailInput({ onEmailChange , setErrors}) {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
@@ -13,17 +13,12 @@ function EmailInput({ onEmailChange }) {
   const handleBlur = () => {
     if(!validateEmail(email)) {
       setError("Email không hợp lệ")
+      setErrors(true);
     }else {
       setError(false);
+      setErrors(false);
     }
   }
-
-  // const handleChange = (e) => {
-  //   const value = e.target.value;
-  //   setEmail(value);
-  //   setError(false);
-  //   return onEmailChange(value);
-  // };
 
   const handleChange = (e) => {
     const value = e.target.value;

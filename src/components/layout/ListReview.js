@@ -1,67 +1,72 @@
 import React, { useEffect, useState } from "react";
 import ReviewItem from "./ReviewItem";
 import summaryApi from "../../common";
+import { Pagination } from "antd";
+import image1 from "../../assets/img/user-default.jpg";
 
-const ListReview = ({productId}) => {
-
-  const [reviews, setReviews] = useState([]) ;
-  // const reviewList = [
-  //   {
-  //     id: 1,
-  //     Name: "huynh_anh2110",
-  //     rating: 4.5,
-  //     date: "2024-09-16 19:21",
-  //     comment: "Chất lượng sản phẩm: ổn",
-  //   },
-  //   {
-  //     id: 2,
-  //     Name: "trang_anh123",
-  //     rating: 5,
-  //     date: "2024-09-18 14:10",
-  //     comment: "Sản phẩm tuyệt vời, sẽ quay lại mua tiếp!",
-  //   },
-  //   {
-  //     id: 3,
-  //     Name: "nguyen_kien",
-  //     rating: 3,
-  //     date: "2024-09-20 11:30",
-  //     comment: "Chất lượng trung bình, không như kỳ vọng.",
-  //   },
-  // ];
+const ListReview = ({ productId }) => {
+  const [reviews, setReviews] = useState([]);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const fetchReview = async() => {
-      const response = await fetch(summaryApi.getReviewByProductId.url + productId , {
-        method: summaryApi.getReviewByProductId.method ,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }); 
+    const fetchReview = async () => {
+      const response = await fetch(
+        summaryApi.getReviewByProductId.url + productId,
+        {
+          method: summaryApi.getReviewByProductId.method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const result = await response.json();
-      if(result.respCode === "000") {
-        setReviews(result.data) ; 
-      }else {
-        console.log("error Review" , result.respDesc) ;
+      if (result.respCode === "000") {
+        console.log("review", result);
+        setReviews(result.data);
+        setTotalReviews(result.data.length)
+      } else {
+        console.log("error Review", result.respDesc);
       }
-    } 
-    fetchReview()
-  } , [productId])
+    };
+    fetchReview();
+  }, [productId]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+   
+  };
+
+  const pageSize =  5;
+  const startIndex = (currentPage - 1) * pageSize;
+  const currentReviews = reviews.slice(startIndex, startIndex + pageSize);
 
   return (
     <div className="bg-white p-5 mt-10">
       <div>
-        <h3 className="md:text-xl text-base font-normal mb-5">ĐÁNH GIÁ SẢN PHẨM  </h3>
+        <h3 className="md:text-xl text-base font-normal mb-5">
+          ĐÁNH GIÁ SẢN PHẨM{" "}
+        </h3>
       </div>
-      {reviews.map((review) => (
+      {currentReviews.map((review) => (
         <ReviewItem
           key={review.id}
-          avatar={review.userAvatar}
-          username={review.Name || review.userEmail}
+          avatar={review.userAvatar || image1}
+          username={review.Name || `user ${review.userId}`}
           rating={review.rating}
           date={review.createAt}
           comment={review.comment}
         />
       ))}
+
+      <div className="mt-5 flex justify-center">
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={totalReviews}
+          onChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 
 function OtpAuthentication() {
   const [otp, setOtp] = useState(["", "", "", ""]);
+  const [error ,setError] = useState("");
 
   const email = useSelector((state) => state.forgotPassword.email);
 
@@ -83,6 +84,8 @@ function OtpAuthentication() {
               />
             ))}
           </div>
+
+          {error && <p className="text-sm text-red-500 my-2">{error}</p>}
 
           <button
             type="submit"
