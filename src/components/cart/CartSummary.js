@@ -52,8 +52,8 @@ const CartSummary = () => {
         <button
           className={`w-full py-2 md:text-lg text-base font-semibold rounded-md mt-2  text-black
              ${subtotal <= 0
-              ? "bg-yellow-500 cursor-not-allowed opacity-50"
-              : "bg-yellow-400 hover:bg-yellow-500 hover:text-black"
+              ? "bg-yellow-400 cursor-not-allowed opacity-50"
+              : "bg-yellow-300 hover:bg-yellow-400 hover:text-black"
             }`}
         >
           Continue to checkout

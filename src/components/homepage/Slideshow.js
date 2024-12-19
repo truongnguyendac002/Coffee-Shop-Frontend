@@ -8,20 +8,22 @@ const slides = [
 
 const Slideshow = () => {
   return (
-    <div className="w-full mt-10 ">
-    <Carousel autoplay effect="fade">
-      {slides.map((slide) => (
-        <div key={slide.id} className="relative w-full h-64 overflow-hidden rounded-md">
-          <img
-            src={slide.image}
-            alt="Slideshow"
-            className="w-full h-full object-cover "
-          />
-        </div>
-      ))}
-    </Carousel>
-  </div>
-  
+    <div className="w-full mt-10 px-4">
+      <Carousel autoplay effect="fade" dots className="rounded-md">
+        {slides.map((slide) => (
+          <div
+            key={slide.id}
+            className="relative w-full sm:h-64 md:h-80 overflow-hidden rounded-md"
+          >
+            <img
+              src={slide.image}
+              alt="Slideshow"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))}
+      </Carousel>
+    </div>
   );
 };
 
