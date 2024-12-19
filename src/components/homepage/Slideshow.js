@@ -1,11 +1,9 @@
 import React from "react";
 import { Carousel } from "antd";
-import image from "../../assets/img/image4.jpg"
 
 const slides = [
   { id: 1, image: "https://sondnpt00343.github.io/f8-project-08/assets/img/slideshow/item-1.png" },
-  { id: 2, image: image},
-  { id: 3, image: "https://sondnpt00343.github.io/f8-project-08/assets/img/slideshow/item-1.png" },
+  { id: 2, image: "https://sondnpt00343.github.io/f8-project-08/assets/img/slideshow/item-1.png" }
 ];
 
 const Slideshow = () => {

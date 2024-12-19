@@ -23,7 +23,8 @@ const OrderStatus = () => {
   const transactionNo = queryParams.get("transactionNo");
   const amount = queryParams.get("amount");
   const payDate = queryParams.get("payDate");
-  const user = JSON.parse(localStorage.getItem("user"));
+  // const user = JSON.parse(localStorage.getItem("user"));
+  const user = useSelector((state) => state.user.user, (prev, next) => prev === next);
 
   const handleBackToHome = () => {
     navigate("/");

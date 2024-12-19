@@ -87,6 +87,11 @@ function App() {
     }
   }, [fetchUserDetails, user]);
 
+  useEffect(() => {
+    document.title = 'Coffee Shop';
+  }, []);
+
+
   return (
     <Context.Provider value={{ fetchUserDetails }}>
       <Outlet />
