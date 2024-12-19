@@ -46,10 +46,10 @@ function OtpAuthentication() {
 
       const otpResult = await otpResponse.json();
       if (otpResult.respCode === "000") {
-        toast.success(otpResult.respDesc);
+        toast.success(otpResult.data);
         navigate("/change-password");
       } else {
-        toast.error(otpResult.respDesc);
+        toast.error(otpResult.data);
       }
     } catch (error) {
       console.log("error", error);

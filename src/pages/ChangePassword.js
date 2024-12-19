@@ -57,7 +57,7 @@ function ChangePassword() {
         const changePassResult = await changePasswordResponse.json();
 
         if (changePassResult.respCode === "000") {
-          toast.success(changePassResult.respDesc);
+          toast.success(changePassResult.data);
           dispatch(clearEmail());
           navigate("/login");
         }

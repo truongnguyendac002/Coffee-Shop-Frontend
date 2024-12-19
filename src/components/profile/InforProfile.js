@@ -15,7 +15,7 @@ const Info = ({ visible, data, onClose, onSave }) => {
                 confirmPassword: "",
             };
             form.setFieldsValue(defaultData);
-    
+
         }
     }, [data, form]);
 
@@ -54,16 +54,16 @@ const Info = ({ visible, data, onClose, onSave }) => {
                     rules={[
                         { required: true, message: "Please enter your phone number" },
                     ]}
-                
+
                 >
-                    <Input  placeholder="Phone Number" />
+                    <Input placeholder="Phone Number" />
                 </Form.Item>
                 <Form.Item
                     label="Password"
                     name="password"
-                    
+
                 >
-                    <Password placeholder="Password"/>
+                    <Password placeholder="Password" />
                 </Form.Item>
                 <Form.Item
                     label="Confirm Password"
@@ -78,9 +78,9 @@ const Info = ({ visible, data, onClose, onSave }) => {
                             },
                         }),
                     ]}
-                
+
                 >
-                    <Password placeholder="Confirm Password"/>
+                    <Password placeholder="Confirm Password" />
                 </Form.Item>
             </Form>
         </Modal>
