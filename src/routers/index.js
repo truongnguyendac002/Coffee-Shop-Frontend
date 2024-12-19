@@ -173,8 +173,6 @@ const router = createBrowserRouter([
                 ]
 
             },
-
-
         ]
 
     }

@@ -74,8 +74,6 @@ const ProductDetail = () => {
         const result = await response.json();
         if (result.respCode === "000") {
           setProductItems(result.data);
-          console.log("ProductItem ", result.data);
-
           setProduct(result.data[0].productResponse);
           setImages(result.data[0].productResponse.images);
           setCurrentImage(0);
