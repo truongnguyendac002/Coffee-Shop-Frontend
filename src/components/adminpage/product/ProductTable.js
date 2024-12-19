@@ -414,13 +414,13 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
                             dropdownRender={(menu) => (
                                 <>
                                     {menu}
-                                    <Button
+                                    {/* <Button
                                         type="text"
                                         className="w-full text-left"
                                         onClick={() => setIsCategoryModalVisible(true)}
                                     >
                                         + Add New Category
-                                    </Button>
+                                    </Button> */}
                                 </>
                             )}
                         >
