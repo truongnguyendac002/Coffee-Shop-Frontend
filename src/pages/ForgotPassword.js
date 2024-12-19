@@ -38,15 +38,14 @@ function ForgotPassword() {
       );
 
       const forgotPassResult = await forgotPassResponse.json();
+      console.log("forgotPassResult", forgotPassResult);
       if (forgotPassResult.respCode === "000") {
         navigate("/otp-auth");
         toast.success("OTP đã được gửi đến email của bạn!");
-        
-      }else if (forgotPassResult.respCode ==="104") {
-        navigate("/otp-auth");
-        toast.info("OTP has already been sent and is still valid.")
-      }else if (forgotPassResponse.status === 404) {
-        toast.error("Email sai hoặc chưa được đăng ký ")
+      }
+ 
+      else  {
+        toast.error(forgotPassResult.data)
       }
     } catch (error) {
       console.log("error", error);

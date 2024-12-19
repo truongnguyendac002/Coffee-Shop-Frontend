@@ -16,10 +16,10 @@ import image1 from "../../assets/img/empty.jpg";
 const OrderDetails = ({ orderId, onClose }) => {
   const [orderDetail, setOrderDetail] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [isReviewModalVisible, setIsReviewModalVisible] = useState(false); 
-  const [currentProduct, setCurrentProduct] = useState(null); 
-  const [rating, setRating] = useState(0); 
-  const [comment, setComment] = useState(""); 
+  const [isReviewModalVisible, setIsReviewModalVisible] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -45,12 +45,12 @@ const OrderDetails = ({ orderId, onClose }) => {
     fetchOrderDetails();
   }, [orderId]);
 
- 
+
   const handleRateProduct = (record) => {
-    setCurrentProduct(record); 
-    setRating(0); 
-    setComment(""); 
-    setIsReviewModalVisible(true); 
+    setCurrentProduct(record);
+    setRating(0);
+    setComment("");
+    setIsReviewModalVisible(true);
   };
 
   const handleRatingChange = (value) => {
@@ -80,7 +80,7 @@ const OrderDetails = ({ orderId, onClose }) => {
       const data = await response.json();
       if (data.respCode === "000") {
         message.success("Review submitted successfully");
-        
+
         setOrderDetail((prevOrderDetail) => {
           const updatedOrderItems = prevOrderDetail.orderItems.map((item) =>
             item.orderItemId === currentProduct.orderItemId
@@ -89,7 +89,7 @@ const OrderDetails = ({ orderId, onClose }) => {
           );
           return { ...prevOrderDetail, orderItems: updatedOrderItems };
         });
-  
+
         setIsReviewModalVisible(false);
       } else {
         message.error("Error submitting review");
@@ -177,9 +177,10 @@ const OrderDetails = ({ orderId, onClose }) => {
           Close
         </Button>,
       ]}
-      width="60%" 
+      width="90%" // Giảm độ rộng modal trên thiết bị di động
       centered
       confirmLoading={loading}
+      className="max-w-full"
     >
       {loading ? (
         <p>Loading...</p>
@@ -188,7 +189,7 @@ const OrderDetails = ({ orderId, onClose }) => {
           <Descriptions
             bordered
             column={1}
-            style={{ fontSize: "16px", padding: "4px" }}
+            style={{ fontSize: "14px", padding: "4px" }} // Giảm kích thước font cho thiết bị di động
           >
             <Descriptions.Item
               label={<span style={{ fontWeight: "bold" }}>Order ID</span>}
@@ -216,7 +217,6 @@ const OrderDetails = ({ orderId, onClose }) => {
             </Descriptions.Item>
             <Descriptions.Item
               label={<span style={{ fontWeight: "bold" }}>Shipping Addr</span>}
-              ess
               style={{ padding: "8px" }}
             >
               {orderDetail.shippingAddress.location}
@@ -229,7 +229,7 @@ const OrderDetails = ({ orderId, onClose }) => {
             </Descriptions.Item>
           </Descriptions>
 
-          <h3 className="mt-4 mb-2">List Order Item:</h3>
+          <h3 className="mt-4 mb-2 text-lg font-semibold">List Order Items:</h3>
           <Table
             dataSource={orderDetail.orderItems.map((item, index) => ({
               ...item,
@@ -240,6 +240,7 @@ const OrderDetails = ({ orderId, onClose }) => {
             pagination={false}
             scroll={{ x: 600 }} // Cho phép cuộn ngang nếu tổng chiều rộng vượt quá 800px
             style={{ width: "100%" }} // Đảm bảo bảng chiếm toàn bộ chiều rộng phần tử cha
+            className="overflow-x-auto"
           />
         </>
       ) : (
@@ -250,7 +251,6 @@ const OrderDetails = ({ orderId, onClose }) => {
         title="Rate Product"
         open={isReviewModalVisible}
         onCancel={() => setIsReviewModalVisible(false)}
-       
         footer={[
           <Button key="cancel" onClick={() => setIsReviewModalVisible(false)}>
             Cancel
@@ -264,12 +264,14 @@ const OrderDetails = ({ orderId, onClose }) => {
             Submit Review
           </Button>,
         ]}
+        width="90%" // Giảm độ rộng modal trên thiết bị di động
+        centered
       >
         <div>
-          <h4>Rating</h4>
+          <h4 className="text-lg">Rating</h4>
           <Rate value={rating} onChange={handleRatingChange} />
 
-          <h4>Comment</h4>
+          <h4 className="text-lg mt-4">Comment</h4>
           <Input.TextArea
             rows={4}
             value={comment}

@@ -14,7 +14,7 @@ const PasswordInput = ({
   const [data, setData] = useState('');
   
   const validatePassword = (password) => {
-    const regex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.{8,})/; 
+    const regex = /^(?=.*[!@#$%^&*(),.?":{}|<>_\-+=/\\'`~])(?=.{8,})/
     return regex.test(password);
   };
 
@@ -27,9 +27,6 @@ const PasswordInput = ({
       setErrors(false);
     }
   }
-
-
-
   const handleChange = (e) => {
     const {value} = e.target;
 
