@@ -15,7 +15,6 @@ const OrderStatus = () => {
   const queryParams = new URLSearchParams(location.search);
 
   const cartItems = useSelector((store) => store.cart.items);
-  console.log("cartItems la:", cartItems);
   const dispatch = useDispatch();
 
 
@@ -40,7 +39,6 @@ const OrderStatus = () => {
       );
       const result = await response.json();
       if (result.respCode === "000") {
-        console.log("Delete cart item successfully");
         dispatch(removeFromCart(itemId));
       }
     } catch (error) {
@@ -50,7 +48,6 @@ const OrderStatus = () => {
 
   const handleOrderProcessing = async () => {
     const order = JSON.parse(localStorage.getItem("order"));
-    console.log("order la:", order);
     if (status === "success") {
       try {
 
@@ -81,8 +78,7 @@ const OrderStatus = () => {
                   TxnRef: txnRef,
                   PayDate: payDate,
                   Amount: amount,
-                  OrderId: responseOrder.data.id,
-                  UserId: user.id,
+                  OrderId: responseOrder.data
                 }),
               }
             );
@@ -135,36 +131,14 @@ const OrderStatus = () => {
             Đặt hàng thành công!
           </h1>
           <p className="text-gray-700 mt-2">
-            Cảm ơn bạn đã đặt hàng. Chúng tôi sẽ liên hệ để xác nhận đơn hàng.
+            Cảm ơn bạn đã đặt hàng. Mọi thắc mắc xin liên hệ với chúng tôi để được hỗ trợ!
           </p>
-          {txnRef && (
-            <div className="text-left mt-4 text-gray-600">
-              <p>
-                <strong>Mã giao dịch:</strong> {txnRef}
-              </p>
-              <p>
-                <strong>Số giao dịch:</strong> {transactionNo}
-              </p>
-              <p>
-                <strong>Số tiền:</strong> {amount} VND
-              </p>
-              <p>
-                <strong>Ngày thanh toán:</strong> {payDate}
-              </p>
-            </div>
-          )}
           <div className="mt-6 space-x-4">
             <button
               onClick={handleBackToHome}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
             >
               Tiếp tục mua hàng
-            </button>
-            <button
-              onClick={() => navigate("/order-detail")}
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-            >
-              Xem chi tiết đơn hàng
             </button>
           </div>
         </div>

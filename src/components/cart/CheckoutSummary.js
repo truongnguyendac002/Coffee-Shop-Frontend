@@ -31,7 +31,6 @@ const CheckoutSummary = ({selectedAddress}) => {
 
   // Thuc lam tu day
   const handleCheckout = async () => {
-    console.log("selectedAddressId at checkout ", selectedAddress);
     const order = {
       OrderItems: selectedItems.map(item => ({
         ProductItemId: item.productItemResponse.id,
@@ -49,13 +48,11 @@ const CheckoutSummary = ({selectedAddress}) => {
       if (paymentMethod === "COD") {
         navigate("/order-status?status=success")
       } else if (paymentMethod === "VNPay") {
-        const amount = total + "000"
-        const createOnlinePayment = await fetchWithAuth(summaryApi.createOnlinePayment.url + `?amount=${amount}`, {
+        const createOnlinePayment = await fetchWithAuth(summaryApi.createOnlinePayment.url + `?amount=${total}`, {
           method: summaryApi.createOnlinePayment.method,
         })
 
         const response = await createOnlinePayment.json();
-        console.log(response)
         if (response.respCode === "000") {
           window.location.href = response.data.URL
         } else {
@@ -66,8 +63,6 @@ const CheckoutSummary = ({selectedAddress}) => {
     } catch (error) {
 
     }
-
-    console.log("selectedItems at checkout ", selectedItems);
 
   }
 
