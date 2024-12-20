@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import img_login from "../assets/img/img-login.png";
 import Logo from "../components/layout/Logo";
-
+import { LoadingOutlined } from "@ant-design/icons";
 import summaryApi from "../common";
 import { toast } from "react-toastify";
 import { message } from "antd";
@@ -14,16 +14,27 @@ import EmailInput from "../components/validateInputForm/EmailInput";
 import PasswordInput from "../components/validateInputForm/PasswordInput";
 
 const SignIn = () => {
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [errors, setErrors] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const [data, setData] = useState({
     email: "",
     password: "",
   });
+
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.{8,})/;
+    return regex.test(password);
+  };
 
   const { fetchUserDetails } = useContext(Context);
   const navigate = useNavigate();
 
   const handleOnchange = (e) => {
     const { name, value } = e.target;
+    setErrors(false);
 
     setData((pre) => {
       return {
@@ -33,13 +44,16 @@ const SignIn = () => {
     });
   };
 
-  const googleLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/google"
-  }
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validatePassword(data.password)) {
+      setErrors("Thông tin email hoặc mật khẩu không chính xác!");
+      return;
+    }
     try {
+      setIsLoading(true);
       const loginResponse = await fetch(summaryApi.signIn.url, {
         method: summaryApi.signIn.method,
         body: JSON.stringify(data),
@@ -52,22 +66,25 @@ const SignIn = () => {
       if (loginResult.respCode === "000") {
         navigate("/");
         message.success("Login Successfully !");
-
         const { accessToken, refreshToken } = loginResult.data;
         Cookies.set("token", accessToken);
         Cookies.set("refreshToken", refreshToken);
         fetchUserDetails();
       } else {
-        toast.error(loginResult.data);
+        // setErrors("Thông tin email hoặc mật khẩu không chính xác!")
+        // toast.error(loginResult.data);
+        toast.error("Email hoặc mật khẩu không chính xác!");
       }
     } catch (error) {
       console.log("error Login", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
-      <div className="bg-gray-100 md:w-1/2 flex items-center justify-center p-8">
+      <div className="bg-gray-100 hidden md:w-1/2 md:flex items-center justify-center p-8">
         <div className="w-96 h-80 ">
           <img src={img_login} alt="img-Login" className="" />
           <p className="text-lg font-sans mb-4 mt-12 text-center">
@@ -95,13 +112,15 @@ const SignIn = () => {
           </p>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <EmailInput onEmailChange={handleOnchange} />
+            {errors && (<p className="text-sm text-red-500 my-2 ">{errors}</p>)}
+            <EmailInput onEmailChange={handleOnchange} setErrors={setEmailError} />
 
             <PasswordInput
               label={"Password"}
               placeholder={"Enter password"}
               name={"password"}
               onChange={handleOnchange}
+              setErrors={setPasswordError}
             />
 
             <div className="text-right">
@@ -116,18 +135,25 @@ const SignIn = () => {
 
             <button
               type="submit"
-              className="w-full py-2 px-4 bg-yellow-300 text-black font-semibold rounded-md shadow hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+              className={`w-full py-2 px-4 text-black font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 ${isLoading
+                ? "bg-gray-300 cursor-wait"
+                : passwordError || emailError || errors
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-yellow-300 hover:bg-yellow-400 focus:ring-yellow-500"
+                }`}
+              disabled={isLoading || passwordError || emailError || errors}
             >
-              Sign in
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <LoadingOutlined className="text-black animate-spin text-lg" />
+                  <span className="ml-2">Signing in...</span>
+                </div>
+              ) : (
+                "Sign in"
+              )}
             </button>
 
-            <button
-              type="button"
-              onClick= {googleLogin}
-              className="mt-2 w-full py-2 px-4 bg-gray-200 text-black font-semibold rounded-md shadow hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            >
-              Sign in with Gmail
-            </button>
+
           </form>
 
           <div className="flex items-center mt-6 space-x-3 justify-center">

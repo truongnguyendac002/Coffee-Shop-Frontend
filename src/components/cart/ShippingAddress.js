@@ -143,13 +143,13 @@ const ShippingAddress = ({selectedAddress,setSelectedAddress}) => {
 
     return (
         <div className="p-6 bg-white rounded-md shadow-md">
-            <h2 className="text-lg font-semibold mb-4">1. Shipping, arrives between Mon, May 16—Tue, May 24</h2>
+            <h2 className="text-lg font-semibold mb-4 ">Shipping, arrives between Mon, May 16—Tue, May 24</h2>
             <div className="flex justify-between">
                 <div className="mb-4">
                     <p className="text-sm text-gray-600">Shipping address</p>
-                    <p className="text-base font-medium mb-4">Where should we deliver your order?</p>
+                    <p className="text-base font-medium mb-4 ">Where should we deliver your order?</p>
                 </div>
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center mb-6 ml-4">
                     <Button type="primary" icon={<PlusOutlined />} onClick={handleAddingAddress}>
                         Add a new address
                     </Button>
@@ -158,31 +158,48 @@ const ShippingAddress = ({selectedAddress,setSelectedAddress}) => {
 
             <div className="space-y-4">
                 {addresses.map((address) => (
-                    <div key={address.id} className={`p-4 border rounded-md flex justify-between items-start space-x-4 ${selectedAddress === address.id ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
-                        <Radio.Group onChange={() => handleSelectAddress(address.id)} value={selectedAddress}>
-                            <Radio value={address.id} />
-                        </Radio.Group>
-                        <div className="flex-1" onClick={() => handleSelectAddress(address.id)}>
-                            <h3 className="font-semibold">{address.receiverName}</h3>
-                            <p className="text-gray-700">Location: {address.location}</p>
-                            <p className="text-gray-500">Phone: {address.receiverPhone}</p>
-                        </div>
-                        <div className="flex space-x-2">
-                            <Button type="link" icon={<EditOutlined />} className="text-gray-500" onClick={() => showModal(address)}>
-                                Edit
-                            </Button>
-                            <Popconfirm
-                                title="Are you sure to delete this address?"
-                                onConfirm={() => handleDeleteAddress(address.id)}
-                                okText="Yes"
-                                cancelText="No"
-                            >
-                                <Button type="link" icon={<DeleteOutlined />} className="text-red-500">
-                                    Delete
-                                </Button>
-                            </Popconfirm>
-                        </div>
+                    <div
+                    key={address.id}
+                    className={`p-4 border rounded-md flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0 md:space-x-4 ${
+                      selectedAddress === address.id
+                        ? "border-green-500 bg-green-50"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    <Radio.Group
+                      onChange={() => handleSelectAddress(address.id)}
+                      value={selectedAddress}
+                      className="self-start md:self-center"
+                    >
+                      <Radio value={address.id} />
+                    </Radio.Group>
+                    <div className="flex-1" onClick={() => handleSelectAddress(address.id)}>
+                      <h3 className="font-semibold text-base">{address.receiverName}</h3>
+                      <p className="text-gray-700 text-sm">Location: {address.location}</p>
+                      <p className="text-gray-500 text-sm">Phone: {address.receiverPhone}</p>
                     </div>
+                    <div className="flex space-x-4">
+                      <Button
+                        type="link"
+                        icon={<EditOutlined />}
+                        className="text-gray-500"
+                        onClick={() => showModal(address)}
+                      >
+                        Edit
+                      </Button>
+                      <Popconfirm
+                        title="Are you sure to delete this address?"
+                        onConfirm={() => handleDeleteAddress(address.id)}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <Button type="link" icon={<DeleteOutlined />} className="text-red-500">
+                          Delete
+                        </Button>
+                      </Popconfirm>
+                    </div>
+                  </div>
+                  
                 ))}
             </div>
 

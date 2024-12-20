@@ -211,8 +211,8 @@ const OrderTable = ({ orderList , refreshOrderList }) => {
     <div>
       <Table
         columns={columns}
-        dataSource={orderList}
-        rowKey="id"
+        dataSource={orderList.sort((a,b)=> new Date(b.orderDate ) - new Date(a.orderDate))}
+        rowKey="orderId"
         pagination={{ pageSize: 10 }}
         bordered
       />
@@ -258,7 +258,7 @@ const OrderTable = ({ orderList , refreshOrderList }) => {
                 <Table
                   columns={orderItemsColumns}
                   dataSource={orderDetail.orderItems}
-                  rowKey="id"
+                  rowKey="orderItemId"
                   pagination={false}
                   bordered
                 />

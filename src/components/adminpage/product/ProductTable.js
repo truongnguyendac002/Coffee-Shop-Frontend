@@ -176,7 +176,6 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
 
     const handleAddProduct = (values) => {
         const fetchAddProduct = async () => {
-            console.log(values);
             const response = await fetchWithAuth(summaryApi.addProduct.url, {
                 method: summaryApi.addProduct.method,
                 headers: {
@@ -415,13 +414,13 @@ const ProductTable = ({ products, setProducts, categories, brands, setCategories
                             dropdownRender={(menu) => (
                                 <>
                                     {menu}
-                                    <Button
+                                    {/* <Button
                                         type="text"
                                         className="w-full text-left"
                                         onClick={() => setIsCategoryModalVisible(true)}
                                     >
                                         + Add New Category
-                                    </Button>
+                                    </Button> */}
                                 </>
                             )}
                         >

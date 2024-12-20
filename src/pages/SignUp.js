@@ -12,10 +12,15 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import PasswordInput from "../components/validateInputForm/PasswordInput";
 import EmailInput from "../components/validateInputForm/EmailInput";
+import { LoadingOutlined } from "@ant-design/icons";
+
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const { fetchUserDetails } = useContext(Context);
 
@@ -40,6 +45,7 @@ const SignUp = () => {
     e.preventDefault();
 
     if (data.password === data.confirmPassword) {
+      setIsLoading(true);
       try {
         const signUpResponse = await fetch(summaryApi.signUP.url, {
           method: summaryApi.signUP.method,
@@ -82,6 +88,9 @@ const SignUp = () => {
       } catch (error) {
         console.log("Error SignUp", error);
       }
+      finally {
+        setIsLoading(false);
+      }
     } else {
       toast.error("Password and Confirm Password not match", {
         autoClose: 1000,
@@ -92,7 +101,7 @@ const SignUp = () => {
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
-      <div className="bg-gray-100 md:w-1/2 flex items-center justify-center p-8">
+      <div className="bg-gray-100 md:w-1/2 md:flex hidden items-center justify-center p-8">
         <div className="w-96 h-80 ">
           <img src={img_login} alt="img-Login" className="" />
           <p className="text-lg font-sans mb-4 mt-12 text-center">
@@ -104,7 +113,7 @@ const SignUp = () => {
 
       <div className="bg-white md:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          
+
           <div className="flex justify-center  ">
             <Link to="/">
               <Logo />
@@ -120,12 +129,13 @@ const SignUp = () => {
           </div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
-            <EmailInput onEmailChange={handleOnchange} />
+            <EmailInput onEmailChange={handleOnchange} setErrors={setEmailError} />
             <PasswordInput
               label={"Password"}
               placeholder={"Enter password"}
               name={"password"}
               onChange={handleOnchange}
+              setErrors={setPasswordError}
             />
 
             <PasswordInput
@@ -133,15 +143,31 @@ const SignUp = () => {
               placeholder={"Enter confirmPassword"}
               name={"confirmPassword"}
               onChange={handleOnchange}
+              setErrors={setPasswordError}
+
             />
-            {error ?? <p className="text-sm text-red-500 my-2">{error}</p>}
+            {error && <p className="text-sm text-red-500 my-2">{error}</p>}
 
             <button
               type="submit"
-              className="w-full py-2 px-4 bg-yellow-500 text-black font-semibold rounded-md shadow hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+              className={`w-full py-2 px-4 text-black font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 ${isLoading
+                ? "bg-gray-300 cursor-wait"
+                : (passwordError || emailError)
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-yellow-300 hover:bg-yellow-400 focus:ring-yellow-500"
+                }`}
+              disabled={isLoading || passwordError || emailError}
             >
-              Sign Up
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <LoadingOutlined className="text-black animate-spin text-lg" />
+                  <span className="ml-2">Loading...</span>
+                </div>
+              ) : (
+                "Sign Up"
+              )}
             </button>
+
           </form>
 
           <div className="flex items-center mt-5 space-x-3 justify-center">

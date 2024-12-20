@@ -13,7 +13,7 @@ import summaryApi from "../common";
 import Cookies from "js-cookie";
 import BreadcrumbNav from "../components/layout/BreadcrumbNav";
 import { setCartItems } from "../store/cartSlice";
-import { selectFavorites, setFavorites } from "../store/favoritesSlice ";
+import { selectFavorites, addToFavorites } from "../store/favoritesSlice ";
 import ChatWidget from "../components/layout/ChatWidget";
 
 const Home = () => {
@@ -26,17 +26,12 @@ const Home = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const favorites = useSelector(selectFavorites);
 
-  useEffect(() => {
-    if (user && user.roleName === "ROLE_ADMIN") {
-      navigate("/admin");
-    }
-  }, [user, navigate]);
 
   useEffect(() => {
     const fetchCartItems = async () => {
       setIsCartLoading(true);
       try {
-       
+
         const response = await fetchWithAuth(
           summaryApi.getAllCartItems.url + user.id,
           { method: summaryApi.getAllCartItems.method }
@@ -73,21 +68,30 @@ const Home = () => {
         const dataResponse = await response.json();
 
         if (dataResponse.data) {
-          dispatch(setFavorites(dataResponse.data));
+          if (dataResponse.data.length > 0) {
+            for (const favoriteProduct of dataResponse.data) {
+              dispatch(addToFavorites(favoriteProduct.product));
+            }
+          }
         }
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
+        } catch (error) {
+          console.log("error", error);
+        }
+      };
 
-    if (user) {
-      if (!localStorage.getItem("favorites") && favorites.length === 0) {
-        fetchFavorites();
+      if (user) {
+        if (!localStorage.getItem("favorites") && favorites.length === 0) {
+          fetchFavorites();
+        }
       }
-    }
-  }, [user, dispatch, favorites.length]);
+    }, [user, dispatch, favorites.length]);
 
-  if (isCartLoading) {
+  
+
+  if (user?.roleName === "ROLE_ADMIN") {
+    navigate("/admin");
+  }
+  else if (isCartLoading) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     return (

@@ -30,8 +30,7 @@ const favoritesSlice = createSlice({
       localStorage.removeItem('favorites');
     },
     removeFromFavorites: (state, action) => {
-      debugger;
-      state.items = state.items.filter(item => item.product.id !== action.payload.id);
+      state.items = state.items.filter(item => item.id !== action.payload.id);
   
       localStorage.setItem('favorites', JSON.stringify(state.items));
     },

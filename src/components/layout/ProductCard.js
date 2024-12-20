@@ -29,18 +29,14 @@ const ProductCard = ({ product }) => {
             {product.brand.name}
           </p>
 
-          <div className="flex items-start justify-between mt-2 ">
+          <div className="flex items-center justify-between mt-2 ">
             <span className="text-base font-medium text-red-500 mt-1">
-              {/* {product.minPrice}đ */}
-              120000 đ
+              {product.minPrice}đ
             </span>
 
             <span className="flex  items-center ">
-              {product.rating}
+              {product?.rating?.toFixed(1)}
               <FaStar className="text-yellow-500 mx-1" />
-              {/* <span className="text-gray-400  font-normal ">
-                ( {product.totalReview} review ){" "}
-              </span> */}
             </span>
           </div>
           <div className="flex items-center justify-between mt-4">

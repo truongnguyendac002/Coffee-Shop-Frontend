@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 import { IoKeyOutline } from "react-icons/io5";
@@ -11,17 +11,20 @@ import { setEmail } from "../store/forgotPasswordSlice";
 function ForgotPassword() {
   const dispatch = useDispatch();
   const email = useSelector((state) => state.forgotPassword.email);
+  const [emailError, setEmailError] = useState(""); 
+  const [data, setData] = useState("");
+  
   const navigate = useNavigate();
 
 
 
   const handleEmailChange = (e) => {
     dispatch(setEmail(e.target.value))
+    setData(e.target.value)
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(`Email gửi yêu cầu reset: ${email}`);
     
     try { 
       const forgotPassResponse = await fetch(
@@ -35,15 +38,14 @@ function ForgotPassword() {
       );
 
       const forgotPassResult = await forgotPassResponse.json();
+      console.log("forgotPassResult", forgotPassResult);
       if (forgotPassResult.respCode === "000") {
         navigate("/otp-auth");
         toast.success("OTP đã được gửi đến email của bạn!");
-        
-      }else if (forgotPassResult.respCode ==="104") {
-        navigate("/otp-auth");
-        toast.info("OTP has already been sent and is still valid.")
-      }else if (forgotPassResponse.status === 404) {
-        toast.error("Email sai hoặc chưa được đăng ký ")
+      }
+ 
+      else  {
+        toast.error(forgotPassResult.data)
       }
     } catch (error) {
       console.log("error", error);
@@ -64,11 +66,16 @@ function ForgotPassword() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <EmailInput onEmailChange={handleEmailChange} />
+          <EmailInput onEmailChange={handleEmailChange} setErrors={setEmailError} />
 
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow hover:bg-indigo-700 "
+            className={`w-full py-2 px-4  text-white font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 
+              ${ (emailError  || !data)
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700 focus:bg-indigo-500 "
+            }`}
+            disabled={emailError}
           >
             Sent Email
           </button>

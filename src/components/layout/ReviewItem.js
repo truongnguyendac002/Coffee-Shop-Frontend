@@ -1,6 +1,5 @@
 import React from "react";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
-import image1 from "../../assets/img/img1.jpg";
 
 const ReviewItem = ({ username, rating, date, comment , avatar}) => {
   const renderStars = (rating) => {
@@ -19,8 +18,7 @@ const ReviewItem = ({ username, rating, date, comment , avatar}) => {
 
   return (
     <div className="flex items-start p-4 border-b bg-white">
-      <img src={image1} alt="user" className="rounded-full md:w-14 md:h-14 w-10 h-10 mr-4 object-cover" />
-      {/* <img src={avatar} alt="user" className="rounded-full w-14 h-14 mr-4 object-cover" /> */}
+      <img src={avatar} alt="userAvatar" className="rounded-full md:w-14 md:h-14 w-10 h-10 mr-4 object-cover" />
       <div className="flex-1">
         <span className="font-semibold">{username}</span>
         <div className="flex md:mt-2 mt-1">{renderStars(rating)}</div>

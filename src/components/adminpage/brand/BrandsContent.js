@@ -15,7 +15,7 @@ const BrandsContent = () => {
             if (data.respCode === '000' && data.data) {
                 setBrands(data.data);
             } else {
-                console.log(data);
+                console.log("error fetchAllBrands data:", data);
             }
         };
         fetchAllBrands();

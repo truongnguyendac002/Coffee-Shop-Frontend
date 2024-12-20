@@ -11,6 +11,7 @@ import { clearEmail } from "../store/forgotPasswordSlice";
 function ChangePassword() {
 
   const email = useSelector((state) => state.forgotPassword.email);
+  const [passwordError, setPasswordError] = useState("");
   const dispatch = useDispatch();
   const [error ,setError] = useState(false);
   
@@ -57,10 +58,9 @@ function ChangePassword() {
         const changePassResult = await changePasswordResponse.json();
 
         if (changePassResult.respCode === "000") {
-          toast.success(changePassResult.respDesc);
+          toast.success(changePassResult.data);
           dispatch(clearEmail());
           navigate("/login");
-          console.log("oke change Password ");
         }
       } catch (error) {
         toast.error(error);
@@ -90,6 +90,7 @@ function ChangePassword() {
             placeholder={"Enter password"}
             name={"password"}
             onChange={handleOnchange}
+            setErrors={setPasswordError}
           />
 
           <PasswordInput
@@ -97,6 +98,8 @@ function ChangePassword() {
             placeholder={"Enter confirmPassword"}
             name={"repeatPassword"}
             onChange={handleOnchange}
+            setErrors={setPasswordError}
+
           />
           {
             error && (
@@ -115,7 +118,12 @@ function ChangePassword() {
 
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-indigo-500"
+            className={`w-full py-2 px-4  text-white font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 
+              ${ passwordError 
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700 focus:bg-indigo-500 "
+            }`}
+            disabled={passwordError}
           >
             Reset password
           </button>

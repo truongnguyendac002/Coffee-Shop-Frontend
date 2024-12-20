@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import summaryApi from "../common";
-import { FaStar } from "react-icons/fa6";
-import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa6";
 import { FaChevronRight } from "react-icons/fa6";
@@ -19,8 +18,9 @@ import {
   setFavorites,
 } from "../store/favoritesSlice ";
 import ListReview from "../components/layout/ListReview";
-
-
+import ProductRating from "../components/layout/ProductRating";
+import DescriptionProduct from "../components/layout/DescriptionProduct";
+import { toast } from "react-toastify";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -39,20 +39,26 @@ const ProductDetail = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const user = useSelector((store) => store?.user?.user);
+  const cartItems = useSelector((store) => store.cart.items);
   const favorites = useSelector(selectFavorites);
+  const selectedItems = cartItems
+    ? cartItems.filter((item) => item.isSelected)
+    : [];
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const maxQuantity = itemStock;
-  const tabs = ["Description", "Review", "Similar"];
+  const tabs = ["Description", "Review"];
 
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     if (product) {
       const isProductFavorite = favorites.some(
-        (item) => item.product && item.product.id === product.id
+        (item) => { 
+          return  item.id === product.id
+        }
       );
       setIsFavorite(isProductFavorite);
     }
@@ -60,6 +66,7 @@ const ProductDetail = () => {
 
   useEffect(() => {
     const fetchProductItems = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(summaryApi.productItem.url + `${id}`, {
           method: summaryApi.productItem.method,
@@ -70,35 +77,13 @@ const ProductDetail = () => {
         const result = await response.json();
         if (result.respCode === "000") {
           setProductItems(result.data);
+          setProduct(result.data[0].productResponse);
+          setImages(result.data[0].productResponse.images);
+          setCurrentImage(0);
+
           if (result.data.length > 0) {
             setProductItemPrice(result.data[0].price);
           }
-        } else {
-          console.log("Error:", result.respDesc);
-        }
-      } catch (error) {
-        console.log("Error:", error);
-      }
-    };
-
-    fetchProductItems();
-  }, [id]);
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(summaryApi.productDetails.url + `${id}`, {
-          method: summaryApi.productDetails.method,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const result = await response.json();
-        if (result.respCode === "000") {
-          setProduct(result.data);
-          setImages(result.data.images);
-          setCurrentImage(0);
         } else {
           console.log("Error:", result.respDesc);
         }
@@ -109,7 +94,7 @@ const ProductDetail = () => {
       }
     };
 
-    fetchProduct();
+    fetchProductItems();
   }, [id]);
 
   const handlePrevClick = () => {
@@ -146,13 +131,13 @@ const ProductDetail = () => {
 
   const handleAddProductToCart = async () => {
     if (!productItem) {
-      setError("Bạn cần chọn kích thước sản phẩm trước khi thêm vào giỏ hàng!");
+      setError("Bạn cần chọn loại sản phẩm trước khi thêm vào giỏ hàng!");
+      toast.error("Chưa chọn loại sản phẩm");
       return;
     }
-
     try {
-      const response = await fetchWithAuth(summaryApi.addCartitem.url, {
-        method: summaryApi.addCartitem.method,
+      const response = await fetchWithAuth(summaryApi.addCartItem.url, {
+        method: summaryApi.addCartItem.method,
         body: JSON.stringify({
           ProductItemId: productItem.id,
           Quantity: quantity,
@@ -162,7 +147,6 @@ const ProductDetail = () => {
 
       const data = await response.json();
       if (data.respCode === "000") {
-        console.log("abc" , data.data);
         dispatch(addToCart(data.data));
         message.success("Đã thêm sản phẩm vào giỏ hàng");
 
@@ -171,7 +155,7 @@ const ProductDetail = () => {
         throw new Error("Lỗi khi thêm vào giỏ hàng");
       }
     } catch (error) {
-      console.log("Lỗi khi thêm vào giỏ hàng:", error);
+      console.log("Lỗi khi thêm vào giỏ hàng:  d", error);
     }
   };
 
@@ -180,10 +164,21 @@ const ProductDetail = () => {
   };
 
   const handleBuyNow = async () => {
-    const addedProduct = await handleAddProductToCart();
-    if (addedProduct) {
-      dispatch(toggleSelected(addedProduct.id));
-      navigate("/checkout");
+    try {
+      const addedProduct = await handleAddProductToCart();
+      if (addedProduct) {
+        const isSelected = selectedItems.some(
+          (item) => item.id === addedProduct.id
+        );
+
+        if (!isSelected) {
+          dispatch(toggleSelected(addedProduct.id));
+        }
+        navigate("/checkout");
+      }
+    } catch (error) {
+      console.error("Lỗi khi thực hiện mua ngay:", error);
+      message.error("Không thể thực hiện mua ngay. Vui lòng thử lại sau.");
     }
   };
 
@@ -205,7 +200,7 @@ const ProductDetail = () => {
           dispatch(removeFromFavorites(product));
           dispatch(
             setFavorites(
-              favorites.filter((item) => item.product.id !== product.id)
+              favorites.filter((item) => item.id !== product.id)
             )
           );
 
@@ -228,10 +223,7 @@ const ProductDetail = () => {
 
         const data = await response.json();
         if (data.respCode === "000") {
-          console.log("favorites" , data);
           dispatch(addToFavorites(product));
-          dispatch(setFavorites([...favorites, { product }]));
-
           message.success("Sản phẩm đã được thêm vào danh sách yêu thích");
         } else {
           throw new Error("Lỗi khi thêm sản phẩm vào danh sách yêu thích");
@@ -248,71 +240,39 @@ const ProductDetail = () => {
     }
     switch (activeTab) {
       case "Description":
-        return (
-          <>
-            <h2 className="text-xl font-bold lg:mt-10 mt-6 ">Chi tiết sản phẩm</h2>
-            <div className="container mx-auto lg:mt-8 mt-4">
-              <div className="bg-white shadow-lg rounded-lg p-6">
-                <ul>
-                  <li className="flex justify-start border-b py-2">
-                    <span className="font-semibold md:w-1/4 w-1/3">Thương hiệu:</span>
-                    <span>{product.brand.name}</span>
-                  </li>
-                  <li className="flex justify-start border-b py-2">
-                    <span className="font-semibold md:w-1/4 w-1/3">Xuất xứ:</span>
-                    <span>Việt Nam </span>
-                  </li>
-                  <li className="flex justify-start border-b py-2">
-                    <span className="font-semibold md:w-1/4 w-1/3">Loại thực phẩm:</span>
-                    <span>Đồ uống </span>
-                  </li>
-                  <li className="flex justify-start border-b py-2">
-                    <span className="font-semibold md:w-1/4 w-1/3">Loại Cafe:</span>
-                    <span>{product.category.name}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <h2 className="text-xl font-bold mt-4">Mô tả sản phẩm</h2>
-            <p className="mt-2">
-              {product?.description
-                ? product.description
-                : "Không có mô tả sản phẩm"}
-            </p>
-          </>
-        );
+        return <DescriptionProduct product={product} />
       case "Review":
         return <ListReview productId={product.id} />;
-      case "Similar":
-        return <p>Similar products content goes here.</p>;
       default:
         return null;
     }
   };
 
-  console.log("product" , product)
   return (
     <div className="container mx-auto mt-3">
-      <div className="shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row ">
+      <div className="shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row">
         {!isLoading && (
-          <div className="p-6 md:w-2/5 w-full  bg-white flex flex-col items-center">
+          <div className="p-6 md:w-2/5 w-full bg-white flex flex-col items-center">
             <img
-              className=" md:w-[300px] md:h-[300px] lg:w-[400px] lg:h-[380px] w-60 h-60 rounded-md object-cover"
+              className="md:w-[300px] md:h-[300px] lg:w-[400px] lg:h-[380px] w-60 h-60 rounded-md object-cover"
               src={images.length > 0 ? images[currentImage].url : image1}
               alt="Main product"
             />
-            
-            <div className="mt-8 relative max-w-full w-full">
-              <div className="grid grid-cols-4 grid-rows-1 gap-1">
+            <div className="mt-8 relative max-w-full">
+              <div
+                className="grid gap-3 lg:gap-1"
+                style={{
+                  gridTemplateColumns: images.length > 0 ? `repeat(${images.length}, 1fr)` : 'repeat(4, 1fr)', // Nếu images có ảnh, dùng gridTemplateColumns, ngược lại sử dụng 4 cột mặc định
+                }}
+              >
                 {(images.length > 0
                   ? images
                   : Array(4).fill({ url: image1 })
                 ).map((image, index) => (
                   <img
                     key={index}
-                    className={`w-16 h-16  lg:h-24 lg:w-24  object-cover rounded-lg shadow-md cursor-pointer ${
-                      index === currentImage ? "border-2 border-red-500" : ""
-                    }`}
+                    className={`w-16 h-16 lg:h-24 lg:w-24 object-cover rounded-lg shadow-md cursor-pointer ${index === currentImage ? "border-2 border-red-500" : ""
+                      }`}
                     src={image.url}
                     alt={`Product ${index + 1}`}
                     onClick={() => setCurrentImage(index)}
@@ -328,7 +288,7 @@ const ProductDetail = () => {
               </button>
               <button
                 onClick={handleNextClick}
-                className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-50  text-gray-800 pr-2 py-2 shadow-md focus:outline-none"
+                className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-50 text-gray-800 pr-2 py-2 shadow-md focus:outline-none"
               >
                 <FaChevronRight />
               </button>
@@ -337,41 +297,32 @@ const ProductDetail = () => {
         )}
 
         {/* Product Details */}
-        <div className="bg-gray-100 md:w-3/5 w-full p-8  flex flex-col justify-between">
+        <div className="bg-gray-100 md:w-3/5 w-full p-8 flex flex-col justify-between">
           <div>
             <h2 className="lg:text-2xl md:text-xl text-lg font-bold">{product.name}</h2>
-            <div className="flex items-center lg:mt-8 mt-5">
-            <span className="mr-2 text-gray-700">{product.rating} </span>
-              <div className="flex text-yellow-500">
-                <FaStar />
-              </div>
-             
-              <span className="ml-2 text-gray-700">( {product.totalReview} reviews )</span>
-            </div>
+            <ProductRating product={product} />
 
-            {/* discount */}
+            {/* Discount */}
             <div className="lg:mt-8 mt-5 flex items-baseline justify-start space-x-10">
               <div className="lg:w-1/6 w-1/5">
                 <h2 className="lg:text-xl md:text-lg text-base">Discount</h2>
               </div>
               <div className="flex gap-x-4 gap-y-3 flex-wrap">
                 {selectedDiscount > 0 ? (
-                  <button className="shrink-0 w-28 h-8 border-dashed border-2 bg-red-100  text-red-500 font-semibold rounded-sm text-lg">
+                  <button className="shrink-0 w-28 h-8 border-dashed border-2 bg-red-100 text-red-500 font-semibold rounded-sm text-lg">
                     {`Giảm ${selectedDiscount}k`}
                   </button>
                 ) : selectedDiscount === 0.0 ? (
-                  <p className="text-red-400">
-                    Sản phẩm này không có mã giảm giá
-                  </p>
+                  <p className="text-red-400">Sản phẩm này không có mã giảm giá</p>
                 ) : (
                   <p className="text-red-400">Chọn size để xem mã giảm giá</p>
                 )}
               </div>
             </div>
 
-            {/* size */}
+            {/* Size */}
             <div className="lg:mt-8 mt-5 flex items-baseline justify-start space-x-10">
-              <div className="lg:w-1/6  w-1/5">
+              <div className="lg:w-1/6 w-1/5">
                 <h2 className="lg:text-xl md:text-lg text-base">Size</h2>
               </div>
               <div className="flex gap-x-4 gap-y-3 flex-wrap">
@@ -379,11 +330,10 @@ const ProductDetail = () => {
                   <button
                     key={index}
                     onClick={() => handleClickSize(item)}
-                    className={`shrink-0 w-28 h-8 rounded-sm text-sm border-2 ${
-                      clickButtonSize === item
+                    className={`shrink-0 w-28 h-8 rounded-sm text-sm border-2 ${clickButtonSize === item
                         ? "border-orange-500 text-red-500"
                         : "bg-white hover:border-orange-500 hover:text-red-500"
-                    }`}
+                      }`}
                   >
                     {item.type.name}
                   </button>
@@ -391,9 +341,9 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* quantity */}
-            <div className="lg:mt-8 mt-5 flex items-baseline justify-start lg:space-x-10 md:space-x-6 sm:space-x-4 space-x-4 " >
-              <div className="lg:w-1/6 w-1/5 ">
+            {/* Quantity */}
+            <div className="lg:mt-8 mt-5 flex items-baseline justify-start lg:space-x-10 md:space-x-6 sm:space-x-4 space-x-4">
+              <div className="lg:w-1/6 w-1/5">
                 <h2 className="lg:text-xl md:text-lg text-base">Số lượng</h2>
               </div>
               <div className="flex items-center">
@@ -407,9 +357,7 @@ const ProductDetail = () => {
                   type="number"
                   value={quantity}
                   onChange={(e) =>
-                    setQuantity(
-                      Math.max(1, Math.min(maxQuantity, e.target.value))
-                    )
+                    setQuantity(Math.max(1, Math.min(maxQuantity, e.target.value)))
                   }
                   className="lg:w-20 px-2 md:w-14 w-16 py-1 text-center border-t border-b border-gray-300 focus:outline-none"
                 />
@@ -424,54 +372,51 @@ const ProductDetail = () => {
                 {itemStock > 0 ? (
                   `${itemStock.toLocaleString()} sản phẩm có sẵn`
                 ) : itemStock === 0 ? (
-                  <span className="text-red-400">
-                    Hiện tại không còn sản phẩm
-                  </span>
+                  <span className="text-red-400">Hiện tại không còn sản phẩm</span>
                 ) : (
                   <span></span>
                 )}
               </p>
             </div>
 
-            {/* price item */}
+            {/* Price */}
             <div className="lg:mt-8 mt-5 flex items-baseline justify-start space-x-10">
               <div className="lg:w-1/6 w-1/5">
                 <h2 className="lg:text-xl md:text-lg text-base">Giá</h2>
               </div>
               <div className="flex gap-x-4 gap-y-3 flex-wrap">
-                <p className="font-semibold text-red-500 text-2xl">
-                  {productItemPrice}đ
-                </p>
+                <p className="font-semibold text-red-500 text-2xl">{productItemPrice}đ</p>
               </div>
             </div>
 
-            <div className="flex lg:mt-8 lg:w-5/6  flex-col mt-5  ">
-              {error && <div className="text-red-500 ">{error}</div>}
-              <div className="flex md:space-x-5 space-x-2 ">
+            {/* Action Buttons */}
+            <div className="flex lg:mt-8 lg:w-5/6 flex-col mt-5">
+              {error && <div className="text-red-500 mb-2">{error}</div>}
+              <div className="flex md:space-x-5 space-x-2">
                 <button
                   onClick={handleAddToCart}
                   className="grow flex items-center justify-center md:px-4 py-2 bg-red-100 border border-red-500 text-red-500 hover:bg-white"
                 >
-                  <FaShoppingCart className=" md:text-lg text-sm mr-2" /> Thêm Vào Giỏ Hàng
+                  <FaShoppingCart className="md:text-lg text-sm mr-2" /> Thêm Vào Giỏ Hàng
                 </button>
 
                 <button
                   onClick={handleBuyNow}
-                  className="grow md:px-4  py-2 bg-red-500 text-white hover:bg-red-600"
+                  className="grow md:px-4 py-2 bg-red-500 text-white hover:bg-red-600"
                 >
                   Mua Ngay
                 </button>
                 {!isFavorite ? (
                   <button
                     onClick={handleClickFavorites}
-                    className={`text-gray-500 hover:text-red-500 w-9`}
+                    className="text-gray-500 hover:text-red-500 w-9"
                   >
-                    <FaRegHeart style={{ width: "32px", height: "32px" }} />
+                    <FaHeart style={{ width: "32px", height: "32px" }} />
                   </button>
                 ) : (
                   <button
                     onClick={handleClickFavorites}
-                    className={`text-red-500  w-9 `}
+                    className="text-red-500 w-9"
                   >
                     <FaHeart style={{ width: "32px", height: "32px" }} />
                   </button>
@@ -482,14 +427,14 @@ const ProductDetail = () => {
         </div>
       </div>
 
+      {/* Tabs */}
       <div className="w-full lg:mt-10 mt-6">
         <div className="flex border-b border-gray-300">
           {tabs.map((tab) => (
             <button
               key={tab}
-              className={`px-4 py-2 font-semibold ${
-                activeTab === tab ? "border-b-2 border-orange-500" : ""
-              }`}
+              className={`px-4 py-2 font-semibold ${activeTab === tab ? "border-b-2 border-orange-500" : ""
+                }`}
               onClick={() => setActiveTab(tab)}
             >
               {tab}
@@ -500,6 +445,7 @@ const ProductDetail = () => {
         <div className="mt-4">{renderContent(product)}</div>
       </div>
     </div>
+
   );
 };
 

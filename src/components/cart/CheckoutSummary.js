@@ -8,7 +8,6 @@ import fetchWithAuth from "../../helps/fetchWithAuth";
 import { Radio } from 'antd';
 
 const CheckoutSummary = ({selectedAddress}) => {
-  console.log("selectedAddress at checkout ", selectedAddress);
   // Lay Cac Item Trong Cart
   const cartItems = useSelector((store) => store.cart.items)
   const [paymentMethod, setPaymentMethod] = useState("COD");
@@ -102,15 +101,12 @@ const CheckoutSummary = ({selectedAddress}) => {
           <Radio value="VNPay">Online Payment (VNPay)</Radio>
         </Radio.Group>
       </div>
-      {console.log("Disabled condition:", (subtotal <= 0 || !selectedAddress))}
-      {console.log("subtotal condition:", (subtotal <= 0 ))}
-      {console.log("selectedAddress condition:", ( !selectedAddress))}
 
       <button
         className={`w-full py-2 text-lg font-semibold rounded-md mt-2  text-black 
           ${(subtotal <= 0 || !selectedAddress)
-            ? "bg-yellow-500 cursor-not-allowed opacity-50"
-            : "bg-yellow-400 hover:bg-yellow-500  hover:text-black"
+            ? "bg-yellow-400 cursor-not-allowed opacity-50"
+            : "bg-yellow-300 hover:bg-yellow-400  hover:text-black"
           }`}
         onClick={handleCheckout}
       >

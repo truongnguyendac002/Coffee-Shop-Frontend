@@ -89,15 +89,15 @@ const OrderHistory = React.memo(() => {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Order History</h1>
-      {console.log("order", orders)}
+    <div className="max-w-full mx-auto px-4 sm:px-6">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Order History</h1>
       <Table
         columns={columns}
         dataSource={orders
           .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))}
         rowKey="orderId"
         pagination={{ pageSize: 5 }}
+        className="overflow-x-auto"
       />
       {selectedOrderId && (
         <OrderDetails

@@ -168,32 +168,48 @@ const ShippingAddress = ({ setLoading }) => {
     return (
         <div className="p-6 bg-white rounded-md shadow-md">
             <h2 className="text-xl font-semibold mb-4">Your address list</h2>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center mb-4">
                 <div className="mb-4">
-                    {addresses.length === 0
-                        ? <p className="text-sm text-gray-600">Do you want to add new address?</p>
-                        : <p className="text-sm text-gray-600">Manage your addresses here!</p>
-                    }
+                    {addresses.length === 0 ? (
+                        <p className="text-sm text-gray-600">Do you want to add new address?</p>
+                    ) : (
+                        <p className="text-sm text-gray-600">Manage your addresses here!</p>
+                    )}
                 </div>
-                <div className="flex justify-between items-center mb-6">
-                    <Button type="primary" icon={<PlusOutlined />} onClick={handleAddingAddress}>
-                        Add a new address
-                    </Button>
-                </div>
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={handleAddingAddress}
+                    className="w-full sm:w-auto"
+                >
+                    Add a new address
+                </Button>
             </div>
 
             <div className="space-y-4">
                 {addresses.map((address) => (
-                    <div key={address.id} className={`p-4 border rounded-md flex justify-between items-start space-x-4
-                    `}>
-
-                        <div className="flex-1" >
-                            <h3 className="font-semibold">{address.receiverName}</h3>
-                            <p className="text-gray-700">Location: {address.location}</p>
-                            <p className="text-gray-500">Phone: {address.receiverPhone}</p>
+                    <div
+                        key={address.id}
+                        className={`p-4 border rounded-md flex flex-col md:flex-row justify-between items-start space-y-4 md:space-y-0 md:space-x-4`}
+                    >
+                        <div className="flex-1">
+                            <h3>
+                                <span className="font-semibold">Name: </span> {address.receiverName}
+                            </h3>
+                            <p>
+                                <span className="font-semibold">Location: </span> {address.location}
+                            </p>
+                            <p>
+                                <span className="font-semibold">Phone: </span> {address.receiverPhone}
+                            </p>
                         </div>
                         <div className="flex space-x-2">
-                            <Button type="link" icon={<EditOutlined />} className="text-gray-500" onClick={() => showModal(address)}>
+                            <Button
+                                type="link"
+                                icon={<EditOutlined />}
+                                className="text-gray-500"
+                                onClick={() => showModal(address)}
+                            >
                                 Edit
                             </Button>
                             <Popconfirm
@@ -210,7 +226,6 @@ const ShippingAddress = ({ setLoading }) => {
                     </div>
                 ))}
             </div>
-
 
             <Modal
                 title={editingAddress?.id ? "Edit Address" : "Add New Address"}

@@ -50,7 +50,6 @@ const Profile = () => {
   const handleSave = async (updatedData) => {
     const fetchUpdateProfile = async (data) => {
       setLoading(true);
-      console.log("set loading TRUE at profile.handleSave")
       const response = await fetchWithAuth(summaryApi.updateProfile.url, {
         method: summaryApi.updateProfile.method,
         body: JSON.stringify({
@@ -72,7 +71,6 @@ const Profile = () => {
     const respData = await fetchUpdateProfile(updatedData);
 
     if (respData) {
-      console.log("respData", respData);
       dispatch(setUser(respData));
     }
     setLoading(false);
@@ -188,7 +186,7 @@ const Profile = () => {
           dataSource={[
             { key: "personalInfo", title: "Personal info", icon: <UserOutlined className="text-2xl " /> },
             { key: "addresses", title: "Addresses", icon: <FiHome className="text-2xl " /> },
-            { key: "communications", title: "Communications & privacy", icon: <FiMail className="text-2xl " /> },
+            
           ]}
           renderItem={(item) => (
             <List.Item
