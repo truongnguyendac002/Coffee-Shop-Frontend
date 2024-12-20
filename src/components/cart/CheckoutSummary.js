@@ -103,6 +103,7 @@ const CheckoutSummary = ({selectedAddress}) => {
       </div>
 
       <button
+        disabled={subtotal <= 0 || !selectedAddress}
         className={`w-full py-2 text-lg font-semibold rounded-md mt-2  text-black 
           ${(subtotal <= 0 || !selectedAddress)
             ? "bg-yellow-400 cursor-not-allowed opacity-50"

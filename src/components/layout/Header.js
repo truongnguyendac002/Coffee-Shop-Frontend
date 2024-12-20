@@ -133,7 +133,7 @@ const Header = () => {
             </Link>
 
             {showCartTab && (
-              <div className="absolute top-12 -right-4 z-50">
+              <div className="absolute top-12 -right-4 z-50 hidden md:block">
                 <CartTab items={carts} />
               </div>
             )}

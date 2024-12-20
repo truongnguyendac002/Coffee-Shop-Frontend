@@ -47,9 +47,9 @@ const CartSummary = () => {
         <p>{total.toFixed(2)} đ</p>
       </div>
 
-      {/* , state: { cartItems: selectedItems } */}
       <Link to={{ pathname: "/checkout" }}>
         <button
+          disabled={subtotal <= 0}
           className={`w-full py-2 md:text-lg text-base font-semibold rounded-md mt-2  text-black
              ${subtotal <= 0
               ? "bg-yellow-400 cursor-not-allowed opacity-50"
