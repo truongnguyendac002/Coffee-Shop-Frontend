@@ -1,5 +1,5 @@
-import React, {  useState } from "react";
-import { Typography, List, Spin, Button } from "antd";
+import React, { useState } from "react";
+import { Typography, List, Spin, Form, Button, Modal } from "antd";
 import { UserOutlined, LoadingOutlined, EditOutlined } from "@ant-design/icons";
 import {
   FiHome,
@@ -10,6 +10,8 @@ import {
   FiKey,
   FiUser,
 } from "react-icons/fi";
+import { toast } from "react-toastify";
+import PasswordInput from "../components/validateInputForm/PasswordInput";
 import { TbInfoSquare } from "react-icons/tb";
 import fetchWithAuth from "../helps/fetchWithAuth";
 import summaryApi from "../common";
@@ -29,6 +31,9 @@ const Profile = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const user = useSelector((state) => state.user.user, (prev, next) => prev === next);
 
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordForm] = Form.useForm();
+
   const dispatch = useDispatch();
 
   if (loading || !user) {
@@ -43,6 +48,8 @@ const Profile = () => {
     );
   }
 
+
+
   const showEditInfoModal = () => {
     setIsModalVisible(true);
   };
@@ -54,9 +61,7 @@ const Profile = () => {
         method: summaryApi.updateProfile.method,
         body: JSON.stringify({
           Name: data.name,
-          Phone: data.phone,
-          Password: data.password,
-          ConfirmPassword: data.confirmPassword,
+          Phone: data.phone
         }),
       });
       const updateRespData = await response.json();
@@ -80,17 +85,68 @@ const Profile = () => {
     setIsModalVisible(false);
   };
 
+  const handlePasswordSave = async (e) => {
+    e.preventDefault();
+    passwordForm.validateFields()
+      .then(async (values) => {
+        const { oldPassword, newPassword, confirmPassword } = values;
+
+        if (newPassword === confirmPassword) {
+          try {
+            const changePasswordResponse = await fetchWithAuth(
+              summaryApi.updatePasswordWithOldPassword.url,
+              {
+                method: summaryApi.updatePasswordWithOldPassword.method,
+                body: JSON.stringify({
+                  old_password: oldPassword,
+                  new_password: newPassword,
+                  confirm_password: confirmPassword
+                }),
+              }
+            );
+
+            const changePassResult = await changePasswordResponse.json();
+
+            if (changePassResult.respCode === "000") {
+              toast.success(changePassResult.data);
+              setShowPasswordModal(false);
+              passwordForm.resetFields();
+
+            }
+            else {
+              toast.error(changePassResult.data);
+            }
+          } catch (error) {
+            toast.error(error);
+          }
+        }
+        else {
+          toast.error("Confirm Password không đúng");
+        }
+
+      })
+  };
 
   const renderContent = () => {
     switch (selectedMenu) {
       case "personalInfo":
         return (
           <div>
+            <div >
+              <Button
+                type="primary"
+                className="mr-6 float-right"
+                onClick={() => setShowPasswordModal(true)}
+              >
+                Đổi mật khẩu
+              </Button>
+            </div>
             {/* Right Content */}
             <section className="lg:col-span-3 space-y-6">
               {/* Account Info */}
-              <div className="bg-white p-6  rounded-lg shadow-md">
-                <div className="flex items-center justify-between">
+
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <div className="flex mt-4 items-center justify-between">
                   <Title level={3}>Account info</Title>
                   <Button type="link" icon={<EditOutlined />} className="text-gray-500"
                     onClick={() => showEditInfoModal()}
@@ -99,7 +155,7 @@ const Profile = () => {
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div className="p-4 bg-gray-100 rounded-lg flex items-center">
+                  <div className="p-4 bg-gray-100 rounded-lg flex items-center">
                     <FiUser className="mr-4 text-xl" />
                     <div>
                       <Text className="block">Name</Text>
@@ -133,14 +189,76 @@ const Profile = () => {
               </div>
 
               {/* Lists */}
-              <Wishlist setLoading = {setLoading} />
+              <Wishlist setLoading={setLoading} />
             </section>
+            {/* Modal for changing password */}
+            <Modal
+              open={showPasswordModal}
+              title="Change Password"
+              onCancel={() => setShowPasswordModal(false)}
+              onOk={handlePasswordSave}
+              okText="Save"
+            >
+              <Form form={passwordForm} layout="vertical">
+                <Form.Item
+                  label="Mật khẩu hiện tại"
+                  name="oldPassword"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập mật khẩu hiện tại của bạn" },
+                  ]}
+                >
+                  <PasswordInput
+                    placeholder="Nhập mật khẩu hiện tại"
+                    name="oldPassword"
+                    setErrors={(value) => passwordForm.setFields([{ name: "oldPassword", errors: value ? ["Invalid password"] : [] }])}
+                    onChange={(e) => passwordForm.setFieldValue("oldPassword", e.target.value)}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Mật khẩu mới"
+                  name="newPassword"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập mật khẩu mới" },
+                  ]}
+                >
+                  <PasswordInput
+                    placeholder="Nhập mật khẩu mới"
+                    name="newPassword"
+                    setErrors={(value) => passwordForm.setFields([{ name: "newPassword", errors: value ? ["Invalid password"] : [] }])}
+                    onChange={(e) => passwordForm.setFieldValue("newPassword", e.target.value)}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Xác nhận mật khẩu"
+                  name="confirmPassword"
+                  dependencies={['newPassword']}
+                  rules={[
+                    { required: true, message: "Vui lòng xác nhận mật khẩu" },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue("newPassword") === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(new Error("Mật khẩu xác nhận không khớp"));
+                      },
+                    }),
+                  ]}
+                >
+                  <PasswordInput
+                    placeholder="Xác nhận mật khẩu"
+                    name="confirmPassword"
+                    setErrors={(value) => passwordForm.setFields([{ name: "confirmPassword", errors: value ? ["Invalid password"] : [] }])}
+                    onChange={(e) => passwordForm.setFieldValue("confirmPassword", e.target.value)}
+                  />
+                </Form.Item>
+              </Form>
+            </Modal>
           </div>
         );
       case "addresses":
         return (
           <>
-            <Address setLoading = {setLoading} />
+            <Address setLoading={setLoading} />
           </>
         );
       case "communications":
@@ -179,14 +297,14 @@ const Profile = () => {
   return (
     <div className="container mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
       <aside className="lg:col-span-1 bg-white p-6 rounded-lg shadow-md">
-        <ProfileSection  />
+        <ProfileSection />
         <Title level={5}>Manage Account</Title>
         <List
           itemLayout="horizontal"
           dataSource={[
             { key: "personalInfo", title: "Personal info", icon: <UserOutlined className="text-2xl " /> },
             { key: "addresses", title: "Addresses", icon: <FiHome className="text-2xl " /> },
-            
+
           ]}
           renderItem={(item) => (
             <List.Item

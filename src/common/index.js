@@ -39,6 +39,10 @@ const summaryApi = {
         url: `${backendDomain}/forgotPassword/verifyOtp/`,
         method: "POST"
     },
+    updatePasswordWithOldPassword: {
+        url: `${backendDomain}/auth/password`,
+        method: "POST"
+    },
     changePassword: {
         url: `${backendDomain}/forgotPassword/changePassword/`,
         method: "POST"
