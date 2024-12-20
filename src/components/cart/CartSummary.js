@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 const CartSummary = () => {
   const cartItems = useSelector((store) => store.cart.items)
 
-  const shipping = 10.0;
+  const shipping = 10000;
   const selectedItems = cartItems
     ? cartItems.filter((item) => item.isSelected)
     : [];
