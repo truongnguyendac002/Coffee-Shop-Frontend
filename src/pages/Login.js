@@ -24,11 +24,6 @@ const SignIn = () => {
     password: "",
   });
 
-  const validatePassword = (password) => {
-    const regex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.{8,})/;
-    return regex.test(password);
-  };
-
   const { fetchUserDetails } = useContext(Context);
   const navigate = useNavigate();
 
@@ -48,10 +43,6 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validatePassword(data.password)) {
-      setErrors("Thông tin email hoặc mật khẩu không chính xác!");
-      return;
-    }
     try {
       setIsLoading(true);
       const loginResponse = await fetch(summaryApi.signIn.url, {
@@ -71,8 +62,6 @@ const SignIn = () => {
         Cookies.set("refreshToken", refreshToken);
         fetchUserDetails();
       } else {
-        // setErrors("Thông tin email hoặc mật khẩu không chính xác!")
-        // toast.error(loginResult.data);
         toast.error("Email hoặc mật khẩu không chính xác!");
       }
     } catch (error) {

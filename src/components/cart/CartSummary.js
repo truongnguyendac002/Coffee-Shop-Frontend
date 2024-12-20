@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 const CartSummary = () => {
   const cartItems = useSelector((store) => store.cart.items)
 
-  const shipping = 10.0;
+  const shipping = 10000;
   const selectedItems = cartItems
     ? cartItems.filter((item) => item.isSelected)
     : [];
@@ -47,9 +47,9 @@ const CartSummary = () => {
         <p>{total.toFixed(2)} đ</p>
       </div>
 
-      {/* , state: { cartItems: selectedItems } */}
       <Link to={{ pathname: "/checkout" }}>
         <button
+          disabled={subtotal <= 0}
           className={`w-full py-2 md:text-lg text-base font-semibold rounded-md mt-2  text-black
              ${subtotal <= 0
               ? "bg-yellow-400 cursor-not-allowed opacity-50"

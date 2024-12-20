@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Button, Table, Tag, Spin } from "antd";
+import { Button, Table, Tag, Spin, message, Popconfirm } from "antd";
 import fetchWithAuth from "../../helps/fetchWithAuth";
 import summaryApi from "../../common";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -37,6 +37,34 @@ const OrderHistory = React.memo(() => {
     fetchOrders();
   }, [fetchOrders]);
 
+
+  const handleCancelOrder = async (orderId) => {
+    try {
+      const response = await fetchWithAuth(
+        `${summaryApi.cancelOrder.url}${orderId}`,
+        {
+          method: summaryApi.cancelOrder.method,
+        }
+      );
+      const result = await response.json();
+      if (result.respCode === "000") {
+        message.info("Đã hủy thành công đơn hàng ");
+
+        setOrders((prevOrders) =>
+          prevOrders.map((item) =>
+            item.orderId === orderId
+              ? { ...item, orderStatus: "Cancelled" }
+              : item
+          )
+        );
+      }else {
+        message.error("Bạn không thể hủy được đơn hàng này!");
+      }
+    } catch (error) {
+      console.error("Error cancelling order:", error.message);
+    }
+  };
+
   if (loading) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
     return (
@@ -63,7 +91,17 @@ const OrderHistory = React.memo(() => {
       dataIndex: "orderStatus",
       key: "orderStatus",
       render: (status) => (
-        <Tag color={status === "Completed" ? "green" : "red"}>{status}</Tag>
+        <Tag
+          color={
+            status === "Completed"
+              ? "green"
+              : status === "Cancelled"
+              ? "red"
+              : "blue"
+          }
+        >
+          {status}
+        </Tag>
       ),
     },
     {
@@ -81,7 +119,22 @@ const OrderHistory = React.memo(() => {
             type="primary"
             onClick={() => handleViewDetails(record.orderId)}
           >
-            View Order Details
+            View Order
+          </Button>
+
+          <Button
+            type="primary"
+            danger
+            disabled={record.orderStatus === "Cancelled"}
+          >
+            <Popconfirm
+              title="Bạn có chắc muốn hủy đơn hàng này?"
+              onConfirm={() => handleCancelOrder(record.orderId)}
+              okText="Yes"
+              cancelText="No"
+            >
+              Cancel Order
+            </Popconfirm>
           </Button>
         </div>
       ),
@@ -90,11 +143,14 @@ const OrderHistory = React.memo(() => {
 
   return (
     <div className="max-w-full mx-auto px-4 sm:px-6">
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Order History</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">
+        Order History
+      </h1>
       <Table
         columns={columns}
-        dataSource={orders
-          .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))}
+        dataSource={orders.sort(
+          (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
+        )}
         rowKey="orderId"
         pagination={{ pageSize: 5 }}
         className="overflow-x-auto"

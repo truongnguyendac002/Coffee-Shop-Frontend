@@ -35,9 +35,6 @@ function ChangePassword() {
     
   };
 
-
- 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     
