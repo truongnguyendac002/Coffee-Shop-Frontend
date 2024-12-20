@@ -279,6 +279,10 @@ const summaryApi = {
     getOrderDetails : {
         url : `${backendDomain}/order`,
         method : "GET"
+    },
+    cancelOrder : {
+        url : `${backendDomain}/order/cancel-order/`,
+        method : "PUT"
     }
 }
 

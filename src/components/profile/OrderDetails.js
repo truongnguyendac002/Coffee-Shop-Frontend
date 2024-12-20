@@ -177,7 +177,7 @@ const OrderDetails = ({ orderId, onClose }) => {
           Close
         </Button>,
       ]}
-      width="90%" // Giảm độ rộng modal trên thiết bị di động
+      width="60%" // Giảm độ rộng modal trên thiết bị di động
       centered
       confirmLoading={loading}
       className="max-w-full"
@@ -264,7 +264,7 @@ const OrderDetails = ({ orderId, onClose }) => {
             Submit Review
           </Button>,
         ]}
-        width="90%" // Giảm độ rộng modal trên thiết bị di động
+        width="60%" // Giảm độ rộng modal trên thiết bị di động
         centered
       >
         <div>
