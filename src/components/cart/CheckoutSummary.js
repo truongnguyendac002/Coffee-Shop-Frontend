@@ -18,7 +18,7 @@ const CheckoutSummary = ({selectedAddress}) => {
     ? cartItems.filter((item) => item.isSelected)
     : [];
 
-  const shipping = 10.0;
+  const shipping = 10000;
   const subtotal = selectedItems
     ? selectedItems.reduce(
       (sum, item) => sum + item.productItemResponse.price * item.quantity,

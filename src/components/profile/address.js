@@ -40,6 +40,8 @@ const ShippingAddress = ({ setLoading }) => {
         }
         else {
             fetchAddresses();
+            setLoading(false);
+
         }
     }, [setLoading]);
 
@@ -96,8 +98,10 @@ const ShippingAddress = ({ setLoading }) => {
                     }
                 } catch (error) {
                     message.error("Error when process address:", error);
-                }
+                }finally{
                 setLoading(false);
+
+                }
                 return null;
             }
 

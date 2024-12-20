@@ -24,7 +24,7 @@ const ProductCard = ({ product }) => {
           )}
         </div>
         <div className="mt-3">
-          <div className="font-medium text-lg ">{product.name}</div>
+          <div className="font-medium text-lg line-clamp-1 ">{product.name}</div>
           <p className="text-gray-400  font-normal mt-1">
             {product.brand.name}
           </p>

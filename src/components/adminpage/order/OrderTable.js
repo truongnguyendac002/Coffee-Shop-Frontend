@@ -2,7 +2,7 @@ import { Button, message, Modal, Popconfirm, Table } from "antd";
 import fetchWithAuth from "../../../helps/fetchWithAuth";
 import summaryApi from "../../../common";
 import { useState } from "react";
-import img1 from "../../../assets/img/img2.png";
+import img1 from "../../../assets/img/empty.jpg";
 
 const OrderTable = ({ orderList , refreshOrderList }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
