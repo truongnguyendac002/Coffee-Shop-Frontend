@@ -230,6 +230,7 @@ const OrderDetails = ({ orderId, onClose }) => {
           </Descriptions>
 
           <h3 className="mt-4 mb-2">List Order Item:</h3>
+          {console.log("datass", orderDetail)}
           <Table
             dataSource={orderDetail.orderItems.map((item, index) => ({
               ...item,
