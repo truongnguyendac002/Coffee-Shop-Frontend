@@ -47,8 +47,7 @@ const CheckoutSummary = ({selectedAddress}) => {
       if (paymentMethod === "COD") {
         navigate("/order-status?status=success")
       } else if (paymentMethod === "VNPay") {
-        const amount = total + "000"
-        const createOnlinePayment = await fetchWithAuth(summaryApi.createOnlinePayment.url + `?amount=${amount}`, {
+        const createOnlinePayment = await fetchWithAuth(summaryApi.createOnlinePayment.url + `?amount=${total}`, {
           method: summaryApi.createOnlinePayment.method,
         })
 
