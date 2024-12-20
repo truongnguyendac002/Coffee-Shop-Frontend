@@ -1,29 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, Popconfirm } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined  } from '@ant-design/icons';
 import fetchWithAuth from '../../../helps/fetchWithAuth';
 import summaryApi from '../../../common';
+import Search from 'antd/es/transfer/search';
+import { toast } from 'react-toastify';
 
 const BrandTable = ({ brands, setBrands }) => {
     // const [brands, setBrands] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
     const [currentBrand, setCurrentBrand] = useState(null);
-
-    useEffect(() => {
-        // const fetchBrands = async () => {
-        //     const response = await fetchWithAuth(summaryApi.getAllBrand.url, {
-        //         method: summaryApi.allBrand.method,
-        //     });
-        //     const data = await response.json();
-        //     if (data.respCode === '000' && data.data) {
-        //         setBrands(data.data);
-        //     } else {
-        //         console.log(data);
-        //     }
-        // };
-        // fetchBrands();
-    }, []);
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const [nameError, setNameError] = useState('');
 
     const handleAddOrUpdateBrand = (values) => {
         const url = currentBrand ? `${summaryApi.updateBrand.url}/${currentBrand.id}` : summaryApi.addBrand.url;
@@ -40,6 +30,8 @@ const BrandTable = ({ brands, setBrands }) => {
             });
             const data = await response.json();
             if (data.respCode === '000' && data.data) {
+                setNameError('')
+                currentBrand? toast.success("Chỉnh sửa nhãn hàng thành công!") : toast.success("Thêm nhãn hàng thành công!")
                 if (currentBrand) {
                     setBrands(brands.map(brand => brand.id === currentBrand.id ? data.data : brand));
                 } else {
@@ -50,6 +42,13 @@ const BrandTable = ({ brands, setBrands }) => {
                 setCurrentBrand(null);
             } else {
                 console.log(data);
+                currentBrand? toast.error("Chỉnh sửa nhãn hàng không thành công! Vui lòng thử lại sau!") : toast.error("Thêm nhãn hàng không thành công! Vui lòng thử lại sau!")
+            }
+            if(data.respCode === '100'){
+                setNameError('Tên nhãn hàng không được để trống!')
+            }
+            if(data.respCode === '102'){
+                setNameError('Nhãn hàng đã tồn tại!')
             }
         };
         fetchAddOrUpdateBrand();
@@ -62,13 +61,63 @@ const BrandTable = ({ brands, setBrands }) => {
             });
             const data = await response.json();
             if (data.respCode === '000') {
+                toast.success('Xóa nhãn hàng thành công!')
                 setBrands(brands.filter(brand => brand.id !== id));
             } else {
                 console.log(data);
+                toast.error('Xóa nhãn hàng thất bại! Vui lòng thử lại sau!')
             }
         };
         fetchDeleteBrand();
     };
+
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
+
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    placeholder={`Tìm kiếm ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{ marginBottom: 8, display: 'block' }}
+                />
+                <Button
+                    type="primary"
+                    onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    icon={<SearchOutlined />}
+                    size="small"
+                    style={{ width: 90, marginRight: 8 }}
+                >
+                    Tìm kiếm
+                </Button>
+                <Button
+                    onClick={() => handleReset(clearFilters)}
+                    size="small"
+                    style={{ width: 90 }}
+                >
+                    Xóa
+                </Button>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex]
+                ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+                : '',
+    });
 
     const columns = [
         {
@@ -80,6 +129,7 @@ const BrandTable = ({ brands, setBrands }) => {
             title: 'Tên nhãn hàng',
             dataIndex: 'name',
             key: 'name',
+            ...getColumnSearchProps("name")
         },
         {
             title: 'Hành động',
@@ -146,6 +196,8 @@ const BrandTable = ({ brands, setBrands }) => {
                         name="name"
                         label="Tên nhãn hàng"
                         rules={[{ required: true, message: 'Vui lòng nhập tên nhãn hàng!' }]}
+                        help={nameError}
+                        validateStatus={nameError ? 'error' : ''}
                     >
                         <Input placeholder="Nhập tên nhãn hàng" className="rounded-md" />
                     </Form.Item>
