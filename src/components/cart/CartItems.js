@@ -14,7 +14,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { message } from "antd";
 import image1 from "../../assets/img/empty.jpg";
 
-const CartItems = ({ cartItems }) => {
+const CartItems = ({ cartItems, isCheckingOut }) => {
   const dispatch = useDispatch();
 
   const [errorItemId, setErrorItemId] = useState(null);
@@ -93,6 +93,7 @@ const CartItems = ({ cartItems }) => {
               checked={item.isSelected}
               onClick={() => handleSelectItem(item)}
               className="sm:mr-6 "
+              disabled={isCheckingOut}
             />
 
             <img
@@ -158,7 +159,7 @@ const CartItems = ({ cartItems }) => {
               onClick={() => handleDeleteCartItem(item.id)}
               className="text-xl sm:text-2xl ml-4 hover:text-red-500 cursor-pointer"
             >
-              <RiDeleteBin6Line />
+              {!isCheckingOut ? <RiDeleteBin6Line /> : <></>}
             </div>
           </div>
         </Card>

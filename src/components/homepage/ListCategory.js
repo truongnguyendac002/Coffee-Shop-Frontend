@@ -31,7 +31,7 @@ const ListCategory = () => {
 
   return (
     <>
-      <div className="container  mx-auto mt-10 bg-white  md:p-4 p-2 shadow-md rounded-md">
+      <div className="container mx-auto mt-10 bg-white  md:p-4 p-2 shadow-md md:rounded-md">
         <div>
           <h2 className="font-bold text-base ">Danh mục</h2>
         </div>

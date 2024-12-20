@@ -46,12 +46,11 @@ function OtpAuthentication() {
       );
 
       const otpResult = await otpResponse.json();
-      if (otpResult.respCode === "000" || otpResult.respCode === "404" ) {
-        toast.success(otpResult.respDesc);
+      if (otpResult.respCode === "000") {
+        toast.success(otpResult.data);
         navigate("/change-password");
-      } else  {
-        setError(otpResult.respDesc);
-        toast.error(otpResult.respDesc);
+      } else {
+        toast.error(otpResult.data);
       }
     } catch (error) {
       console.log("error", error);

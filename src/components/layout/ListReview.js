@@ -22,7 +22,6 @@ const ListReview = ({ productId }) => {
       );
       const result = await response.json();
       if (result.respCode === "000") {
-        console.log("review", result);
         setReviews(result.data);
         setTotalReviews(result.data.length)
       } else {

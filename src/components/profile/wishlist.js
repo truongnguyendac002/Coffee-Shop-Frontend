@@ -47,48 +47,49 @@ const Wishlist = ({ setLoading }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <Title level={3}>Wish List</Title>
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+      <Title level={3} className="text-lg sm:text-xl font-semibold">
+        Wish List
+      </Title>
       <div className="mt-4 space-y-4">
         {favorites.length === 0 ? (
-          <Text>Danh sách yêu thích trống.</Text>
+          <Text className="text-gray-500 text-center">Danh sách yêu thích trống.</Text>
         ) : (
           favorites.map((item) => (
-            <div className="flex justify-between items-center p-4 bg-gray-100 rounded-lg">
+            <div
+              key={item.id}
+              className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-50 rounded-lg border border-gray-200"
+            >
               <div
-                key={item.product.id}
-                className=" flex items-center"
-                onClick={() => handleViewItem(item.product)}
+                className="flex items-center w-full sm:w-auto cursor-pointer"
+                onClick={() => handleViewItem(item)}
               >
                 <img
-                  className="w-16 h-16 border-2 rounded-lg object-cover"
+                  className="w-16 h-16 sm:w-20 sm:h-20 border-2 rounded-lg object-cover"
                   src={
-                    item.product?.images[0]?.url
-                      ? item.product.images[0].url
+                    item.images[0]?.url
+                      ? item.images[0].url
                       : image1
                   }
-                  alt={item.product.name}
+                  alt={item.name}
                 />
-                <div className="ml-4">
-                  <Text className="block mb-4 font-medium text-xl ">
-                    {item.product.name}
+                <div className="ml-4 flex-1">
+                  <Text className="block mb-1 font-medium text-base sm:text-lg text-gray-800">
+                    {item.name}
                   </Text>
-                  <div>
-                    <Text className="text-lg font-normal ">
-                      <span className="font-medium ">Category: </span>{" "}
-                      {item.product.category.name}
-                    </Text>
-                  </div>
+                  <Text className="text-sm sm:text-base text-gray-600">
+                    <span className="font-medium text-gray-700">Category: </span>
+                    {item.category.name}
+                  </Text>
                 </div>
               </div>
-
               <Button
-                className="ml-4"
+                className="mt-3 sm:mt-0 sm:ml-4 w-full sm:w-auto"
                 type="primary"
                 danger
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleRemoveFavorite(item.product);
+                  handleRemoveFavorite(item);
                 }}
               >
                 Remove
@@ -98,7 +99,8 @@ const Wishlist = ({ setLoading }) => {
         )}
       </div>
     </div>
+
   );
-};
+}
 
 export default Wishlist;

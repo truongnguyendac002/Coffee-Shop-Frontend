@@ -47,8 +47,7 @@ const CheckoutSummary = ({selectedAddress}) => {
       if (paymentMethod === "COD") {
         navigate("/order-status?status=success")
       } else if (paymentMethod === "VNPay") {
-        const amount = total + "000"
-        const createOnlinePayment = await fetchWithAuth(summaryApi.createOnlinePayment.url + `?amount=${amount}`, {
+        const createOnlinePayment = await fetchWithAuth(summaryApi.createOnlinePayment.url + `?amount=${total}`, {
           method: summaryApi.createOnlinePayment.method,
         })
 
@@ -106,8 +105,8 @@ const CheckoutSummary = ({selectedAddress}) => {
       <button
         className={`w-full py-2 text-lg font-semibold rounded-md mt-2  text-black 
           ${(subtotal <= 0 || !selectedAddress)
-            ? "bg-yellow-500 cursor-not-allowed opacity-50"
-            : "bg-yellow-400 hover:bg-yellow-500  hover:text-black"
+            ? "bg-yellow-400 cursor-not-allowed opacity-50"
+            : "bg-yellow-300 hover:bg-yellow-400  hover:text-black"
           }`}
         onClick={handleCheckout}
       >
