@@ -46,17 +46,27 @@ const cartSlice = createSlice({
       });
     },
     toggleSelected: (state, action) => {
-      const itemId = action.payload;
-      const itemIndex = state.items.findIndex((item) => {
-        return item.id === itemId;
-      });
-      if (itemIndex >= 0) {
-        state.items[itemIndex].isSelected = !state.items[itemIndex].isSelected;
+      const { itemId, isSelected } = action.payload;
+    
+      if (itemId) {
+        const itemIndex = state.items.findIndex((item) => item.id === itemId);
+        if (itemIndex >= 0) {
+          state.items[itemIndex].isSelected = !state.items[itemIndex].isSelected;
+          Cookies.set("cart-item-list", JSON.stringify(state.items), {
+            expires: 7,
+          });
+        }
+      } else if (isSelected !== undefined) {
+       
+        state.items.forEach((item) => {
+          item.isSelected = isSelected; 
+        });
         Cookies.set("cart-item-list", JSON.stringify(state.items), {
           expires: 7,
         });
       }
-    },
+    }
+    
   },
 });
 
