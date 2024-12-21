@@ -8,16 +8,17 @@ function Cart() {
  
   const cartItems = useSelector((store) => store.cart.items);
 
+
   return (
     <>
     {
        cartItems.length > 0  ? (
         <div className="container mx-auto  bg-gray-100 min-h-screen">
         <div className="flex flex-col lg:flex-row justify-between items-start space-y-4 lg:space-y-0 lg:space-x-4">
-          <div className="w-full lg:w-2/3">
+          <div className="w-full lg:w-[70%]">
             <CartItems cartItems={cartItems}  />
           </div>
-          <div className="w-full lg:w-1/3">
+          <div className="w-full lg:w-[30%]">
             <CartSummary cartItems={cartItems} />
           </div>
         </div>

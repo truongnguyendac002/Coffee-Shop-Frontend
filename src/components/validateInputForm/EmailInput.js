@@ -4,6 +4,7 @@ import InPutForm from "./InPutForm";
 function EmailInput({ onEmailChange , setErrors}) {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  
 
   const validateEmail = (value) => {
     const emailRegex = /^(([^<>()[\],;:\s@"]+(\.[^<>()[\],;:\s@"]+)*)|(".+"))@(([^<>()[\],;:\s@"]+\.)+[^<>()[\],;:\s@"]{2,})$/i;

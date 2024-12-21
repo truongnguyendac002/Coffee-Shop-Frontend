@@ -125,7 +125,7 @@ const OrderHistory = React.memo(() => {
           <Button
             type="primary"
             danger
-            disabled={record.orderStatus === "Cancelled"}
+            disabled={record.orderStatus === "Cancelled" || record.orderStatus === "Completed" }
           >
             <Popconfirm
               title="Bạn có chắc muốn hủy đơn hàng này?"
