@@ -124,11 +124,11 @@ const SignIn = () => {
 
             <button
               type="submit"
-              className={`w-full py-2 px-4 text-black font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 ${isLoading
+              className={`w-full py-2 px-4 text-white font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 ${isLoading
                 ? "bg-gray-300 cursor-wait"
                 : passwordError || emailError || errors
                   ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-yellow-300 hover:bg-yellow-400 focus:ring-yellow-500"
+                  : "bg-gradient-to-r from-teal-500 via-teal-300 to-teal-500 transition-all duration-500 ease-in-out bg-[length:200%_auto] hover:bg-[position:right_center]"
                 }`}
               disabled={isLoading || passwordError || emailError || errors}
             >

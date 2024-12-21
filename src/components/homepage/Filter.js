@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import summaryApi from "../../common";
 import { Slider, Box, Typography } from "@mui/material";
 
-const Filter = ({ onFilter, products, onClickFilter }) => {
-  const min = 0;
+const Filter = ({ onFilter, products ,onClickFilter }) => {
+  const min = 0 ;
   const max = 1000000;
-  const step = 10000;
+  const step= 10000;
   const [brands, setBrands] = useState([]);
-  const [selectBrand, setSelectBrand] = useState("");
+  const [selectBrand, setSelectBrand] = useState([]);
   const [value, setValue] = useState([min, max]);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event, newValue) => { 
     setValue(newValue);
   };
 
@@ -36,16 +36,20 @@ const Filter = ({ onFilter, products, onClickFilter }) => {
   }, []);
 
   const handleSelectBrand = (brand) => {
-    setSelectBrand(brand.name);
+    setSelectBrand((pre) => 
+      pre.includes(brand.name ) 
+      ? pre.filter((item) => item !== brand.name) 
+      : [...pre , brand.name]
+    );
   };
 
   const handleClickFilter = () => {
     const filtered = products.filter((product) => {
       const inPriceRange =
         product.minPrice >= value[0] && product.minPrice <= value[1];
-      const matchesBrand = selectBrand
-        ? product.brand.name === selectBrand
-        : true;
+      const matchesBrand = selectBrand.length
+        ? selectBrand.includes(product.brand.name)
+        : true  ;
       return inPriceRange && matchesBrand;
     });
     onClickFilter();
@@ -81,12 +85,21 @@ const Filter = ({ onFilter, products, onClickFilter }) => {
                 "& .MuiSlider-thumb": {
                   width: 12,
                   height: 12,
+                  backgroundColor: "#02AAB0", 
+                  "&:hover, &.Mui-focusVisible": {
+                    boxShadow: "0px 0px 0px 8px rgba(2, 170, 176, 0.16)", 
+                  },
                 },
                 "& .MuiSlider-track": {
                   height: 6,
+                  backgroundColor: "#00CDAC",
                 },
                 "& .MuiSlider-rail": {
                   height: 6,
+                  backgroundColor: "#ccc",
+                },
+                "& .MuiSlider-valueLabel": {
+                  backgroundColor: "#02AAB0", 
                 },
               }}
             />
@@ -126,7 +139,7 @@ const Filter = ({ onFilter, products, onClickFilter }) => {
               <button
                 key={index}
                 className={`border rounded p-2 text-nowrap text-sm line-clamp-1 ${
-                  selectBrand === brand.name ? "bg-yellow-500 text-white" : ""
+                  selectBrand.includes(brand.name) ? "bg-yellow-500 text-white" : ""
                 }`}
                 onClick={() => handleSelectBrand(brand)}
               >
@@ -140,7 +153,10 @@ const Filter = ({ onFilter, products, onClickFilter }) => {
       <div className=" mt-10">
         <button
           onClick={handleClickFilter}
-          className="bg-yellow-500 text-white rounded p-2  w-full"
+        
+          className ="w-full p-2 text-white uppercase rounded-lg shadow-lg
+           bg-gradient-to-r from-teal-500 via-teal-300 to-teal-500 transition-all 
+           duration-500 ease-in-out bg-[length:200%_auto] hover:bg-[position:right_center]"
         >
           Áp dụng
         </button>

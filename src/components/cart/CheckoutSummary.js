@@ -75,19 +75,19 @@ const CheckoutSummary = ({selectedAddress}) => {
 
         <div className="flex text-lg font-semibold justify-between">
           <h3 className=" text-gray-700">Price (Total):</h3>
-          <p className="text-gray-800">{subtotal.toFixed(2)}đ</p>
+          <p className="text-gray-800">{subtotal.toFixed(0)}đ</p>
         </div>
 
         <div className="flex text-lg font-semibold justify-between">
           <h3 className=" text-gray-700">Shipping:</h3>
-          <p className="text-gray-800">{shipping.toFixed(2)} đ</p>
+          <p className="text-gray-800">{shipping.toFixed(0)} đ</p>
         </div>
       </div>
       <hr className="border-t border-gray-300 mt-6"></hr>
 
       <div className="my-6 flex justify-between text-lg font-bold text-gray-800">
         <h3>Total:</h3>
-        <p>{total.toFixed(2)} đ</p>
+        <p>{total.toFixed(0)} đ</p>
       </div>
 
       <div className="mb-4">

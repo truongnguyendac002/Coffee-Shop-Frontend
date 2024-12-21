@@ -40,6 +40,7 @@ const SearchProduct = () => {
       if (dataResponse.respCode === "000") {
         setProducts(dataResponse.data);
       } else {
+        setProducts([]);
         console.log("Error fetching search data");
       }
     } catch (error) {
