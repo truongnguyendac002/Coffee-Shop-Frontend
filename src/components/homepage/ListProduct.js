@@ -11,7 +11,7 @@ const ListProduct = ({ products: initialProducts, title }) => {
   const titleRef = useRef();
   const itemsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const productList = products;
   const totalPages = Math.ceil(productList.length / itemsPerPage);
