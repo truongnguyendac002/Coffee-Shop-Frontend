@@ -11,7 +11,7 @@ import image1 from "../assets/img/empty.jpg";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart, toggleSelected } from "../store/cartSlice";
 import fetchWithAuth from "../helps/fetchWithAuth";
-import { message } from "antd";
+import { message , Modal} from "antd";
 import {
   selectFavorites,
   removeFromFavorites,
@@ -145,11 +145,26 @@ const ProductDetail = () => {
 
 
   const handleAddProductToCart = async () => {
+
+    if(!user ) {
+      Modal.confirm({
+        title: "Xác nhận",
+        content: "Bạn có muốn đăng nhập để tiếp tục mua hàng?",
+        okText: "Đăng nhập",
+        cancelText: "Hủy",
+        onOk: () => {
+          navigate("/login");
+        },
+      });
+      return;
+    }
     if (!productItem) {
       setError("Bạn cần chọn loại sản phẩm trước khi thêm vào giỏ hàng!");
       toast.error("Chưa chọn loại sản phẩm");
       return;
     }
+
+   
     try {
       const response = await fetchWithAuth(summaryApi.addCartItem.url, {
         method: summaryApi.addCartItem.method,
@@ -262,6 +277,7 @@ const ProductDetail = () => {
         return null;
     }
   };
+
 
   return (
     <div className="container mx-auto mt-3">

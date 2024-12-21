@@ -40,7 +40,7 @@ const ListProduct = ({ products: initialProducts, title }) => {
   };
 
   useEffect(() => {
-    if (!initialProducts || initialProducts.length === 0) {
+    if (!initialProducts ) {
       const fetchProduct = async () => {
         try {
           setIsLoading(true);

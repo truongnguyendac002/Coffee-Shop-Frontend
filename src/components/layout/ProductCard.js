@@ -50,7 +50,7 @@ const ProductCard = ({ product }) => {
           </span>
 
           <span className="flex items-center">
-            {product?.rating?.toFixed(1)}
+            {product?.rating !== 0.0 ? product?.rating?.toFixed(1) : ""}
             <FaStar className="text-yellow-500 mx-1" />
           </span>
         </div>

@@ -151,7 +151,7 @@ const OrderTable = ({ orderList , refreshOrderList }) => {
           >
             <Button
               type="primary"
-              disabled={record.orderStatus === "Completed"}
+              disabled={record.orderStatus === "Completed" || record.orderStatus === "Cancelled" }
             >
               Change Status
             </Button>

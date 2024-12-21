@@ -18,8 +18,8 @@ const RevenueChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetchWithAuth(summaryApi.getAllOrder.url, {
-          method: summaryApi.getAllOrder.method,
+        const response = await fetchWithAuth(summaryApi.getOrderByStatus.url + `Completed`, {
+          method: summaryApi.getOrderByStatus.method,
         });
         const result = await response.json();
         if (result.respCode === "000") {
