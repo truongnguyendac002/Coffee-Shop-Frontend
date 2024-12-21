@@ -4,12 +4,14 @@ import { MdArrowBackIos } from "react-icons/md";
 import { MdArrowForwardIos } from "react-icons/md";
 import { useRef } from "react";
 import summaryApi from "../../common";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const ListProduct = ({ products: initialProducts, title }) => {
   const [products, setProducts] = useState(initialProducts || []);
   const titleRef = useRef();
   const itemsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
 
   const productList = products;
   const totalPages = Math.ceil(productList.length / itemsPerPage);
@@ -41,6 +43,7 @@ const ListProduct = ({ products: initialProducts, title }) => {
     if (!initialProducts || initialProducts.length === 0) {
       const fetchProduct = async () => {
         try {
+          setIsLoading(true);
           const productResponse = await fetch(summaryApi.allProduct.url, {
             method: summaryApi.allProduct.method,
             headers: {
@@ -56,8 +59,10 @@ const ListProduct = ({ products: initialProducts, title }) => {
         } catch (error) {
           console.log("error", error);
         }
+        finally {
+          setIsLoading(false);
+        }
       };
-
       fetchProduct();
     } else {
       setProducts(initialProducts);
@@ -71,6 +76,12 @@ const ListProduct = ({ products: initialProducts, title }) => {
           <h2 ref={titleRef} className="font-bold text-base ">
             {`${title} ( ${productList.length} )`}
           </h2>
+        </div>
+      )}
+
+      {isLoading && (
+        <div className="flex justify-center items-center ">
+          <LoadingOutlined style={{ fontSize: 48, color: 'red' }} spin />
         </div>
       )}
 
@@ -90,11 +101,10 @@ const ListProduct = ({ products: initialProducts, title }) => {
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
-          className={`px-2 py-1 rounded-l ${
-            currentPage === 1
+          className={`px-2 py-1 rounded-l ${currentPage === 1
               ? "bg-gray-200 cursor-not-allowed"
               : "bg-gray-300 hover:bg-gray-400"
-          }`}
+            }`}
         >
           <MdArrowBackIos />
         </button>
@@ -106,11 +116,10 @@ const ListProduct = ({ products: initialProducts, title }) => {
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
-          className={`px-2 py-1 rounded-r ${
-            currentPage === totalPages
+          className={`px-2 py-1 rounded-r ${currentPage === totalPages
               ? "bg-gray-200 cursor-not-allowed"
               : "bg-gray-300 hover:bg-gray-400"
-          }`}
+            }`}
         >
           <MdArrowForwardIos />
         </button>

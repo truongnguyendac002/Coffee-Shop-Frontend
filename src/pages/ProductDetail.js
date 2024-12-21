@@ -5,6 +5,7 @@ import { FaHeart } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa6";
 import { FaChevronRight } from "react-icons/fa6";
+import { LoadingOutlined } from '@ant-design/icons';
 
 import image1 from "../assets/img/empty.jpg";
 import { useSelector, useDispatch } from "react-redux";
@@ -53,11 +54,16 @@ const ProductDetail = () => {
 
   const [isFavorite, setIsFavorite] = useState(false);
 
+  const [imageLoadStatus, setImageLoadStatus] = useState(
+    images.map(() => false) // Tạo trạng thái tải cho từng ảnh
+  );
+
+
   useEffect(() => {
     if (product) {
       const isProductFavorite = favorites.some(
-        (item) => { 
-          return  item.id === product.id
+        (item) => {
+          return item.id === product.id
         }
       );
       setIsFavorite(isProductFavorite);
@@ -128,6 +134,15 @@ const ProductDetail = () => {
     setProductItem(item);
     setError(null);
   };
+
+  const handleImageLoad = (index) => {
+    setImageLoadStatus((prev) => {
+      const updatedStatus = [...prev];
+      updatedStatus[index] = true;
+      return updatedStatus;
+    });
+  };
+
 
   const handleAddProductToCart = async () => {
     if (!productItem) {
@@ -250,14 +265,28 @@ const ProductDetail = () => {
 
   return (
     <div className="container mx-auto mt-3">
+      {isLoading && (
+        <div className="flex justify-center items-center h-screen">
+          <LoadingOutlined style={{ fontSize: 48, color: 'red' }} spin />
+        </div>
+      )}
       <div className="shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row">
         {!isLoading && (
           <div className="p-6 md:w-2/5 w-full bg-white flex flex-col items-center">
-            <img
-              className="md:w-[300px] md:h-[300px] lg:w-[400px] lg:h-[380px] w-60 h-60 rounded-md object-cover"
-              src={images.length > 0 ? images[currentImage].url : image1}
-              alt="Main product"
-            />
+            <div className="relative">
+              {!imageLoadStatus[currentImage] && (
+                <div className="absolute inset-0  flex items-center justify-center">
+                  <LoadingOutlined className="text-3xl text-gray-400" spin />
+                </div>
+              )}
+              <img
+                className={`md:w-[300px] md:h-[300px] lg:w-[400px] lg:h-[380px] w-60 h-60 rounded-md object-cover transition-opacity duration-300 ${imageLoadStatus[currentImage] ? "opacity-100" : "opacity-0"
+                  }`}
+                src={images.length > 0 ? images[currentImage].url : image1}
+                alt="Main product"
+                onLoad={() => handleImageLoad(currentImage)}
+              />
+            </div>
             <div className="mt-8 relative max-w-full">
               <div
                 className="grid gap-3 lg:gap-1"
@@ -269,14 +298,22 @@ const ProductDetail = () => {
                   ? images
                   : Array(4).fill({ url: image1 })
                 ).map((image, index) => (
-                  <img
-                    key={index}
-                    className={`w-16 h-16 lg:h-24 lg:w-24 object-cover rounded-lg shadow-md cursor-pointer ${index === currentImage ? "border-2 border-red-500" : ""
-                      }`}
-                    src={image.url}
-                    alt={`Product ${index + 1}`}
-                    onClick={() => setCurrentImage(index)}
-                  />
+
+                  <div key={index} className="relative">
+                    {!imageLoadStatus[index] && (
+                      <div className="absolute inset-0  flex items-center justify-center">
+                        <LoadingOutlined className="text-xl text-gray-400" spin />
+                      </div>
+                    )}
+                    <img
+                      className={`w-16 h-16 lg:h-24 lg:w-24 object-cover rounded-lg shadow-md cursor-pointer transition-opacity duration-300 ${index === currentImage ? "border-2 border-red-500" : ""
+                        } ${imageLoadStatus[index] ? "opacity-100" : "opacity-0"}`}
+                      src={image.url}
+                      alt={`Product ${index + 1}`}
+                      onLoad={() => handleImageLoad(index)}
+                      onClick={() => setCurrentImage(index)}
+                    />
+                  </div>
                 ))}
               </div>
 
@@ -331,8 +368,8 @@ const ProductDetail = () => {
                     key={index}
                     onClick={() => handleClickSize(item)}
                     className={`shrink-0 w-28 h-8 rounded-sm text-sm border-2 ${clickButtonSize === item
-                        ? "border-orange-500 text-red-500"
-                        : "bg-white hover:border-orange-500 hover:text-red-500"
+                      ? "border-orange-500 text-red-500"
+                      : "bg-white hover:border-orange-500 hover:text-red-500"
                       }`}
                   >
                     {item.type.name}
