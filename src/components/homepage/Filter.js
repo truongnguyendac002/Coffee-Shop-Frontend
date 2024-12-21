@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import summaryApi from "../../common";
 import { Slider, Box, Typography } from "@mui/material";
 
-const Filter = ({ onFilter, products ,onClickFilter }) => {
-  const min = 0 ;
+const Filter = ({ onFilter, products, onClickFilter }) => {
+  const min = 0;
   const max = 1000000;
-  const step= 10000;
+  const step = 10000;
   const [brands, setBrands] = useState([]);
   const [selectBrand, setSelectBrand] = useState("");
   const [value, setValue] = useState([min, max]);
 
-  const handleChange = (event, newValue) => { 
+  const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
@@ -45,7 +45,7 @@ const Filter = ({ onFilter, products ,onClickFilter }) => {
         product.minPrice >= value[0] && product.minPrice <= value[1];
       const matchesBrand = selectBrand
         ? product.brand.name === selectBrand
-        : true  ;
+        : true;
       return inPriceRange && matchesBrand;
     });
     onClickFilter();

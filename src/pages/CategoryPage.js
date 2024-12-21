@@ -3,12 +3,12 @@ import summaryApi from "../common";
 import ListProduct from "../components/homepage/ListProduct";
 import { useParams } from "react-router-dom";
 import Filter from "../components/homepage/Filter";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const CategoryPage = () => {
   const [products, setProducts] = useState([]);
   const { categoryName, categoryId } = useParams();
   const [loading, setLoading] = useState(false);
-  const [showList, setShowList] = useState(false);
   const [onClickFilter , setOnClickFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
@@ -51,18 +51,13 @@ const CategoryPage = () => {
     fetchCategory();
   }, [categoryId]);
 
-  useEffect(() => {
-    if (products.length > 0) {
-      const timer = setTimeout(() => {
-        setShowList(true);
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [products]);
-
   return (
     <div className="container  mx-auto ">
-      {loading && <p className="text-lg text-center">Loading ...</p>}
+      {loading &&(
+        <div className="flex justify-center items-center h-screen">
+          <LoadingOutlined style={{ fontSize: 48, color: 'red' }} spin />
+        </div>
+      )}
 
       <div className=" grid grid-cols-12 lg:gap-x-10 gap-x-3">
         <div className="lg:col-span-3 md:col-span-4 col-span-12 mt-10 sm:min-h-screen ">
@@ -79,9 +74,10 @@ const CategoryPage = () => {
           </div>
         ) : (
           <div className="lg:col-start-4 lg:col-span-9 md:col-start-5 md:col-span-8  col-span-12">
-            {showList && (
+ 
+
               <ListProduct products={productList} title={categoryName} />
-            )}
+       
           </div>
         )}
       </div>
