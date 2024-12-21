@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Input, message, Popconfirm } from 'antd';
+import { Button, Modal, Input, message, Popconfirm, InputNumber } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import summaryApi from '../../common';
 import { useSelector } from 'react-redux';
@@ -256,9 +256,20 @@ const ShippingAddress = ({ setLoading }) => {
 
                 <h3 className="mt-3 font-semibold ">Receiver phone: </h3>
                 <Input
-                    placeholder="Receiver Phone"
+                    placeholder="Receiver Phone "
                     value={editingAddress?.receiverPhone || ''}
-                    onChange={(e) => setEditingAddress((prev) => ({ ...prev, receiverPhone: e.target.value }))}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^\d*$/.test(value)) {
+                          setEditingAddress((prev) => ({ ...prev, receiverPhone: value }));
+                        }
+                      }}
+                      onPaste={(e) => {
+                        const pastedValue = e.clipboardData.getData('Text');
+                        if (!/^\d*$/.test(pastedValue)) {
+                          e.preventDefault();
+                        }
+                      }}
                     className={` ${errors.receiverPhone ? 'border-red-500' : ''}`}
                 />
                 {errors.receiverPhone && <p className="text-red-500 text-sm">{errors.receiverPhone}</p>}

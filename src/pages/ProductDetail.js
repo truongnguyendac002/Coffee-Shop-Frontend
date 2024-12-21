@@ -202,7 +202,7 @@ const ProductDetail = () => {
         );
 
         if (!isSelected) {
-          dispatch(toggleSelected(addedProduct.id));
+          dispatch(toggleSelected({itemId : addedProduct.id}));
         }
         navigate("/checkout");
       }

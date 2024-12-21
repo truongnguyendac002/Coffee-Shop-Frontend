@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, InputNumber, Button, Checkbox } from "antd";
+import {  InputNumber, Button, Checkbox } from "antd";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import fetchWithAuth from "../../helps/fetchWithAuth";
@@ -20,6 +20,7 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
   const location = useLocation();
 
   const [errorItemId, setErrorItemId] = useState(null);
+  const [selectAll, setSelectAll] = useState(false);
 
   const handleQuantityChange = (value, item) => {
     if (value < 1 || value > item.productItemResponse.stock) {
@@ -62,10 +63,7 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
     setTimeout(() => setErrorItemId(null), 500);
   };
 
-  const handleSelectItem = (item) => {
-    dispatch(toggleSelected(item.id));
-  };
-
+ 
   const handleDeleteCartItem = async (itemId) => {
     try {
       const response = await fetchWithAuth(
@@ -85,13 +83,27 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
     }
   };
 
+  const handleSelectItem = (item) => {
+    setSelectAll(false);
+    dispatch(toggleSelected({itemId: item.id}));
+  };
+
+
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+    dispatch(toggleSelected({ isSelected: !selectAll }));
+  };
+
   return (
     <div className="space-y-4">
       {location.pathname === "/cart" ? (
         <div className="bg-white rounded-lg shadow-md py-2 px-3">
           <div className="flex items-center  pb-2 font-semibold text-gray-500">
             <div className="w-1/12 flex justify-center ">
-              <input type="checkbox" className="w-4 h-4" />
+              <input type="checkbox" className="w-4 h-4" 
+               checked={selectAll} 
+               onChange={handleSelectAll} 
+              />
             </div>
             <div className="w-5/12 flex justify-start">Sản Phẩm</div>
             <div className="w-1/12 flex justify-start">Đơn Giá</div>
@@ -112,7 +124,7 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
           <div className="flex flex-row items-center justify-between">
             <div className="w-1/12 flex justify-center ">
               <Checkbox
-                checked={item.isSelected}
+                checked={item.isSelected || selectAll}
                 onClick={() => handleSelectItem(item)}
                 disabled={isCheckingOut}
                 style={{ transform: "scale(1.1)" }}
