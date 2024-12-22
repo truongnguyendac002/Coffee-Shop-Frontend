@@ -189,7 +189,7 @@ const Profile = () => {
               </div>
 
               {/* Lists */}
-              <Wishlist setLoading={setLoading} />
+              <Wishlist  />
             </section>
             {/* Modal for changing password */}
             <Modal
@@ -258,7 +258,7 @@ const Profile = () => {
       case "addresses":
         return (
           <>
-            <Address setLoading={setLoading} />
+            <Address  />
           </>
         );
       case "communications":

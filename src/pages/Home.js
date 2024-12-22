@@ -189,7 +189,7 @@ const Home = () => {
                       />
                     </div>
                   ) : (
-                    <ListProduct products={products} title={"Dành cho bạn"} />
+                    <ListProduct products={products} title={"All products"} />
                   )}
                 </div>
               </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Typography, message } from "antd";
 import { removeFromFavorites } from "../../store/favoritesSlice ";
@@ -8,9 +8,10 @@ import image1 from "../../assets/img/empty.jpg";
 import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
-const Wishlist = ({ setLoading }) => {
+const Wishlist = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading , setLoading ] =  useState(false);
 
   const favorites = useSelector((state) => state.favorites.items);
 
@@ -87,6 +88,7 @@ const Wishlist = ({ setLoading }) => {
                 className="mt-3 sm:mt-0 sm:ml-4 w-full sm:w-auto"
                 type="primary"
                 danger
+                loading={loading === item.id}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleRemoveFavorite(item);

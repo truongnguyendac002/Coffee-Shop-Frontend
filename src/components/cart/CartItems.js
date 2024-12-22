@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {  InputNumber, Button, Checkbox } from "antd";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
@@ -94,6 +94,12 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
     dispatch(toggleSelected({ isSelected: !selectAll }));
   };
 
+  useEffect(() => {
+    const allSelected = cartItems.every(cartItem => cartItem.isSelected === true);
+    setSelectAll(allSelected);
+  }, [cartItems]);
+  
+
   return (
     <div className="space-y-4">
       {location.pathname === "/cart" ? (
@@ -161,7 +167,7 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
             </div>
 
             <div className="w-1/12  text-sm sm:text-base font-semibold">
-              {item.productItemResponse.price.toFixed(0)}đ
+            {Number(item.productItemResponse.price).toLocaleString("vi-VN")}đ
             </div>
 
             <div className="w-3/12 flex items-center justify-center ">
@@ -192,7 +198,7 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
             </div>
 
             <div className=" w-1/12 flex justify-center text-sm sm:text-base font-semibold text-red-500">
-              {(item.productItemResponse.price * item.quantity).toFixed(0)}đ
+              {Number(item.productItemResponse.price * item.quantity).toLocaleString("vi-VN")}đ
             </div>
 
             <div

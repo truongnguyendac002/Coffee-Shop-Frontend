@@ -8,12 +8,11 @@ import fetchWithAuth from "../../helps/fetchWithAuth";
 import { Radio } from 'antd';
 
 const CheckoutSummary = ({selectedAddress}) => {
-  // Lay Cac Item Trong Cart
+  
   const cartItems = useSelector((store) => store.cart.items)
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const navigate = useNavigate();
 
-  // Cac Item Duoc Chon Thanh Toan
   const selectedItems = cartItems
     ? cartItems.filter((item) => item.isSelected)
     : [];
@@ -75,19 +74,20 @@ const CheckoutSummary = ({selectedAddress}) => {
 
         <div className="flex text-lg font-semibold justify-between">
           <h3 className=" text-gray-700">Price (Total):</h3>
-          <p className="text-gray-800">{subtotal.toFixed(0)}đ</p>
+          <p className="text-gray-800">{Number(subtotal).toLocaleString("vi-VN")}đ</p>
         </div>
 
         <div className="flex text-lg font-semibold justify-between">
           <h3 className=" text-gray-700">Shipping:</h3>
-          <p className="text-gray-800">{shipping.toFixed(0)} đ</p>
+          <p className="text-gray-800">{Number(shipping).toLocaleString("vi-VN")}đ</p>
+
         </div>
       </div>
       <hr className="border-t border-gray-300 mt-6"></hr>
 
       <div className="my-6 flex justify-between text-lg font-bold text-gray-800">
         <h3>Total:</h3>
-        <p>{total.toFixed(0)} đ</p>
+        <p>{Number(total).toLocaleString("vi-VN")} đ</p>
       </div>
 
       <div className="mb-4">
