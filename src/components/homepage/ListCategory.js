@@ -4,9 +4,9 @@ const ListCategory = ({categories}) => {
 
   return (
     <>
-      <div className="container mx-auto mt-10 bg-white  md:p-4 p-2 shadow-md md:rounded-md">
+      <div className="container mx-auto mt-10 bg-white p-2  md:p-4  shadow-md md:rounded-md">
         <div>
-          <h2 className="font-bold text-base ">Danh mục</h2>
+          <h2 className="font-bold text-base ">Category:</h2>
         </div>
         <div className="mt-4 grid md:grid-cols-1 grid-cols-2 gap-1 lg:gap-2   ">
 
