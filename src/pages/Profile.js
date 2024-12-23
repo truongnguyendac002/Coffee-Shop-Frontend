@@ -138,7 +138,7 @@ const Profile = () => {
                 className="mr-6 mt-2 float-right"
                 onClick={() => setShowPasswordModal(true)}
               >
-                Đổi mật khẩu
+                Change Password
               </Button>
             </div>
             {/* Right Content */}

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Typography, message } from "antd";
+import { Button, Pagination, Typography, message } from "antd";
 import { removeFromFavorites } from "../../store/favoritesSlice ";
 import fetchWithAuth from "../../helps/fetchWithAuth";
 import summaryApi from "../../common";
@@ -11,11 +11,21 @@ const { Title, Text } = Typography;
 const Wishlist = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [loading , setLoading ] =  useState(false);
 
   const favorites = useSelector((state) => state.favorites.items);
-
   const user = useSelector((store) => store?.user?.user);
+
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(2);
+
+  const currentFavorites = useMemo(() => {
+    const indexOfLastFavorite = currentPage * pageSize;
+    const indexOfFirstFavorite = indexOfLastFavorite - pageSize;
+    return favorites.slice(indexOfFirstFavorite, indexOfLastFavorite);
+  }, [currentPage, pageSize, favorites]);
+
+
   const handleRemoveFavorite = async (product) => {
     try {
       setLoading(true);
@@ -29,8 +39,14 @@ const Wishlist = () => {
 
       const data = await response.json();
       if (data.respCode === "000") {
-        dispatch(removeFromFavorites(product));
 
+        const updateFavorites = favorites.filter((item) =>  item.id !== product.id);
+        const totalPages =  Math.ceil(updateFavorites.length / pageSize);
+
+        if(currentPage > totalPages) {
+          setCurrentPage(Math.max(1 , totalPages ));
+        }
+        dispatch(removeFromFavorites(product));
         message.success("Sản phẩm đã được xóa khỏi danh sách yêu thích");
       } else {
         throw new Error("Lỗi khi xóa sản phẩm khỏi danh sách yêu thích");
@@ -54,9 +70,11 @@ const Wishlist = () => {
       </Title>
       <div className="mt-4 space-y-4">
         {favorites.length === 0 ? (
-          <Text className="text-gray-500 text-center">Danh sách yêu thích trống.</Text>
+          <Text className="text-gray-500 text-center">
+            Danh sách yêu thích trống.
+          </Text>
         ) : (
-          favorites.map((item) => (
+          currentFavorites.map((item) => (
             <div
               key={item.id}
               className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-50 rounded-lg border border-gray-200"
@@ -67,11 +85,7 @@ const Wishlist = () => {
               >
                 <img
                   className="w-16 h-16 sm:w-20 sm:h-20 border-2 rounded-lg object-cover"
-                  src={
-                    item.images[0]?.url
-                      ? item.images[0].url
-                      : image1
-                  }
+                  src={item.images[0]?.url ? item.images[0].url : image1}
                   alt={item.name}
                 />
                 <div className="ml-4 flex-1">
@@ -79,7 +93,9 @@ const Wishlist = () => {
                     {item.name}
                   </Text>
                   <Text className="text-sm sm:text-base text-gray-600">
-                    <span className="font-medium text-gray-700">Category: </span>
+                    <span className="font-medium text-gray-700">
+                      Category:{" "}
+                    </span>
                     {item.category.name}
                   </Text>
                 </div>
@@ -99,10 +115,21 @@ const Wishlist = () => {
             </div>
           ))
         )}
+
+        {
+          favorites.length > pageSize  && (
+          <Pagination 
+            current={currentPage} 
+            pageSize={pageSize}
+            total={favorites.length} 
+            onChange={(page) => setCurrentPage(page)} 
+            showSizeChanger= {false}
+          />)
+        }
+        
       </div>
     </div>
-
   );
-}
+};
 
 export default Wishlist;
