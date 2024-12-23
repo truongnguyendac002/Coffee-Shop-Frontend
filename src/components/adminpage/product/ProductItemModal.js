@@ -84,7 +84,7 @@ const AddItemModal = ({ visible, onClose, onSave, types, onAddType, editingItem 
                     name="discount"
                     rules={[{ required: true, message: 'Vui lòng nhập giảm giá' }]}
                 >
-                    <InputNumber min={0} max={100} style={{ width: '100%' }} />
+                    <InputNumber min={0}   style={{ width: '100%' }} />
                 </Form.Item>
                 <Form.Item
                     label="Type"
