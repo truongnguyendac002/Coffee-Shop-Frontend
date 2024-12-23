@@ -363,7 +363,7 @@ const ProductDetail = () => {
               <div className="flex gap-x-4 gap-y-3 flex-wrap">
                 {selectedDiscount > 0 ? (
                   <button className="shrink-0 w-28 h-8 border-dashed border-2 bg-red-100 text-red-500 font-semibold rounded-sm text-lg">
-                    {`Giảm ${selectedDiscount}k`}
+                    {`- ${Number(selectedDiscount).toLocaleString("vi-VN")}đ`}
                   </button>
                 ) : selectedDiscount === 0.0 ? (
                   <p className="text-red-400">Sản phẩm này không có mã giảm giá</p>

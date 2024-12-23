@@ -20,12 +20,13 @@ const CheckoutSummary = ({selectedAddress}) => {
   const shipping = 10000;
   const subtotal = selectedItems
     ? selectedItems.reduce(
-      (sum, item) => sum + item.productItemResponse.price * item.quantity,
+      (sum, item) => sum + (item.productItemResponse.price * item.quantity),
       0
     )
     : 0;
 
   const total = subtotal + shipping;
+  console.log("total" , total )
 
   // Thuc lam tu day
   const handleCheckout = async () => {
@@ -49,6 +50,8 @@ const CheckoutSummary = ({selectedAddress}) => {
         const createOnlinePayment = await fetchWithAuth(summaryApi.createOnlinePayment.url + `?amount=${total}`, {
           method: summaryApi.createOnlinePayment.method,
         })
+        console.log("total22" , total )
+
 
         const response = await createOnlinePayment.json();
         if (response.respCode === "000") {

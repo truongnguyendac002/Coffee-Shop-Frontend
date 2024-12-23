@@ -204,19 +204,17 @@ const ShippingAddress = () => {
       <div className="flex justify-between items-center mb-4">
         <div className="mb-4">
           {addresses.length !== 0 ? (
-              isProfilePage ? (
-                <p className="text-sm text-gray-600">
-                    Manage your addresses here!
-                 
-                </p>
-                ) :  (
-                  <p className="text-sm text-gray-600">
-                     Select the address you want to receive the product
-                  
-                </p> 
-                )
+            isProfilePage ? (
+              <p className="text-sm text-gray-600">
+                Manage your addresses here!
+              </p>
+            ) : (
+              <p className="text-sm text-gray-600">
+                Select the address you want to receive the product
+              </p>
+            )
           ) : (
-            <p>  Do you want to add new address?</p>
+            <p> Do you want to add new address?</p>
           )}
         </div>
         <Button
@@ -240,15 +238,16 @@ const ShippingAddress = () => {
             key={address.id}
             className={`p-4 border rounded-md flex flex-col md:flex-row justify-between items-start `}
           >
-            <Radio.Group
-              onChange={() => handleSelectAddress(address.id)}
-              value={selectedAddressId}
-              className="self-start md:self-center"
-              style={{ display: isProfilePage ? "none" : "block" }}
-            >
-              <Radio value={address.id} />
-            </Radio.Group>
+             <Radio.Group
+                onChange={() => handleSelectAddress(address.id)}
+                value={selectedAddressId}
+                className="self-start md:self-center"
+                style={{ display: isProfilePage ? "none" : "block" }}
+              >
+                <Radio value={address.id} />
+              </Radio.Group>
             <div className="flex-1">
+             
               <div className="flex flex-col lg:flex-row items-baseline justify-between">
                 <p className="lg:w-[60%] w-full">
                   <span className="font-semibold">Name: </span>
