@@ -37,7 +37,6 @@ const ProfileSection = () => {
         }
     };
 
-
     return (
         <section className="text-center mb-8">
             <div

@@ -5,6 +5,7 @@ import { CiMail } from "react-icons/ci";
 import summaryApi from "../common";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { message } from "antd";
 
 function OtpAuthentication() {
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -19,6 +20,7 @@ function OtpAuthentication() {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
+      setError(false);
 
       if (value && index < otp.length - 1) {
         document.getElementById(`otp-${index + 1}`).focus();
@@ -34,6 +36,10 @@ function OtpAuthentication() {
     e.preventDefault();
     const otpValue = otp.join("");
 
+    if(!otpValue || otpValue.length !== 4) {
+      message.info("Bạn phải điền mã OTP");
+      return ;
+    }
     try {
       const otpResponse = await fetch(
         summaryApi.verifyOtp.url + `${otpValue}/` + email,
@@ -51,6 +57,7 @@ function OtpAuthentication() {
         navigate("/change-password");
       } else {
         toast.error(otpResult.data);
+        setError(otpResult.data)
       }
     } catch (error) {
       console.log("error", error);
@@ -80,7 +87,7 @@ function OtpAuthentication() {
                 value={otp[index]}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 maxLength="1"
-                className="w-12 h-12 text-center border-2 rounded-md text-lg focus:outline-none focus:border-indigo-600"
+                className={`w-12 h-12 text-center border-2 rounded-md text-lg focus:outline-none focus:border-indigo-600 ${error ? "border-red-500 bg-red-50 text-red-600" : ""} `}
               />
             ))}
           </div>

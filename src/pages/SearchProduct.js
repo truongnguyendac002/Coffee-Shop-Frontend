@@ -9,7 +9,6 @@ const SearchProduct = () => {
   const location = useLocation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showList, setShowList] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [onClickFilter, setOnClickFilter] = useState(false);
 
@@ -41,6 +40,7 @@ const SearchProduct = () => {
       if (dataResponse.respCode === "000") {
         setProducts(dataResponse.data);
       } else {
+        setProducts([]);
         console.log("Error fetching search data");
       }
     } catch (error) {
@@ -53,15 +53,6 @@ const SearchProduct = () => {
   useEffect(() => {
     fetchSearchProduct();
   }, [fetchSearchProduct]);
-
-  useEffect(() => {
-    if (products.length > 0) {
-      const timer = setTimeout(() => {
-        setShowList(true);
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [products]);
 
   const title = `Sản Phẩm liên quan đến "${searchTerm}" :`;
 
@@ -92,7 +83,7 @@ const SearchProduct = () => {
             </div>
           ) : (
             <div className="lg:col-start-4 lg:col-span-9 md:col-start-5 md:col-span-8  col-span-12">
-              {showList && <ListProduct products={productList} title={title} />}
+              <ListProduct products={productList} title={title} />
             </div>
           )}
         </div>

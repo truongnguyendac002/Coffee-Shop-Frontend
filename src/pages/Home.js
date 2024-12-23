@@ -18,20 +18,25 @@ import ChatWidget from "../components/layout/ChatWidget";
 
 const Home = () => {
   const location = useLocation();
-  const user = useSelector((state) => state.user.user, (prev, next) => prev === next);
+  const user = useSelector(
+    (state) => state.user.user,
+    (prev, next) => prev === next
+  );
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const [isCartLoading, setIsCartLoading] = useState(false);
+  const [isProductsLoading, setIsProductsLoading] = useState(false);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cart.items);
   const favorites = useSelector(selectFavorites);
 
-
   useEffect(() => {
     const fetchCartItems = async () => {
       setIsCartLoading(true);
       try {
-
         const response = await fetchWithAuth(
           summaryApi.getAllCartItems.url + user.id,
           { method: summaryApi.getAllCartItems.method }
@@ -74,24 +79,71 @@ const Home = () => {
             }
           }
         }
-        } catch (error) {
-          console.log("error", error);
-        }
-      };
-
-      if (user) {
-        if (!localStorage.getItem("favorites") && favorites.length === 0) {
-          fetchFavorites();
-        }
+      } catch (error) {
+        console.log("error", error);
       }
-    }, [user, dispatch, favorites.length]);
+    };
 
-  
+    if (user) {
+      if (!localStorage.getItem("favorites") && favorites.length === 0) {
+        fetchFavorites();
+      }
+    }
+  }, [user, dispatch, favorites.length]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setIsProductsLoading(true);
+        const productResponse = await fetch(summaryApi.allProduct.url, {
+          method: summaryApi.allProduct.method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const productResult = await productResponse.json();
+
+        if (productResult.respCode === "000") {
+          setProducts(productResult.data);
+        }
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        setIsProductsLoading(false);
+      }
+    };
+    fetchProduct();
+  }, []);
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      setIsCategoriesLoading(true);
+      try {
+        const categoryResponse = await fetch(summaryApi.allCategory.url, {
+          method: summaryApi.allCategory.method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const dataResult = await categoryResponse.json();
+        if (dataResult.respCode === "000") {
+          setCategories(dataResult.data);
+        }
+      } catch (error) {
+        console.log("error", error);
+      }finally {
+        setIsCategoriesLoading(false);
+      }
+    };
+
+    fetchCategory();
+  }, []);
 
   if (user?.roleName === "ROLE_ADMIN") {
     navigate("/admin");
-  }
-  else if (isCartLoading) {
+  } else if (isCartLoading) {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     return (
@@ -116,11 +168,29 @@ const Home = () => {
               <div className="flex flex-col md:flex-row mt-5">
                 <div className="md:w-2/6 lg:w-1/5 w-full md:pr-4">
                   <div className="sticky top-24">
-                    <ListCategory />
+                    {isCategoriesLoading ? (
+                    <div className="flex justify-center items-center h-screen">
+                      <LoadingOutlined
+                        style={{ fontSize: 48, color: "red" }}
+                        spin
+                      />
+                    </div>
+                  ) : (
+                    <ListCategory  categories={categories}/>
+                  )}
                   </div>
                 </div>
                 <div className="md:w-4/6 lg:w-4/5 w-full md:pl-4">
-                  <ListProduct title={"Dành cho bạn"} />
+                  {isProductsLoading ? (
+                    <div className="flex justify-center items-center h-screen">
+                      <LoadingOutlined
+                        style={{ fontSize: 48, color: "red" }}
+                        spin
+                      />
+                    </div>
+                  ) : (
+                    <ListProduct products={products} title={"All products"} />
+                  )}
                 </div>
               </div>
             </>

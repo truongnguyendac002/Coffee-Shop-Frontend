@@ -35,7 +35,6 @@ const Header = () => {
     Cookies.remove("refreshToken");
     Cookies.remove("cart-item-list");
     localStorage.removeItem("shipping-address");
-    localStorage.removeItem("selected-address-id");
     dispatch(clearUser());
     dispatch(clearCart());
     dispatch(clearFavorites());
@@ -63,8 +62,6 @@ const Header = () => {
       handleSearch();
     }
   };
-
-
 
   useEffect(() => {
     const total = carts.length;
@@ -111,7 +108,9 @@ const Header = () => {
           />
           <div
             onClick={handleSearch}
-            className="flex h-8 min-w-[50px] items-center justify-center rounded-r-full bg-teal-500 text-lg text-white cursor-pointer hover:bg-teal-600"
+            className="flex h-8 min-w-[50px] items-center justify-center rounded-r-full cursor-pointer 
+            text-white text-lg  bg-gradient-to-r from-teal-500 via-teal-400 to-teal-500 transition-all 
+            duration-500 ease-in-out bg-[length:200%_auto] hover:bg-[position:right_center]"
           >
             <GrSearch />
           </div>
@@ -160,7 +159,9 @@ const Header = () => {
             <>
               <div>
                 <Link to="/login">
-                  <button className="rounded-full bg-teal-500 px-5 py-1 text-white text-lg hover:bg-teal-600">
+                  <button className="rounded-full px-5 py-1 text-white text-lg shadow-lg
+                  bg-gradient-to-r from-teal-500 via-teal-400 to-teal-500 transition-all duration-500 
+                  ease-in-out bg-[length:200%_auto] hover:bg-[position:right_center]">
                     Sign In
                   </button>
                 </Link>
@@ -170,7 +171,9 @@ const Header = () => {
             <div>
               <button
                 onClick={handleLogout}
-                className="rounded-full bg-teal-500 px-5 py-1 text-white text-lg hover:bg-teal-600"
+                className="rounded-full  px-5 py-1 text-white text-lg shadow-lg bg-gradient-to-r
+                 from-teal-500 via-teal-400 to-teal-500 transition-all duration-500 ease-in-out bg-[length:200%_auto]
+                  hover:bg-[position:right_center]"
               >
                 Logout
               </button>

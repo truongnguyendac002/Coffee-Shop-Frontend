@@ -3,6 +3,7 @@ import userReducer from "./userSlice";
 import forgotPasswordReducer from "./forgotPasswordSlice";
 import cartReducer from "./cartSlice";
 import favoritesReducer from './favoritesSlice ';
+import shippingAddressReducer  from './shippingAddressSlice ';
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     forgotPassword: forgotPasswordReducer,
     cart : cartReducer,
     favorites: favoritesReducer,
+    shippingAddresses: shippingAddressReducer ,
   },
 });

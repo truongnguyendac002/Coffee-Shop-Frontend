@@ -31,6 +31,12 @@ const CustomBreadcrumb = styled(Breadcrumb)`
 
 const BreadcrumbNav = () => {
   const location = useLocation();
+  const renameMap = {
+    product: 'Product',
+    checkout: 'Checkout',
+    search: 'Search',
+    cart : 'Cart'
+  };
 
   if (location.pathname === '/') {
     return null; 
@@ -40,21 +46,23 @@ const BreadcrumbNav = () => {
 
   const items = [
     {
-      title: <Link to="/" className=" ">Trang chủ</Link>,
+      title: <Link to="/" className=" ">Home</Link>,
       key: 'home',
     },
-    ...pathSnippets.map((_, index) => {
+    ...pathSnippets.map((snippet, index) => {
+
+      const formattedSnippet = renameMap[snippet.toLowerCase()] || snippet;
       const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
       const isLast = index === pathSnippets.length - 1;
 
       return {
         title: isLast ? (
           <span style={{ color: '#1A162E', fontWeight: 'bold', fontSize: '18px' }}>
-            {_}
+            {formattedSnippet}
           </span>
         ) : (
           <Link to={url} className="text-gray-800 ">
-            {_}
+            {formattedSnippet}
           </Link>
         ),
         key: url,

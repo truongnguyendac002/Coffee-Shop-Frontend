@@ -7,24 +7,28 @@ import summaryApi from "../common";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setEmail } from "../store/forgotPasswordSlice";
+import { message } from "antd";
 
 function ForgotPassword() {
   const dispatch = useDispatch();
   const email = useSelector((state) => state.forgotPassword.email);
   const [emailError, setEmailError] = useState(""); 
   const [data, setData] = useState("");
-  
   const navigate = useNavigate();
-
-
 
   const handleEmailChange = (e) => {
     dispatch(setEmail(e.target.value))
     setData(e.target.value)
+    setEmailError(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if(!data) {
+      message.info("Bạn cần nhập địa chỉ email!"); 
+      return;
+    }
     
     try { 
       const forgotPassResponse = await fetch(
@@ -38,7 +42,6 @@ function ForgotPassword() {
       );
 
       const forgotPassResult = await forgotPassResponse.json();
-      console.log("forgotPassResult", forgotPassResult);
       if (forgotPassResult.respCode === "000") {
         navigate("/otp-auth");
         toast.success("OTP đã được gửi đến email của bạn!");
@@ -46,6 +49,7 @@ function ForgotPassword() {
  
       else  {
         toast.error(forgotPassResult.data)
+        setEmailError(forgotPassResult.data)
       }
     } catch (error) {
       console.log("error", error);
@@ -65,13 +69,16 @@ function ForgotPassword() {
           <p className="text-sm text-gray-400 mt-3">Please enter your email!</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <EmailInput onEmailChange={handleEmailChange} setErrors={setEmailError} />
+
+          
+          {emailError && <p className="text-sm text-red-500 ">{emailError}</p>}
 
           <button
             type="submit"
             className={`w-full py-2 px-4  text-white font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 
-              ${ (emailError  || !data)
+              ${ (emailError)
                 ? "bg-gray-300 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700 focus:bg-indigo-500 "
             }`}

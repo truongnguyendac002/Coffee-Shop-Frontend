@@ -138,7 +138,7 @@ const Profile = () => {
                 className="mr-6 mt-2 float-right"
                 onClick={() => setShowPasswordModal(true)}
               >
-                Đổi mật khẩu
+                Change Password
               </Button>
             </div>
             {/* Right Content */}
@@ -189,7 +189,7 @@ const Profile = () => {
               </div>
 
               {/* Lists */}
-              <Wishlist setLoading={setLoading} />
+              <Wishlist  />
             </section>
             {/* Modal for changing password */}
             <Modal
@@ -258,7 +258,7 @@ const Profile = () => {
       case "addresses":
         return (
           <>
-            <Address setLoading={setLoading} />
+            <Address  />
           </>
         );
       case "communications":

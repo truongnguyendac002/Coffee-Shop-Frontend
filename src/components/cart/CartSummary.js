@@ -32,19 +32,20 @@ const CartSummary = () => {
 
         <div className="flex md:text-lg text-base font-semibold justify-between">
           <h3 className=" text-gray-700">Price (Total):</h3>
-          <p className="text-gray-800">{subtotal.toFixed(2)}đ</p>
+          <p className="text-gray-800">{Number(subtotal).toLocaleString("vi-VN")}đ</p>
+
         </div>
 
         <div className="flex md:text-lg text-base font-semibold justify-between">
           <h3 className=" text-gray-700">Shipping:</h3>
-          <p className="text-gray-800">{shipping.toFixed(2)} đ</p>
+          <p className="text-gray-800">{Number(shipping).toLocaleString("vi-VN")}đ</p>
         </div>
       </div>
       <hr className="border-t border-gray-300 mt-6"></hr>
 
       <div className="my-6 flex justify-between md:text-lg text-base font-bold text-gray-800">
         <h3>Total:</h3>
-        <p>{total.toFixed(2)} đ</p>
+        <p>{Number(total).toLocaleString("vi-VN")} đ</p>
       </div>
 
       <Link to={{ pathname: "/checkout" }}>
