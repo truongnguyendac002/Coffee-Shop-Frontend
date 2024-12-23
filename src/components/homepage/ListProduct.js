@@ -1,73 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ProductCard from "../layout/ProductCard";
-import { MdArrowBackIos } from "react-icons/md";
-import { MdArrowForwardIos } from "react-icons/md";
 import { useRef } from "react";
-import summaryApi from "../../common";
-import { LoadingOutlined } from "@ant-design/icons";
+import { Pagination } from "antd";
 
 const ListProduct = ({ products: initialProducts, title }) => {
-  const [products, setProducts] = useState(initialProducts || []);
   const titleRef = useRef();
-  const itemsPerPage = 20;
+  const [products, setProducts] = useState(initialProducts || []);
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-
+  const itemsPerPage = 20;
   const productList = products;
-  const totalPages = Math.ceil(productList.length / itemsPerPage);
 
-  const currentProducts = productList.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-      setTimeout(() => {
-        titleRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 0);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-      setTimeout(() => {
-        titleRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 0);
-    }
-  };
+  const currentProducts = useMemo(() => {
+    const indexLast = currentPage * itemsPerPage;
+    const indexFirst = indexLast - itemsPerPage;
+    return productList.slice(indexFirst, indexLast);
+  }, [currentPage, itemsPerPage, productList]);
 
   useEffect(() => {
-    if (!initialProducts ) {
-      const fetchProduct = async () => {
-        try {
-          setIsLoading(true);
-          const productResponse = await fetch(summaryApi.allProduct.url, {
-            method: summaryApi.allProduct.method,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-
-          const productResult = await productResponse.json();
-
-          if (productResult.respCode === "000") {
-            setProducts(productResult.data);
-          }
-        } catch (error) {
-          console.log("error", error);
-        }
-        finally {
-          setIsLoading(false);
-        }
-      };
-      fetchProduct();
-    } else {
-      setProducts(initialProducts);
-    }
+    setProducts(initialProducts);
   }, [initialProducts]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page); 
+    if(titleRef.current) {
+      const elementPosition = titleRef.current.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: elementPosition - 150, 
+        behavior: "smooth",
+      });
+    }
+  } 
 
   return (
     <div className="container bg-white shadow-md p-3 mx-auto mt-10 ">
@@ -78,13 +41,6 @@ const ListProduct = ({ products: initialProducts, title }) => {
           </h2>
         </div>
       )}
-
-      {isLoading && (
-        <div className="flex justify-center items-center ">
-          <LoadingOutlined style={{ fontSize: 48, color: 'red' }} spin />
-        </div>
-      )}
-
       {productList.length === 0 ? (
         <div className="text-center text-lg font-bold text-gray-500 mt-5">
           No results found
@@ -98,31 +54,13 @@ const ListProduct = ({ products: initialProducts, title }) => {
       )}
 
       <div className="flex justify-center mt-4">
-        <button
-          onClick={handlePreviousPage}
-          disabled={currentPage === 1}
-          className={`px-2 py-1 rounded-l ${currentPage === 1
-              ? "bg-gray-200 cursor-not-allowed"
-              : "bg-gray-300 hover:bg-gray-400"
-            }`}
-        >
-          <MdArrowBackIos />
-        </button>
-
-        <span className="px-2 py-1">
-          Page {currentPage} of {totalPages}
-        </span>
-
-        <button
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-          className={`px-2 py-1 rounded-r ${currentPage === totalPages
-              ? "bg-gray-200 cursor-not-allowed"
-              : "bg-gray-300 hover:bg-gray-400"
-            }`}
-        >
-          <MdArrowForwardIos />
-        </button>
+        <Pagination
+          current={currentPage}
+          total={productList.length}
+          onChange={ handlePageChange}
+          pageSize={itemsPerPage}
+          showSizeChanger={false}
+        />
       </div>
     </div>
   );

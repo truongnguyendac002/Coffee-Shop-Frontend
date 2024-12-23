@@ -8,7 +8,12 @@ import {
   Pagination,
   Radio,
 } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined, LoadingOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import summaryApi from "../../common";
 import { useDispatch, useSelector } from "react-redux";
 import fetchWithAuth from "../../helps/fetchWithAuth";
@@ -38,7 +43,7 @@ const ShippingAddress = () => {
   };
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [pageSize] = useState(3);
+  const [pageSize] = useState(2);
   const currentAddresses = useMemo(() => {
     const indexOfLastAddress = currentPage * pageSize;
     const indexOfFirstAddress = indexOfLastAddress - pageSize;
@@ -198,18 +203,20 @@ const ShippingAddress = () => {
       <h2 className="text-xl font-semibold mb-4">Your address list</h2>
       <div className="flex justify-between items-center mb-4">
         <div className="mb-4">
-          {addresses.length === 0 ? (
-            <p className="text-sm text-gray-600">
-              Do you want to add new address?
-            </p>) ? (
-              isProfilePage
-            ) : (
-              <p className="text-sm text-gray-600">
-                Manage your addresses here!
-              </p>
-            )
-           : (
-            <p> Select the address you want to receive the product</p>
+          {addresses.length !== 0 ? (
+              isProfilePage ? (
+                <p className="text-sm text-gray-600">
+                    Manage your addresses here!
+                 
+                </p>
+                ) :  (
+                  <p className="text-sm text-gray-600">
+                     Select the address you want to receive the product
+                  
+                </p> 
+                )
+          ) : (
+            <p>  Do you want to add new address?</p>
           )}
         </div>
         <Button
@@ -223,11 +230,11 @@ const ShippingAddress = () => {
       </div>
 
       <div className="space-y-4">
-      {loading && (
-        <div className="flex justify-center items-center ">
-          <LoadingOutlined style={{ fontSize: 48, color: 'red' }} spin />
-        </div>
-      )}
+        {loading && (
+          <div className="flex justify-center items-center ">
+            <LoadingOutlined style={{ fontSize: 48, color: "red" }} spin />
+          </div>
+        )}
         {currentAddresses.map((address) => (
           <div
             key={address.id}
@@ -285,13 +292,16 @@ const ShippingAddress = () => {
             </div>
           </div>
         ))}
-        <Pagination
-          current={currentPage}
-          pageSize={pageSize}
-          total={addresses.length}
-          onChange={(page) => setCurrentPage(page)}
-          showSizeChanger={false}
-        />
+
+        {addresses.length > pageSize && (
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={addresses.length}
+            onChange={(page) => setCurrentPage(page)}
+            showSizeChanger={false}
+          />
+        )}
       </div>
 
       <Modal

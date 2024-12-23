@@ -69,7 +69,7 @@ const Filter = ({ onFilter, products ,onClickFilter }) => {
                 marginBottom: "1rem",
               }}
             >
-              Mức giá
+              Price
             </Typography>
             <Slider
               value={value}
