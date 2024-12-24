@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, List, Spin, Form, Button, Modal } from "antd";
+import { Typography, List, Spin, Form, Button, Modal, message } from "antd";
 import { UserOutlined, LoadingOutlined, EditOutlined } from "@ant-design/icons";
 import {
   FiHome,
@@ -55,6 +55,8 @@ const Profile = () => {
   };
 
   const handleSave = async (updatedData) => {
+    
+
     const fetchUpdateProfile = async (data) => {
       setLoading(true);
       const response = await fetchWithAuth(summaryApi.updateProfile.url, {
@@ -274,21 +276,6 @@ const Profile = () => {
             <OrderHistory />
           </div>
         );
-
-      case "help":
-        return (
-          <div>
-            <Title level={3}>Help</Title>
-            <p>Contact our support team for assistance.</p>
-          </div>
-        );
-      case "terms":
-        return (
-          <div>
-            <Title level={3}>Terms of Use</Title>
-            <p>Read the terms of use for our services.</p>
-          </div>
-        );
       default:
         return <div>Content not found.</div>;
     }
@@ -335,22 +322,7 @@ const Profile = () => {
           className="mb-6"
         />
 
-        <Title level={5}>Customer Service</Title>
-        <List
-          itemLayout="horizontal"
-          dataSource={[
-            { key: "help", title: "Help", icon: <TbInfoSquare className="text-2xl" /> },
-            { key: "terms", title: "Terms of Use", icon: <FiAlertCircle className="text-2xl" /> },
-          ]}
-          renderItem={(item) => (
-            <List.Item
-              onClick={() => setSelectedMenu(item.key)}
-              className={`cursor-pointer p-2 rounded-lg transition-all duration-300 ${selectedMenu === item.key ? "bg-gray-200" : "bg-white"}`}
-            >
-              <List.Item.Meta avatar={<div className="pl-2">{item.icon}</div>} title={item.title} />
-            </List.Item>
-          )}
-        />
+       
       </aside>
 
 
