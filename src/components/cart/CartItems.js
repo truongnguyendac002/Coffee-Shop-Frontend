@@ -100,6 +100,7 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
   }, [cartItems]);
   
 
+
   return (
     <div className="space-y-4">
       {location.pathname === "/cart" ? (
@@ -127,6 +128,10 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
           key={item.id}
           className="bg-white shadow-md border rounded-md py-4 px-3"
         >
+          {
+  console.log("kfi" ,cartItems )
+
+          }
           <div className="flex flex-row items-center justify-between">
             <div className="w-1/12 flex justify-center ">
               <Checkbox
@@ -167,7 +172,22 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
             </div>
 
             <div className="w-1/12  text-sm sm:text-base font-semibold hidden sm:block">
-            {Number(item.productItemResponse.price).toLocaleString("vi-VN")}đ
+
+            {
+              item.productItemResponse.discount ? (
+                <div className="flex flex-col justify-center">
+                <p className="">
+                  {Number(item.productItemResponse.price - item.productItemResponse.discount).toLocaleString("vi-VN")}đ
+                </p>
+                <p className="text-gray-500 line-through text-sm font-normal">
+                  {Number(item.productItemResponse.price).toLocaleString("vi-VN")}đ
+                </p>
+              </div>
+              ) : (
+               <p> {Number(item.productItemResponse.price).toLocaleString("vi-VN") }đ </p>
+              )
+            }
+          
             </div>
 
             <div className="w-3/12 flex items-center justify-center ">
@@ -197,7 +217,21 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
             </div>
 
             <div className=" w-2/12 sm:w-1/12 flex justify-center text-sm sm:text-base font-semibold text-red-500">
-              {Number(item.productItemResponse.price * item.quantity).toLocaleString("vi-VN")}đ
+
+              {
+              item.productItemResponse.discount ? (
+                <div className="flex flex-col justify-center">
+                <p className="">
+                  {Number(item.productItemResponse.price * item.quantity - item.productItemResponse.discount * item.quantity).toLocaleString("vi-VN")}đ
+                </p>
+                <p className="text-gray-500 line-through text-sm font-normal">
+                  {Number(item.productItemResponse.price * item.quantity).toLocaleString("vi-VN")}đ
+                </p>
+              </div>
+              ) : (
+               <p>  {Number(item.productItemResponse.price * item.quantity).toLocaleString("vi-VN")}đ </p>
+              )
+            }
             </div>
 
             <div
