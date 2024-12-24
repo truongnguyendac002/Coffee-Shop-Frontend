@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {  InputNumber, Button, Checkbox } from "antd";
+import {  InputNumber, Button, Checkbox, Input } from "antd";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import fetchWithAuth from "../../helps/fetchWithAuth";
@@ -112,9 +112,9 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
               />
             </div>
             <div className="w-5/12 flex justify-start">Sản Phẩm</div>
-            <div className="w-1/12 flex justify-start">Đơn Giá</div>
+            <div className="sm:w-1/12 w-0  justify-start hidden sm:flex">Đơn Giá</div>
             <div className="w-3/12 flex justify-center">Số Lượng</div>
-            <div className="w-1/12 flex justify-start">Số Tiền</div>
+            <div className="w-2/12 sm:w-1/12 flex justify-start">Số Tiền</div>
             <div className="w-1/12 flex justify-start">Thao Tác</div>
           </div>
         </div>
@@ -140,7 +140,7 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
               <Link
                 to={`/product/${item.productItemResponse.productResponse.id}`}
               >
-                <div className="flex space-x-3 items-center">
+                <div className="flex flex-col items-start sm:flex-row  sm:space-x-3 sm:items-center">
                   <img
                     src={
                       item.productItemResponse.productResponse.images[0]
@@ -148,10 +148,10 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
                         : image1
                     }
                     alt={item.productItemResponse.productResponse.name}
-                    className="w-20 h-20 sm:w-16 sm:h-16 object-cover "
+                    className="w-10 h-10 sm:w-16 sm:h-16 object-cover "
                   />
                   <div>
-                    <h2 className="text-base sm:text-lg font-semibold text-gray-800">
+                    <h2 className="text-sm sm:text-lg font-semibold text-gray-800 line-clamp-1">
                       {item.productItemResponse.productResponse.name}
                     </h2>
                     <p className="text-xs sm:text-sm text-gray-600">
@@ -166,7 +166,7 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
               </Link>
             </div>
 
-            <div className="w-1/12  text-sm sm:text-base font-semibold">
+            <div className="w-1/12  text-sm sm:text-base font-semibold hidden sm:block">
             {Number(item.productItemResponse.price).toLocaleString("vi-VN")}đ
             </div>
 
@@ -175,15 +175,14 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
                 type="default"
                 icon={<MinusOutlined />}
                 onClick={() => handleQuantityChange(item.quantity - 1, item)}
-                className="sm:w-5  w-4 h-8"
+                className="w-3  sm:w-5 sm:h-8"
               />
-              <InputNumber
+              <Input
                 min={1}
                 max={item.productItemResponse.stock}
                 value={item.quantity}
                 onChange={(value) => handleQuantityChange(value, item)}
-                controls={false}
-                className={`sm:w-12 w-4 h-8 text-sm text-center border  transition-all duration-500 ${
+                className={`sm:w-14 w-10 h-8 text-sm text-center border  transition-all duration-500 ${
                   errorItemId === item.id
                     ? "border-red-500 animate-shake"
                     : "border-gray-300"
@@ -193,11 +192,11 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
                 type="default"
                 icon={<PlusOutlined />}
                 onClick={() => handleQuantityChange(item.quantity + 1, item)}
-                className="sm:w-5  w-4 h-8"
+                className="w-2  sm:w-5 sm:h-8"
               />
             </div>
 
-            <div className=" w-1/12 flex justify-center text-sm sm:text-base font-semibold text-red-500">
+            <div className=" w-2/12 sm:w-1/12 flex justify-center text-sm sm:text-base font-semibold text-red-500">
               {Number(item.productItemResponse.price * item.quantity).toLocaleString("vi-VN")}đ
             </div>
 
