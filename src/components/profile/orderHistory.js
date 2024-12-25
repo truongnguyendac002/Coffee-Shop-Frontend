@@ -37,31 +37,43 @@ const OrderHistory = React.memo(() => {
     fetchOrders();
   }, [fetchOrders]);
 
+  const updateOrderStatus = (orderId, status) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((item) =>
+        item.orderId === orderId ? { ...item, orderStatus: status } : item
+      )
+    );
+  };
 
-  const handleCancelOrder = async (orderId) => {
+  const handleCancelOrder = async (record) => {
+    const { orderId, paymentMethod } = record;
+    setLoading(true);
     try {
-      const response = await fetchWithAuth(
-        `${summaryApi.cancelOrder.url}${orderId}`,
-        {
-          method: summaryApi.cancelOrder.method,
-        }
-      );
+      const apiUrl = paymentMethod === 'COD' 
+        ? `${summaryApi.cancelOrder.url}${orderId}` 
+        : `${summaryApi.cancelOrderAndRefund.url}?orderId=${orderId}`;
+      const method = paymentMethod === 'COD' 
+      ? summaryApi.cancelOrder.method 
+      : summaryApi.cancelOrderAndRefund.method;
+        
+      const response = await fetchWithAuth(apiUrl, {
+        method: method,
+      });
       const result = await response.json();
+      console.log(paymentMethod)
+      console.log(apiUrl)
+  
       if (result.respCode === "000") {
-        message.info("Đã hủy thành công đơn hàng ");
-
-        setOrders((prevOrders) =>
-          prevOrders.map((item) =>
-            item.orderId === orderId
-              ? { ...item, orderStatus: "Cancelled" }
-              : item
-          )
-        );
-      }else {
-        message.error("Bạn không thể hủy được đơn hàng này!");
+        message.info("Đã hủy thành công đơn hàng");
+        updateOrderStatus(orderId, "Cancelled");
+      } else {
+        message.error("Có lỗi xảy ra, vui lòng thử lại sau hoặc liên hệ với chúng tôi để được hỗ trợ!");
       }
     } catch (error) {
       console.error("Error cancelling order:", error.message);
+      message.error("Có lỗi xảy ra, vui lòng thử lại sau hoặc liên hệ với chúng tôi để được hỗ trợ!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,11 +137,11 @@ const OrderHistory = React.memo(() => {
           <Button
             type="primary"
             danger
-            disabled={record.orderStatus === "Cancelled" || record.orderStatus === "Completed" }
+            disabled={record.orderStatus !== 'Processing' }
           >
             <Popconfirm
               title="Bạn có chắc muốn hủy đơn hàng này?"
-              onConfirm={() => handleCancelOrder(record.orderId)}
+              onConfirm={() => handleCancelOrder(record)}
               okText="Yes"
               cancelText="No"
             >
