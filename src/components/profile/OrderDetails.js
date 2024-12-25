@@ -222,6 +222,12 @@ const OrderDetails = ({ orderId, onClose }) => {
               {orderDetail.shippingAddress.location}
             </Descriptions.Item>
             <Descriptions.Item
+              label={<span style={{ fontWeight: "bold" }}>Shipping Fee</span>}
+              style={{ padding: "8px" }}
+            >
+              {"10000 đ"}
+            </Descriptions.Item>
+            <Descriptions.Item
               label={<span style={{ fontWeight: "bold" }}>Total Amount</span>}
               style={{ padding: "8px" }}
             >
