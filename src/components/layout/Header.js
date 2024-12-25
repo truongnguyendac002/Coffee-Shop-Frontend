@@ -35,7 +35,6 @@ const Header = () => {
     Cookies.remove("refreshToken");
     Cookies.remove("cart-item-list");
     localStorage.removeItem("shipping-address");
-    localStorage.removeItem("selected-address-id");
     dispatch(clearUser());
     dispatch(clearCart());
     dispatch(clearFavorites());

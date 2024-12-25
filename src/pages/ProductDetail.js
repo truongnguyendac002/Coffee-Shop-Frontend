@@ -5,13 +5,13 @@ import { FaHeart } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa6";
 import { FaChevronRight } from "react-icons/fa6";
-import { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from "@ant-design/icons";
 
 import image1 from "../assets/img/empty.jpg";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart, toggleSelected } from "../store/cartSlice";
 import fetchWithAuth from "../helps/fetchWithAuth";
-import { message , Modal} from "antd";
+import { message, Modal } from "antd";
 import {
   selectFavorites,
   removeFromFavorites,
@@ -58,14 +58,11 @@ const ProductDetail = () => {
     images.map(() => false) // Tạo trạng thái tải cho từng ảnh
   );
 
-
   useEffect(() => {
     if (product) {
-      const isProductFavorite = favorites.some(
-        (item) => {
-          return item.id === product.id
-        }
-      );
+      const isProductFavorite = favorites.some((item) => {
+        return item.id === product.id;
+      });
       setIsFavorite(isProductFavorite);
     }
   }, [product, favorites]);
@@ -115,12 +112,18 @@ const ProductDetail = () => {
   };
 
   const decrement = () => {
+    if (!maxQuantity) {
+      setError("Bạn cần chọn loại sản phẩm trước");
+    }
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
   };
 
   const increment = () => {
+    if (!maxQuantity) {
+      setError("Bạn cần chọn loại sản phẩm trước");
+    }
     if (quantity < maxQuantity) {
       setQuantity(quantity + 1);
     }
@@ -143,10 +146,8 @@ const ProductDetail = () => {
     });
   };
 
-
   const handleAddProductToCart = async () => {
-
-    if(!user ) {
+    if (!user) {
       Modal.confirm({
         title: "Xác nhận",
         content: "Bạn có muốn đăng nhập để tiếp tục mua hàng?",
@@ -164,7 +165,6 @@ const ProductDetail = () => {
       return;
     }
 
-   
     try {
       const response = await fetchWithAuth(summaryApi.addCartItem.url, {
         method: summaryApi.addCartItem.method,
@@ -202,7 +202,7 @@ const ProductDetail = () => {
         );
 
         if (!isSelected) {
-          dispatch(toggleSelected(addedProduct.id));
+          dispatch(toggleSelected({ itemId: addedProduct.id }));
         }
         navigate("/checkout");
       }
@@ -229,9 +229,7 @@ const ProductDetail = () => {
         if (data.respCode === "000") {
           dispatch(removeFromFavorites(product));
           dispatch(
-            setFavorites(
-              favorites.filter((item) => item.id !== product.id)
-            )
+            setFavorites(favorites.filter((item) => item.id !== product.id))
           );
 
           message.success("Sản phẩm đã được xóa khỏi danh sách yêu thích");
@@ -270,7 +268,7 @@ const ProductDetail = () => {
     }
     switch (activeTab) {
       case "Description":
-        return <DescriptionProduct product={product} />
+        return <DescriptionProduct product={product} />;
       case "Review":
         return <ListReview productId={product.id} />;
       default:
@@ -278,12 +276,11 @@ const ProductDetail = () => {
     }
   };
 
-
   return (
     <div className="container mx-auto mt-3">
       {isLoading && (
         <div className="flex justify-center items-center h-screen">
-          <LoadingOutlined style={{ fontSize: 48, color: 'red' }} spin />
+          <LoadingOutlined style={{ fontSize: 48, color: "red" }} spin />
         </div>
       )}
       <div className="shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row">
@@ -296,8 +293,9 @@ const ProductDetail = () => {
                 </div>
               )}
               <img
-                className={`md:w-[300px] md:h-[300px] lg:w-[400px] lg:h-[380px] w-60 h-60 rounded-md object-cover transition-opacity duration-300 ${imageLoadStatus[currentImage] ? "opacity-100" : "opacity-0"
-                  }`}
+                className={`md:w-[300px] md:h-[300px] lg:w-[400px] lg:h-[380px] w-60 h-60 rounded-md object-cover transition-opacity duration-300 ${
+                  imageLoadStatus[currentImage] ? "opacity-100" : "opacity-0"
+                }`}
                 src={images.length > 0 ? images[currentImage].url : image1}
                 alt="Main product"
                 onLoad={() => handleImageLoad(currentImage)}
@@ -307,23 +305,31 @@ const ProductDetail = () => {
               <div
                 className="grid gap-3 lg:gap-1"
                 style={{
-                  gridTemplateColumns: images.length > 0 ? `repeat(${images.length}, 1fr)` : 'repeat(4, 1fr)', // Nếu images có ảnh, dùng gridTemplateColumns, ngược lại sử dụng 4 cột mặc định
+                  gridTemplateColumns:
+                    images.length > 0
+                      ? `repeat(${images.length}, 1fr)`
+                      : "repeat(4, 1fr)", // Nếu images có ảnh, dùng gridTemplateColumns, ngược lại sử dụng 4 cột mặc định
                 }}
               >
                 {(images.length > 0
                   ? images
                   : Array(4).fill({ url: image1 })
                 ).map((image, index) => (
-
                   <div key={index} className="relative">
                     {!imageLoadStatus[index] && (
                       <div className="absolute inset-0  flex items-center justify-center">
-                        <LoadingOutlined className="text-xl text-gray-400" spin />
+                        <LoadingOutlined
+                          className="text-xl text-gray-400"
+                          spin
+                        />
                       </div>
                     )}
                     <img
-                      className={`w-16 h-16 lg:h-24 lg:w-24 object-cover rounded-lg shadow-md cursor-pointer transition-opacity duration-300 ${index === currentImage ? "border-2 border-red-500" : ""
-                        } ${imageLoadStatus[index] ? "opacity-100" : "opacity-0"}`}
+                      className={`w-16 h-16 lg:h-24 lg:w-24 object-cover rounded-lg shadow-md cursor-pointer transition-opacity duration-300 ${
+                        index === currentImage ? "border-2 border-red-500" : ""
+                      } ${
+                        imageLoadStatus[index] ? "opacity-100" : "opacity-0"
+                      }`}
                       src={image.url}
                       alt={`Product ${index + 1}`}
                       onLoad={() => handleImageLoad(index)}
@@ -352,7 +358,9 @@ const ProductDetail = () => {
         {/* Product Details */}
         <div className="bg-gray-100 md:w-3/5 w-full p-8 flex flex-col justify-between">
           <div>
-            <h2 className="lg:text-2xl md:text-xl text-lg font-bold">{product.name}</h2>
+            <h2 className="lg:text-2xl md:text-xl text-lg font-bold">
+              {product.name}
+            </h2>
             <ProductRating product={product} />
 
             {/* Discount */}
@@ -363,10 +371,12 @@ const ProductDetail = () => {
               <div className="flex gap-x-4 gap-y-3 flex-wrap">
                 {selectedDiscount > 0 ? (
                   <button className="shrink-0 w-28 h-8 border-dashed border-2 bg-red-100 text-red-500 font-semibold rounded-sm text-lg">
-                    {`Giảm ${selectedDiscount}k`}
+                    {`- ${Number(selectedDiscount).toLocaleString("vi-VN")}đ`}
                   </button>
                 ) : selectedDiscount === 0.0 ? (
-                  <p className="text-red-400">Sản phẩm này không có mã giảm giá</p>
+                  <p className="text-red-400">
+                    Sản phẩm này không có mã giảm giá
+                  </p>
                 ) : (
                   <p className="text-red-400">Chọn size để xem mã giảm giá</p>
                 )}
@@ -383,10 +393,11 @@ const ProductDetail = () => {
                   <button
                     key={index}
                     onClick={() => handleClickSize(item)}
-                    className={`shrink-0 w-28 h-8 rounded-sm text-sm border-2 ${clickButtonSize === item
-                      ? "border-orange-500 text-red-500"
-                      : "bg-white hover:border-orange-500 hover:text-red-500"
-                      }`}
+                    className={`shrink-0 w-28 h-8 rounded-sm text-sm border-2 ${
+                      clickButtonSize === item
+                        ? "border-orange-500 text-red-500"
+                        : "bg-white hover:border-orange-500 hover:text-red-500"
+                    }`}
                   >
                     {item.type.name}
                   </button>
@@ -403,6 +414,7 @@ const ProductDetail = () => {
                 <button
                   onClick={decrement}
                   className="px-2 py-1 text-gray-800 rounded-l focus:outline-none border border-solid"
+                  // disabled={!maxQuantity}
                 >
                   -
                 </button>
@@ -410,13 +422,16 @@ const ProductDetail = () => {
                   type="number"
                   value={quantity}
                   onChange={(e) =>
-                    setQuantity(Math.max(1, Math.min(maxQuantity, e.target.value)))
+                    setQuantity(
+                      Math.max(1, Math.min(maxQuantity, e.target.value))
+                    )
                   }
                   className="lg:w-20 px-2 md:w-14 w-16 py-1 text-center border-t border-b border-gray-300 focus:outline-none"
                 />
                 <button
                   onClick={increment}
                   className="px-2 py-1 text-gray-800 rounded-r focus:outline-none border border-solid"
+                  // disabled={!maxQuantity}
                 >
                   +
                 </button>
@@ -425,7 +440,9 @@ const ProductDetail = () => {
                 {itemStock > 0 ? (
                   `${itemStock.toLocaleString()} sản phẩm có sẵn`
                 ) : itemStock === 0 ? (
-                  <span className="text-red-400">Hiện tại không còn sản phẩm</span>
+                  <span className="text-red-400">
+                    Hiện tại không còn sản phẩm
+                  </span>
                 ) : (
                   <span></span>
                 )}
@@ -438,7 +455,20 @@ const ProductDetail = () => {
                 <h2 className="lg:text-xl md:text-lg text-base">Giá</h2>
               </div>
               <div className="flex gap-x-4 gap-y-3 flex-wrap">
-                <p className="font-semibold text-red-500 text-2xl">{productItemPrice}đ</p>
+                {selectedDiscount ? (
+                  <div className="flex items-center space-x-5">
+                    <p className="text-gray-500 line-through text-lg">
+                      {Number(productItemPrice).toLocaleString("vi-VN")}đ
+                    </p>
+                    <p className="font-semibold text-red-500 text-2xl">
+                      {Number(productItemPrice - selectedDiscount).toLocaleString("vi-VN")}đ
+                    </p>
+                  </div>
+                ) : (
+                  <p className="font-semibold text-red-500 text-2xl">
+                    {Number(productItemPrice).toLocaleString("vi-VN")}đ
+                  </p>
+                )}
               </div>
             </div>
 
@@ -450,7 +480,8 @@ const ProductDetail = () => {
                   onClick={handleAddToCart}
                   className="grow flex items-center justify-center md:px-4 py-2 bg-red-100 border border-red-500 text-red-500 hover:bg-white"
                 >
-                  <FaShoppingCart className="md:text-lg text-sm mr-2" /> Thêm Vào Giỏ Hàng
+                  <FaShoppingCart className="md:text-lg text-sm mr-2" /> Thêm
+                  Vào Giỏ Hàng
                 </button>
 
                 <button
@@ -486,8 +517,9 @@ const ProductDetail = () => {
           {tabs.map((tab) => (
             <button
               key={tab}
-              className={`px-4 py-2 font-semibold ${activeTab === tab ? "border-b-2 border-orange-500" : ""
-                }`}
+              className={`px-4 py-2 font-semibold ${
+                activeTab === tab ? "border-b-2 border-orange-500" : ""
+              }`}
               onClick={() => setActiveTab(tab)}
             >
               {tab}
@@ -498,7 +530,6 @@ const ProductDetail = () => {
         <div className="mt-4">{renderContent(product)}</div>
       </div>
     </div>
-
   );
 };
 
