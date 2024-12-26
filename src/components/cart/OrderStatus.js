@@ -91,10 +91,10 @@ const OrderStatus = () => {
             );
             const responseTran = await addTransactionResponse.json();
 
-            if (responseTran.respCode !== "000") {
-              setStatus("fail");
-              toast.error("Đặt hàng không thành công");
-            }
+            // if (responseTran.respCode !== "000") {
+            //   setStatus("fail");
+            //   toast.error("Đặt hàng không thành công");
+            // }
           }
         } else {
           setStatus("fail");
@@ -103,8 +103,9 @@ const OrderStatus = () => {
       } catch (error) {
         console.error("Có lỗi xảy ra khi xử lý đơn hàng:", error);
         setStatus("fail");
+      } finally {
+        localStorage.removeItem("order");
       }
-      localStorage.removeItem("order");
     }
   };
 
