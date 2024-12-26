@@ -11,7 +11,7 @@ import image1 from "../assets/img/empty.jpg";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart, toggleSelected } from "../store/cartSlice";
 import fetchWithAuth from "../helps/fetchWithAuth";
-import { message, Modal } from "antd";
+import {  message, Modal } from "antd";
 import {
   selectFavorites,
   removeFromFavorites,
@@ -38,6 +38,8 @@ const ProductDetail = () => {
   const [images, setImages] = useState([]);
   const [currentImage, setCurrentImage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [checkQuantity , setCheckQuantity] =  useState(0);
 
   const user = useSelector((store) => store?.user?.user);
   const cartItems = useSelector((store) => store.cart.items);
@@ -165,6 +167,13 @@ const ProductDetail = () => {
       return;
     }
 
+    const checkItem = cartItems.find((item) =>  item.productItemResponse.id === productItem.id)  ;
+    if(checkItem && (checkItem.quantity + quantity >  maxQuantity)) {
+      setCheckQuantity(checkItem.quantity)
+       showModal();
+       return;
+    }
+
     try {
       const response = await fetchWithAuth(summaryApi.addCartItem.url, {
         method: summaryApi.addCartItem.method,
@@ -276,6 +285,19 @@ const ProductDetail = () => {
     }
   };
 
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="container mx-auto mt-3">
       {isLoading && (
@@ -308,7 +330,7 @@ const ProductDetail = () => {
                   gridTemplateColumns:
                     images.length > 0
                       ? `repeat(${images.length}, 1fr)`
-                      : "repeat(4, 1fr)", // Nếu images có ảnh, dùng gridTemplateColumns, ngược lại sử dụng 4 cột mặc định
+                      : "repeat(4, 1fr)", 
                 }}
               >
                 {(images.length > 0
@@ -391,13 +413,14 @@ const ProductDetail = () => {
               <div className="flex gap-x-4 gap-y-3 flex-wrap">
                 {productItems.map((item, index) => (
                   <button
+                    disabled={item.stock === 0}
                     key={index}
                     onClick={() => handleClickSize(item)}
                     className={`shrink-0 w-28 h-8 rounded-sm text-sm border-2 ${
                       clickButtonSize === item
                         ? "border-orange-500 text-red-500"
                         : "bg-white hover:border-orange-500 hover:text-red-500"
-                    }`}
+                    }${item.stock === 0 ? "bg-gray-200 text-gray-400 cursor-not-allowed" : ""}` }
                   >
                     {item.type.name}
                   </button>
@@ -529,6 +552,25 @@ const ProductDetail = () => {
 
         <div className="mt-4">{renderContent(product)}</div>
       </div>
+
+      <Modal
+        title=""
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <button key="ok" type="primary" onClick={handleOk} className="w-full py-1 rounded-md text-base  bg-red-500 text-white hover:bg-red-600">
+            OK
+          </button>,
+        ]}
+        centered
+        closable={false} 
+      >
+        <p className="  text-base font-normal mt-10 mb-20">
+          Bạn đã có {checkQuantity} sản phẩm này trong giỏ hàng. Không thể thêm số lượng đã chọn vào
+          giỏ hàng vì sẽ vượt quá giới hạn mua hàng của bạn.
+        </p>
+      </Modal>
     </div>
   );
 };

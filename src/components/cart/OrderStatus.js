@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import fetchWithAuth from "../../helps/fetchWithAuth";
 import summaryApi from "../../common";
@@ -23,7 +23,6 @@ const OrderStatus = () => {
   const transactionNo = queryParams.get("transactionNo");
   const amount = queryParams.get("amount");
   const payDate = queryParams.get("payDate");
-  const user = useSelector((state) => state.user.user, (prev, next) => prev === next);
 
   const handleBackToHome = () => {
     navigate("/");
@@ -46,29 +45,33 @@ const OrderStatus = () => {
     }
   };
 
-  const handleOrderProcessing = async () => {
-    const order = JSON.parse(localStorage.getItem("order"));
-    if (status === "success") {
-      try {
 
-        const addOrderResponse = await fetchWithAuth(summaryApi.addOrder.url, {
-          method: summaryApi.addOrder.method,
-          body: JSON.stringify(order),
+
+const handleOrderProcessing = useCallback(async () => {
+  const order = JSON.parse(localStorage.getItem("order"));
+
+  if (status === "success" && order) {
+    try {
+      const addOrderResponse = await fetchWithAuth(summaryApi.addOrder.url, {
+        method: summaryApi.addOrder.method,
+        body: JSON.stringify(order),
+      });
+      const responseOrder = await addOrderResponse.json();
+
+      if (responseOrder.respCode === "000") {
+        toast.success("Đặt hàng thành công");
+
+        order.OrderItems.forEach((orderItem) => {
+          const cartItem = cartItems.find(
+            (item) => item.productItemResponse.id === orderItem.ProductItemId
+          );
+          if (cartItem) {
+            handleDeleteCartItem(cartItem.id);
+          }
         });
-        const responseOrder = await addOrderResponse.json();
 
-        if (responseOrder.respCode === "000") {
-          toast.success("Đặt hàng thành công");
-          cartItems.forEach((item) => {
-            order.OrderItems.forEach((orderItem) => {
-              if (item.productItemResponse.id === orderItem.ProductItemId) {
-                dispatch(removeFromCart(item.id));
-                handleDeleteCartItem(item.id);
-              }
-            });
-          });
-          
-          if (txnRef) {
+        if (txnRef) {
+          try {
             const addTransactionResponse = await fetchWithAuth(
               summaryApi.addTransaction.url,
               {
@@ -78,34 +81,38 @@ const OrderStatus = () => {
                   TxnRef: txnRef,
                   PayDate: payDate,
                   Amount: amount,
-                  OrderId: responseOrder.data
+                  OrderId: responseOrder.data,
                 }),
               }
             );
             const responseTran = await addTransactionResponse.json();
 
             if (responseTran.respCode !== "000") {
-              setStatus("fail");
-              toast.error("Đặt hàng không thành công");
+              throw new Error("Giao dịch không thành công");
             }
+          } catch (error) {
+            toast.error("Giao dịch không thành công");
+            setStatus("fail");
+            return; 
           }
-        } else {
-          setStatus("fail");
-          toast.error("Đặt hàng không thành công");
         }
-      } catch (error) {
-        console.error("Có lỗi xảy ra khi xử lý đơn hàng:", error);
-        setStatus("fail");
+      } else {
+        throw new Error("Đặt hàng không thành công");
       }
+    } catch (error) {
+      console.error("Có lỗi xảy ra khi xử lý đơn hàng:", error);
+      toast.error("Đặt hàng không thành công");
+      setStatus("fail");
+    } finally {
+      localStorage.removeItem("order");
     }
-    localStorage.removeItem("order");
-    
-    
-  };
+  }
+}, [status, cartItems, dispatch, txnRef, transactionNo, payDate, amount ]);
 
-  useEffect(() => {
-    handleOrderProcessing();
-  }, []);
+useEffect(() => {
+  handleOrderProcessing();
+}, [handleOrderProcessing]);
+
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-50">

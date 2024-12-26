@@ -55,7 +55,6 @@ const CheckoutSummary = ({selectedAddress}) => {
         const createOnlinePayment = await fetchWithAuth(summaryApi.createOnlinePayment.url + `?amount=${total}`, {
           method: summaryApi.createOnlinePayment.method,
         })
-        console.log("total22" , total )
 
 
         const response = await createOnlinePayment.json();

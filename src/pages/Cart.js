@@ -24,7 +24,7 @@ function Cart() {
             <CartItems cartItems={cartItems}  />
           </div>
           <div className="w-full lg:w-[30%]">
-            <CartSummary cartItems={cartItems} />
+            <CartSummary  />
           </div>
         </div>
       </div>
