@@ -23,7 +23,7 @@ const OrderStatus = () => {
   const transactionNo = queryParams.get("transactionNo");
   const amount = queryParams.get("amount");
   const payDateString = queryParams.get("payDate");
-  const user = useSelector((state) => state.user.user, (prev, next) => prev === next);
+
   let payDate = null;
   if (payDateString) {
     const formattedPayDate = new Date(
@@ -36,82 +36,90 @@ const OrderStatus = () => {
     navigate("/");
   };
 
-  const handleDeleteCartItem = async (itemId) => {
-    try {
-      const response = await fetchWithAuth(
-        summaryApi.deleteCartItem.url + itemId,
-        {
-          method: summaryApi.deleteCartItem.method,
+  useEffect(() => {
+
+    const handleOrderProcessing = async () => {
+      const handleDeleteCartItem = async (itemId) => {
+        try {
+          const response = await fetchWithAuth(
+            summaryApi.deleteCartItem.url + itemId,
+            {
+              method: summaryApi.deleteCartItem.method,
+            }
+          );
+          const result = await response.json();
+          if (result.respCode === "000") {
+            dispatch(removeFromCart(itemId));
+          }
+        } catch (error) {
+          console.error("Error delete cart item:", error);
         }
-      );
-      const result = await response.json();
-      if (result.respCode === "000") {
-        dispatch(removeFromCart(itemId));
-      }
-    } catch (error) {
-      console.error("Error delete cart item:", error);
-    }
-  };
+      };
 
-  const handleOrderProcessing = async () => {
-    const order = JSON.parse(localStorage.getItem("order"));
-    if (status === "success" && order) {
-      try {
+      const order = JSON.parse(localStorage.getItem("order"));
 
-        const addOrderResponse = await fetchWithAuth(summaryApi.addOrder.url, {
-          method: summaryApi.addOrder.method,
-          body: JSON.stringify(order),
-        });
-        const responseOrder = await addOrderResponse.json();
+      if (status === "success" && order) {
+        try {
+          const addOrderResponse = await fetchWithAuth(summaryApi.addOrder.url, {
+            method: summaryApi.addOrder.method,
+            body: JSON.stringify(order),
+          });
+          const responseOrder = await addOrderResponse.json();
 
-        if (responseOrder.respCode === "000") {
-          toast.success("Đặt hàng thành công");
-          cartItems.forEach((item) => {
+          if (responseOrder.respCode === "000") {
+            toast.success("Đặt hàng thành công");
+
             order.OrderItems.forEach((orderItem) => {
-              if (item.productItemResponse.id === orderItem.ProductItemId) {
-                dispatch(removeFromCart(item.id));
-                handleDeleteCartItem(item.id);
+              const cartItem = cartItems.find(
+                (item) => item.productItemResponse.id === orderItem.ProductItemId
+              );
+              if (cartItem) {
+                handleDeleteCartItem(cartItem.id);
               }
             });
-          });
-          
-          if (txnRef) {
-            const addTransactionResponse = await fetchWithAuth(
-              summaryApi.addTransaction.url,
-              {
-                method: summaryApi.addTransaction.method,
-                body: JSON.stringify({
-                  TransactionNo: transactionNo,
-                  TxnRef: txnRef,
-                  PayDate: payDate,
-                  Amount: amount,
-                  OrderId: responseOrder.data
-                }),
+
+            if (txnRef) {
+              try {
+                const addTransactionResponse = await fetchWithAuth(
+                  summaryApi.addTransaction.url,
+                  {
+                    method: summaryApi.addTransaction.method,
+                    body: JSON.stringify({
+                      TransactionNo: transactionNo,
+                      TxnRef: txnRef,
+                      PayDate: payDate,
+                      Amount: amount,
+                      OrderId: responseOrder.data,
+                    }),
+                  }
+                );
+                const responseTran = await addTransactionResponse.json();
+
+                if (responseTran.respCode !== "000") {
+                  throw new Error("Giao dịch không thành công");
+                }
+              } catch (error) {
+                toast.error("Giao dịch không thành công");
+                setStatus("fail");
+                return;
               }
-            );
-            const responseTran = await addTransactionResponse.json();
-
-            // if (responseTran.respCode !== "000") {
-            //   setStatus("fail");
-            //   toast.error("Đặt hàng không thành công");
-            // }
+            }
+          } else {
+            throw new Error("Đặt hàng không thành công");
           }
-        } else {
-          setStatus("fail");
+        } catch (error) {
+          console.error("Có lỗi xảy ra khi xử lý đơn hàng:", error);
           toast.error("Đặt hàng không thành công");
+          setStatus("fail");
+        } finally {
+          localStorage.removeItem("order");
         }
-      } catch (error) {
-        console.error("Có lỗi xảy ra khi xử lý đơn hàng:", error);
-        setStatus("fail");
-      } finally {
-        localStorage.removeItem("order");
       }
-    }
-  };
-
-  useEffect(() => {
+    };
     handleOrderProcessing();
-  }, []);
+
+  }, [amount, dispatch, payDate, status, transactionNo, txnRef]);
+
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-50">
