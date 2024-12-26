@@ -1,12 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
-import Cookies from "js-cookie";
 
 const initialState = {
-  items: JSON.parse(Cookies.get("cart-item-list") || "[]").map((item) => ({
+  items: (() => {
+    try {
+      return JSON.parse(localStorage.getItem("cart-item-list")) || [];
+    } catch (error) {
+      console.error("Failed to parse localStorage data:", error);
+      return [];
+    }
+  })().map((item) => ({
     ...item,
     isSelected: item.isSelected || false,
   })),
 };
+
 
 const cartSlice = createSlice({
   name: "cart",
@@ -24,46 +31,38 @@ const cartSlice = createSlice({
       } else {
         state.items.push(newItem);
       }
-      Cookies.set("cart-item-list", JSON.stringify(state.items), {
-        expires: 7,
-      });
+      localStorage.setItem("cart-item-list", JSON.stringify(state.items));
     },
     removeFromCart: (state, action) => {
       const itemId = action.payload;
       state.items = state.items.filter((item) => item.id !== itemId);
-      Cookies.set("cart-item-list", JSON.stringify(state.items), {
-        expires: 7,
-      });
+      localStorage.setItem("cart-item-list", JSON.stringify(state.items));
     },
     clearCart: (state) => {
       state.items = [];
-      Cookies.remove("cart-item-list");
+      localStorage.removeItem("cart-item-list");
     },
     setCartItems: (state, action) => {
       state.items = action.payload;
-      Cookies.set("cart-item-list", JSON.stringify(action.payload), {
-        expires: 7,
-      });
+      localStorage.setItem("cart-item-list", JSON.stringify(action.payload));
     },
     toggleSelected: (state, action) => {
       const { itemId, isSelected } = action.payload;
     
-      if (itemId) {
-        const itemIndex = state.items.findIndex((item) => item.id === itemId);
+      if (itemId ) {
+        const itemIndex = state.items.findIndex((item) => item.quantity <= item.productItemResponse.stock && item.id === itemId);
         if (itemIndex >= 0) {
           state.items[itemIndex].isSelected = !state.items[itemIndex].isSelected;
-          Cookies.set("cart-item-list", JSON.stringify(state.items), {
-            expires: 7,
-          });
+          localStorage.setItem("cart-item-list", JSON.stringify(state.items));
         }
       } else if (isSelected !== undefined) {
        
         state.items.forEach((item) => {
-          item.isSelected = isSelected; 
+          if(item.quantity <= item.productItemResponse.stock){
+            item.isSelected = isSelected; 
+          }
         });
-        Cookies.set("cart-item-list", JSON.stringify(state.items), {
-          expires: 7,
-        });
+        localStorage.setItem("cart-item-list", JSON.stringify(state.items));
       }
     }
     
