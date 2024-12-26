@@ -22,7 +22,15 @@ const OrderStatus = () => {
   const txnRef = queryParams.get("txnRef");
   const transactionNo = queryParams.get("transactionNo");
   const amount = queryParams.get("amount");
-  const payDate = queryParams.get("payDate");
+  const payDateString = queryParams.get("payDate");
+  const user = useSelector((state) => state.user.user, (prev, next) => prev === next);
+  let payDate = null;
+  if (payDateString) {
+    const formattedPayDate = new Date(
+      `${payDateString.slice(0, 4)}-${payDateString.slice(4, 6)}-${payDateString.slice(6, 8)}T${payDateString.slice(8, 10)}:${payDateString.slice(10, 12)}:${payDateString.slice(12, 14)}`
+    );
+    payDate = formattedPayDate.toISOString();
+  }
 
   const handleBackToHome = () => {
     navigate("/");

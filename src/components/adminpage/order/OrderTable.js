@@ -248,6 +248,11 @@ const OrderTable = ({ orderList , refreshOrderList }) => {
               <p className="w-4/5"> {orderDetail.shippingAddress.location} </p>
             </div>
             <div className="flex justify-between items-center">
+              <strong className="w-1/5">Shipping Fee:</strong>
+
+              <p className="w-4/5"> {"10000 đ"} </p>
+            </div>
+            <div className="flex justify-between items-center">
               <strong className="w-1/5">Total Amount:</strong>
               <p className="w-4/5">{orderDetail.total} đ </p>
             </div>
