@@ -9,7 +9,6 @@ const { Title, Text } = Typography;
 
 const ProfileSection = () => {
   const user = useSelector((state) => state?.user?.user);
-  console.log("ué", user)
   const dispatch = useDispatch();
 
   const handleUpload = async (file) => {
