@@ -283,6 +283,10 @@ const summaryApi = {
     cancelOrder : {
         url : `${backendDomain}/order/cancel-order/`,
         method : "PUT"
+    },
+    cancelOrderAndRefund : {
+        url : `${backendDomain}/payment`,
+        method : "POST"
     }
 }
 

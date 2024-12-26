@@ -25,8 +25,13 @@ const CheckoutSummary = ({selectedAddress}) => {
     )
     : 0;
 
-  const total = subtotal + shipping;
-  console.log("total" , total )
+
+  const discount =  selectedItems ? selectedItems.reduce((sum, item ) => {
+    return sum + item.productItemResponse.discount * item.quantity
+  } , 0) : 0; 
+
+  const total = subtotal + shipping - discount;
+
 
   // Thuc lam tu day
   const handleCheckout = async () => {
@@ -50,7 +55,6 @@ const CheckoutSummary = ({selectedAddress}) => {
         const createOnlinePayment = await fetchWithAuth(summaryApi.createOnlinePayment.url + `?amount=${total}`, {
           method: summaryApi.createOnlinePayment.method,
         })
-        console.log("total22" , total )
 
 
         const response = await createOnlinePayment.json();
@@ -84,6 +88,11 @@ const CheckoutSummary = ({selectedAddress}) => {
           <h3 className=" text-gray-700">Shipping:</h3>
           <p className="text-gray-800">{Number(shipping).toLocaleString("vi-VN")}đ</p>
 
+        </div>
+
+        <div className="flex md:text-lg text-base font-semibold justify-between">
+          <h3 className=" text-gray-700">Discount:</h3>
+          <p className="text-gray-800">{Number(discount).toLocaleString("vi-VN")}đ</p>
         </div>
       </div>
       <hr className="border-t border-gray-300 mt-6"></hr>
