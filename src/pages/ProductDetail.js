@@ -224,6 +224,19 @@ const ProductDetail = () => {
   const handleClickFavorites = async () => {
     const isAlreadyFavorite = isFavorite;
 
+    if(!user) {
+      Modal.confirm ({
+        title : "",
+        content: "Bạn cần phải đăng nhập để có thể thêm sản phẩm vào danh sách yêu thích", 
+        okText: "Đăng nhập",
+        cancelText: "Cancel",
+        onOk : () => {
+          navigate('/login')
+        },
+      })
+      return;
+    }
+
     if (isAlreadyFavorite) {
       try {
         const response = await fetchWithAuth(summaryApi.deleteFavorites.url, {
@@ -571,6 +584,8 @@ const ProductDetail = () => {
           giỏ hàng vì sẽ vượt quá giới hạn mua hàng của bạn.
         </p>
       </Modal>
+
+    
     </div>
   );
 };
