@@ -41,9 +41,9 @@ const CartTab = ({ items }) => {
                       {item.productItemResponse.productResponse.name}
                     </span>
 
-                    <span className="col-span-1 font-semibold text-base md:text-sm text-orange-500">
+                    <span className="col-span-1 font-semibold text-base md:text-sm text-red-500">
                       {/* {item.price} */}
-                      {item.productItemResponse.price} đ
+                      {Number(item.productItemResponse.price).toLocaleString("vi-VN")}đ
                     </span>
                   </div>
                 </Link>
@@ -61,7 +61,7 @@ const CartTab = ({ items }) => {
 
       {displayedItems.length > 0 ? (
         <Link to="/cart">
-          <button className="w-full text-base bg-rose-500 text-white font-semibold py-2 px-4 rounded hover:bg-rose-600">
+          <button className="w-full text-base  text-white font-semibold py-2 px-4 rounded bg-gradient-to-r from-orange-400 to-red-400">
             Xem Giỏ Hàng
           </button>
         </Link>

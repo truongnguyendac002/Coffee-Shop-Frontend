@@ -164,7 +164,7 @@ const OrderHistory = React.memo(() => {
           (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
         )}
         rowKey="orderId"
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 5  , showSizeChanger :false}}
         className="overflow-x-auto"
       />
       {selectedOrderId && (
