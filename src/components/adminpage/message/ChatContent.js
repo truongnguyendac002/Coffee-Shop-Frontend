@@ -124,7 +124,7 @@ const ChatContent = () => {
   };
 
   const paginatedData = conversationList
-    .sort((a, b) => a.hostId - b.hostId)
+    .sort((a, b) => b.id - a.id)
     .slice(
       (currentPage - 1) * pageSize,
       currentPage * pageSize
@@ -138,6 +138,7 @@ const ChatContent = () => {
         <List
           itemLayout="horizontal"
           dataSource={paginatedData}
+          loading={loading}
           renderItem={(conversation) => (
             <List.Item
               key={conversation.id}
