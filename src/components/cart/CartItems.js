@@ -21,11 +21,15 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
 
   const [errorItemId, setErrorItemId] = useState(null);
   const [selectAll, setSelectAll] = useState(false);
+  const newCartItems =  cartItems.filter((item) => item.quantity <= item.productItemResponse.stock )
 
   const handleQuantityChange = (value, item) => {
-    if (value < 1 || value > item.productItemResponse.stock) {
+    if (value < 1) {  
       triggerError(item);
     } else {
+      if(value > item.productItemResponse.stock) {
+        value =  item.productItemResponse.stock;
+      }
       const updatedItem = { ...item, quantity: value };
       setErrorItemId(null);
       try {
@@ -88,18 +92,21 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
   };
 
   const handleSelectAll = () => {
-    console.log(!selectAll)
     setSelectAll(!selectAll);
     dispatch(toggleSelected({ isSelected: !selectAll }));
   };
 
   useEffect(() => {
-    const newCartItems =  cartItems.filter((item) => item.quantity <= item.productItemResponse.stock )
+   
+    if (newCartItems.length === 0) {
+      setSelectAll(false); 
+      return;
+    }
     const allSelected = newCartItems.every(
       (cartItem) =>  cartItem.isSelected === true
     );
-    setSelectAll(allSelected);
-  }, [cartItems]);
+    setSelectAll(allSelected && newCartItems.length > 0);
+  }, [newCartItems]);
 
   useEffect(() => {
     cartItems.forEach((item) => {
@@ -115,10 +122,11 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
         <div className="bg-white rounded-lg shadow-md py-2 px-3">
           <div className="flex items-center  pb-2 font-semibold text-gray-500">
             <div className="w-1/12 flex justify-center ">
-              <input
+              <Checkbox
                 type="checkbox"
                 className="w-4 h-4"
-                checked={selectAll}
+                checked={selectAll }
+                disabled ={newCartItems.length === 0}
                 onChange={handleSelectAll}
               />
             </div>
@@ -204,11 +212,11 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
                   </div>
                 ) : (
                   <p>
-                    {" "}
+                  
                     {Number(item.productItemResponse.price).toLocaleString(
                       "vi-VN"
                     )}
-                    đ{" "}
+                    đ
                   </p>
                 )}
               </div>
@@ -219,6 +227,7 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
                   icon={<MinusOutlined />}
                   onClick={() => handleQuantityChange(item.quantity - 1, item)}
                   className="w-3  sm:w-5 sm:h-8"
+                  disabled={item.quantity === 1}
                 />
                 <InputNumber
                   min={1}
@@ -236,6 +245,12 @@ const CartItems = ({ cartItems, isCheckingOut }) => {
                   icon={<PlusOutlined />}
                   onClick={() => handleQuantityChange(item.quantity + 1, item)}
                   className="w-2  sm:w-5 sm:h-8"
+                  disabled = {item.quantity >=  item.productItemResponse.stock}
+                  title={
+                    item.quantity >= item.productItemResponse.stock
+                      ? "Đã đạt số lượng tối đa"
+                      : " "
+                  }
                 />
               </div>
 
