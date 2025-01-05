@@ -177,7 +177,7 @@ const OrderDetails = ({ orderId, onClose }) => {
           Close
         </Button>,
       ]}
-      width="60%" // Giảm độ rộng modal trên thiết bị di động
+      width="60%" 
       centered
       confirmLoading={loading}
       className="max-w-full"
@@ -189,7 +189,7 @@ const OrderDetails = ({ orderId, onClose }) => {
           <Descriptions
             bordered
             column={1}
-            style={{ fontSize: "14px", padding: "4px" }} // Giảm kích thước font cho thiết bị di động
+            style={{ fontSize: "14px", padding: "4px" }} 
           >
             <Descriptions.Item
               label={<span style={{ fontWeight: "bold" }}>Order ID</span>}
@@ -244,8 +244,8 @@ const OrderDetails = ({ orderId, onClose }) => {
             columns={columns}
             rowKey="key"
             pagination={false}
-            scroll={{ x: 600 }} // Cho phép cuộn ngang nếu tổng chiều rộng vượt quá 800px
-            style={{ width: "100%" }} // Đảm bảo bảng chiếm toàn bộ chiều rộng phần tử cha
+            scroll={{ x: 600 }} 
+            style={{ width: "100%" }} 
             className="overflow-x-auto"
           />
         </>

@@ -95,13 +95,13 @@ const OrderStatus = () => {
                 );
                 const responseTran = await addTransactionResponse.json();
 
-                if (responseTran.respCode !== "000") {
-                  throw new Error("Giao dịch không thành công");
-                }
+                // if (responseTran.respCode !== "000") {
+                //   throw new Error("Giao dịch không thành công");
+                // }
               } catch (error) {
-                toast.error("Giao dịch không thành công");
-                setStatus("fail");
-                return;
+                console.error("Giao dịch không thành công");
+                // setStatus("fail");
+                // return;
               }
             }
           } else {
