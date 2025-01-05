@@ -26,7 +26,7 @@ const Sidebar = () => {
               }
             >
               <MdPermIdentity className="mr-2 text-lg" />
-              Users
+              Khách hàng
             </NavLink>
 
             <NavLink
@@ -38,7 +38,7 @@ const Sidebar = () => {
               }
             >
               <MdStore className="mr-2 text-lg" />
-              Products
+              Sản phẩm
             </NavLink>
 
             <NavLink
@@ -105,7 +105,7 @@ const Sidebar = () => {
               }
             >
               <MdChatBubbleOutline className="mr-2 text-lg" />
-              Messages
+              Tin nhắn
             </NavLink>
           </ul>
         </div>
