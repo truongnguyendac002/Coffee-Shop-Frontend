@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { List, Avatar, Input, Spin, Button, Typography } from "antd";
+import { List, Avatar, Input, Spin, Button, Typography, Pagination } from "antd";
 import { LoadingOutlined, SendOutlined, UserOutlined } from "@ant-design/icons";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
@@ -14,6 +14,8 @@ const ChatContent = () => {
   const [selectedConversationId, setselectedConversationId] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const [conversationList, setConversationList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5); // Số mục hiển thị trên mỗi trang
   const stompClient = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -115,6 +117,19 @@ const ChatContent = () => {
     );
   }
 
+
+  const handlePageChange = (page, size) => {
+    setCurrentPage(page);
+    setPageSize(size);
+  };
+
+  const paginatedData = conversationList
+    .sort((a, b) => a.hostId - b.hostId)
+    .slice(
+      (currentPage - 1) * pageSize,
+      currentPage * pageSize
+    );
+
   return (
     <div className="flex -mt-5 h-[calc(100vh-60px)]">
       {/* Sidebar */}
@@ -122,11 +137,11 @@ const ChatContent = () => {
         <Text className="text-xl font-semibold mb-4 block">Conversations</Text>
         <List
           itemLayout="horizontal"
-          dataSource={conversationList}
+          dataSource={paginatedData}
           renderItem={(conversation) => (
             <List.Item
               key={conversation.id}
-              className={`cursor-pointer rounded-lg  ${selectedConversationId === conversation.id
+              className={`cursor-pointer rounded-lg ${selectedConversationId === conversation.id
                 ? "bg-blue-100"
                 : "hover:bg-gray-50"
                 }`}
@@ -136,18 +151,25 @@ const ChatContent = () => {
                 avatar={
                   <Avatar
                     size={40}
-                    src={conversation.hostAvatar !== null ? conversation.hostAvatar : null}
+                    src={conversation.hostAvatar || null}
                     icon={<UserOutlined />}
                     className="bg-transparent text-gray-500 ml-2"
-
-                  >
-                  </Avatar>}
+                  />
+                }
                 title={<Text>{conversation.hostName}</Text>}
               />
             </List.Item>
           )}
         />
+        <Pagination
+          className="mt-4"
+          current={currentPage}
+          pageSize={pageSize}
+          total={conversationList.length}
+          onChange={handlePageChange}
+        />
       </div>
+
 
       {/* Chat Area */}
       <div className="flex-1 max-h-full flex flex-col">
@@ -163,8 +185,8 @@ const ChatContent = () => {
               >
                 <div
                   className={`inline-block max-w-[75%] px-3 py-2 rounded-xl ${msg.senderId === user.id
-                      ? "bg-blue-500 text-white rounded-br-none" 
-                      : "bg-gray-200 text-black rounded-bl-none" 
+                    ? "bg-blue-500 text-white rounded-br-none"
+                    : "bg-gray-200 text-black rounded-bl-none"
                     }`}
                 >
                   {msg.content}
