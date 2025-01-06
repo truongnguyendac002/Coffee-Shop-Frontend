@@ -110,8 +110,8 @@ const OrderDetails = ({ orderId, onClose }) => {
     },
     {
       title: "Image",
-      dataIndex: "image",
-      key: "image",
+      dataIndex: "productImage",
+      key: "productImage",
       render: (url) => (
         <img
           src={url || image1}
