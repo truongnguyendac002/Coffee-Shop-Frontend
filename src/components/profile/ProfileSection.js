@@ -73,7 +73,6 @@ const ProfileSection = () => {
         </Text>
 
       )}
-        <Text>{user.created_at}</Text>
 
     </section>
   );
