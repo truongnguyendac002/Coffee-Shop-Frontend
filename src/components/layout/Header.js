@@ -15,6 +15,7 @@ import { Badge } from "antd";
 import { clearCart } from "../../store/cartSlice";
 import { clearFavorites } from "../../store/favoritesSlice ";
 import CartTab from "../cart/CartTab";
+import { clearAddress } from "../../store/shippingAddressSlice ";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ const Header = () => {
     dispatch(clearUser());
     dispatch(clearCart());
     dispatch(clearFavorites());
+    dispatch(clearAddress());
     navigate("/");
     message.success("Logout Successfully!");
   };

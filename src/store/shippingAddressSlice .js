@@ -40,8 +40,12 @@ const shippingAddressSlice = createSlice({
         }));
         localStorage.setItem(SHIPPING_ADDRESS_KEY, JSON.stringify(state.addresses));
       },
+      clearAddress: (state) => {
+        state.addresses = [];
+        localStorage.removeItem(SHIPPING_ADDRESS_KEY);
+      },
   },
 });
 
-export const { setAddresses, addAddress, updateAddress, deleteAddress , toggleSelectedAddress} = shippingAddressSlice.actions;
+export const { setAddresses, addAddress, updateAddress, deleteAddress , toggleSelectedAddress , clearAddress} = shippingAddressSlice.actions;
 export default shippingAddressSlice.reducer;
