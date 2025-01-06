@@ -11,7 +11,6 @@ const OrdersContent = () => {
     "Đang giao hàng ",
     "Hoàn thành",
     "Đã hủy",
-    "Trả hàng/Hoàn tiền",
   ];
 
   const renderContent = () => {
@@ -28,8 +27,6 @@ const OrdersContent = () => {
         return <OrderProgress progress={"Completed"} />;
       case "Đã hủy":
         return <OrderProgress progress={"Cancelled"} />;
-      case "Trả hàng/Hoàn tiền":
-        return <p>Nội dung cho Trả hàng/Hoàn tiền</p>;
       default:
         return <p>Nội dung mặc định</p>;
     }
@@ -38,7 +35,7 @@ const OrdersContent = () => {
   return (
     <div className=" min-h-screen">
      
-      <div className="bg-white shadow-md">
+      <div className="bg-white shadow-md ">
         <div className="container mx-auto">
           <ul className="flex justify-start border-b">
             {keyTab.map((tab, index) => (
@@ -60,7 +57,7 @@ const OrdersContent = () => {
 
       
 
-      <div>{renderContent()}</div>
+      <div className="">{renderContent()}</div>
     </div>
   );
 };

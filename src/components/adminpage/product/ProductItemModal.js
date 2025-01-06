@@ -248,6 +248,11 @@ const ProductItemsModal = ({ product, setProduct, visible, onClose, setProductLi
             return;
         }
 
+        if(discount >  price) {
+            message.error("Discount không hợp lệ ")
+            return;
+        }
+
         const fetchAddItem = async () => {
             try {
                 const response = await fetchWithAuth(summaryApi.addProductItem.url, {
@@ -279,6 +284,11 @@ const ProductItemsModal = ({ product, setProduct, visible, onClose, setProductLi
     const handleSaveItem = (item, itemId) => {
         if (itemId) {
             // Update existing item
+            if(item.discount >  item.price) {
+                message.error("Discount không hợp lệ ")
+                return;
+            }
+
             const fetchUpdateItem = async () => {
                 try {
                     const response = await fetchWithAuth(
