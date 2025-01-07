@@ -80,6 +80,7 @@ const OrderStatus = () => {
 
             if (txnRef) {
               try {
+                console.log("trans date:" + payDate);
                 const addTransactionResponse = await fetchWithAuth(
                   summaryApi.addTransaction.url,
                   {

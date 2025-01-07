@@ -114,7 +114,7 @@ const OrderDetails = ({ orderId, onClose }) => {
       key: "productImage",
       render: (url) => (
         <img
-          src={url || image1}
+          src={url?url:image1}
           alt="Product"
           style={{ width: 50, height: 50 }}
         />
