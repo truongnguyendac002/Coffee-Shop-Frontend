@@ -49,12 +49,15 @@ const OrderHistory = React.memo(() => {
     const { orderId, paymentMethod } = record;
     setLoading(true);
     try {
-      const apiUrl = paymentMethod === 'COD' 
-        ? `${summaryApi.cancelOrder.url}${orderId}` 
-        : `${summaryApi.cancelOrderAndRefund.url}?orderId=${orderId}`;
-      const method = paymentMethod === 'COD' 
-      ? summaryApi.cancelOrder.method 
-      : summaryApi.cancelOrderAndRefund.method;
+      // const apiUrl = paymentMethod === 'COD' 
+      //   ? `${summaryApi.cancelOrder.url}${orderId}` 
+      //   : `${summaryApi.cancelOrderAndRefund.url}?orderId=${orderId}`;
+      // const method = paymentMethod === 'COD' 
+      // ? summaryApi.cancelOrder.method 
+      // : summaryApi.cancelOrderAndRefund.method;
+
+      const apiUrl = `${summaryApi.cancelOrder.url}${orderId}`;
+      const method = summaryApi.cancelOrder.method;
         
       const response = await fetchWithAuth(apiUrl, {
         method: method,
