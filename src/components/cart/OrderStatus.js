@@ -26,10 +26,9 @@ const OrderStatus = () => {
 
   let payDate = null;
   if (payDateString) {
-    const formattedPayDate = new Date(
-      `${payDateString.slice(0, 4)}-${payDateString.slice(4, 6)}-${payDateString.slice(6, 8)}T${payDateString.slice(8, 10)}:${payDateString.slice(10, 12)}:${payDateString.slice(12, 14)}`
-    );
-    payDate = formattedPayDate.toISOString();
+    const moment = require("moment");
+    payDate = moment(payDateString, "YYYYMMDDHHmmss").format("YYYY-MM-DD HH:mm:ss");
+    console.log("Formatted Date:", payDate);
   }
 
   const handleBackToHome = () => {
