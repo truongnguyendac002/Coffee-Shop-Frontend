@@ -27,7 +27,7 @@ const OrderStatus = () => {
   let payDate = null;
   if (payDateString) {
     const moment = require("moment");
-    payDate = moment(payDateString, "YYYYMMDDHHmmss").format("YYYY-MM-DD HH:mm:ss");
+    payDate = moment(payDateString, "YYYYMMDDHHmmss").format("YYYY-MM-DD[T]HH:mm:ss");
     console.log("Formatted Date:", payDate);
   }
 
