@@ -4,8 +4,8 @@ import { Slider, Box, Typography } from "@mui/material";
 
 const Filter = ({ onFilter, products ,onClickFilter }) => {
   const min = 0 ;
-  const max = 1000000;
-  const step= 10000;
+  const max = 5000000;
+  const step= 50000;
   const [brands, setBrands] = useState([]);
   const [selectBrand, setSelectBrand] = useState([]);
   const [value, setValue] = useState([min, max]);
